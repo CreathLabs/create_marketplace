@@ -1,0 +1,100 @@
+"use client";
+import Button from "@/components/Button";
+import NavLink from "@/components/NavLink";
+import {
+  Bag2,
+  Buildings,
+  Clipboard,
+  Gallery,
+  House,
+  People,
+  Shop,
+} from "iconsax-react";
+import Image from "next/image";
+import Link from "next/link";
+import React from "react";
+
+interface Props {
+  openModal: () => void;
+}
+
+const Header: React.FC<Props> = ({ openModal }) => {
+  return (
+    <main className="w-full h-[70px] bg-white !z-50 sticky top-0">
+      <div className="contain h-full flex justify-between items-center ">
+        <Image
+          src="/logo.svg"
+          width={55}
+          height={40}
+          className="!z-50 cursor-pointer"
+          alt=""
+        />
+        <div className=" hidden absolute top-0 left-0 right-0 bottom-0 xl:flex w-full h-full justify-center space-x-[88px] items-center">
+          <NavLink
+            text="Home"
+            icon={<House size="20" variant="Outline" />}
+            path=""
+          />
+          <NavLink
+            text="Art"
+            path="art"
+            icon={<Gallery size="20" variant="Outline" />}
+            isdropdown
+            content={company}
+          />
+          <NavLink
+            text="Collectibles"
+            path="collectibles"
+            icon={<Bag2 size="20" variant="Outline" />}
+          />
+          <NavLink
+            text="Exhibitions"
+            path="exhibitions"
+            icon={<Clipboard size="20" variant="Outline" />}
+          />
+        </div>
+        <Button
+          text="Log In"
+          className="h-full flex justify-center !z-50 items-center py-0 w-[145px]"
+          action={openModal}
+        />
+      </div>
+    </main>
+  );
+};
+
+export default Header;
+
+const links = [
+  {
+    name: "Marketplace",
+    url: "/marketplace",
+    icon: <Shop size={20} variant="Outline" />,
+  },
+  {
+    name: "Artists",
+    url: "/artists",
+    icon: <People size={20} variant="Outline" />,
+  },
+  {
+    name: "Galleries",
+    url: "/galleries",
+    icon: <Buildings size={20} variant="Outline" />,
+  },
+];
+
+export const company = (
+  <div className="flex flex-col bg-white px-4 w-full py-6 space-y-8 ">
+    {links.map((item, index) => (
+      <div key={index} className="">
+        <Link
+          href={`${item.url}`}
+          className={`text-mainGray font-medium text-base cursor-pointer pr-[13px] flex space-x-3 items-center `}
+        >
+          {item.icon}
+          <h1>{item.name}</h1>
+        </Link>
+      </div>
+    ))}
+  </div>
+);
