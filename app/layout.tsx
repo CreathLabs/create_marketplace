@@ -39,7 +39,7 @@ export default function RootLayout({
           rel="stylesheet"
         ></link>
       </head>
-      <body className={`${inter.className} font-Manrope `}>{children}</body>
+      <body className={`${inter.className} font-Manrope  `}>{children}</body>
     </html>
   );
 }

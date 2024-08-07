@@ -31,31 +31,36 @@ const ExhibitionDetails = () => {
                 24 Blue Road, Lekki Lagos. Nigeria
               </h2>
             </div>
+            <Button text="View Gallery" textStyles="w-[183px]" />
           </div>
         </div>
       </div>
       <div className="contain space-y-[105px] ">
-        <div className="w-full space-y-4 max-w-[50%]">
+        <div className="w-full space-y-8 max-w-[50%]">
           <h1 className="font-Playfair font-bold text-[35px] leading-[46px] ">
             Two Boys One Lambo
           </h1>
-          <div className="flex flex-col  w-full">
+          <div className="flex flex-col space-y-10 w-full">
             <h3 className="font-semibold text-xl leading-9 tracking-[5%] ">
               Lorem Ipsum Dolor consect leut wefLorem Ipsum Dolor consect leut
               wefLorem Ipsum Dolor consect leut wefLorem Ipsum Dolor consect
               leut wefLorem Ipsum sect leut wefLorem Ipsum
             </h3>
+            <div className="flex items-center justify-between ">
+              <div className="space-y-4">
+                <h2 className="text-lg text-mainGray font-semibold ">
+                  Artists
+                </h2>
+                <h1 className="text-[22px] font-bold ">Chuma Anagbado</h1>
+              </div>
+              <div className="space-y-4">
+                <h2 className="text-lg text-mainGray font-semibold ">
+                  Curator
+                </h2>
+                <h1 className="text-[22px] font-bold ">Ike Anago</h1>
+              </div>
+            </div>
           </div>
-          <div></div>
-          <div></div>
-          <div></div>
-          <div></div>
-          <div></div>
-          <div></div>
-          <div></div>
-          <div></div>
-          <div></div>
-          <div></div>
         </div>
         <div className="pb-[98px] space-y-6">
           <h1 className="font-Playfair font-bold !text-3xl ">

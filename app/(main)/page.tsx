@@ -8,75 +8,92 @@ import Accordion from "@/components/Accordion";
 import { accordionItems } from "@/lib/data";
 import BlogCard from "@/components/BlogCard";
 
+const artists = [1, 2, 3, 4, 5, 6, 7, 8];
+
 export default function Home() {
   return (
     <main className="w-full h-full">
       <Hero />
       <TopNFTs />
       {/* artists */}
-      <div className="bg-black  pt-10 pb-16">
-        <div className="contain space-y-14">
+      <div className="bg-black  pt-8 md:pt-10 md:pb-14 pb-6">
+        <div className="contain space-y-10 md:space-y-14">
           <div className=" flex justify-between items-center">
-            <h1 className="font-Playfair text-white font-bold !text-[40px] ">
-              Performing Artists
-            </h1>
+            <h1 className="heading text-white ">Performing Artists</h1>
             <Button
               text="View All Artists"
               textStyles="w-[183px]"
-              className="text-white border-white"
+              className="text-white border-white hidden lg:flex"
             />
           </div>
-          <div className="grid grid-cols-4 gap-20">
-            <Artist />
-            <Artist />
-            <Artist />
-            <Artist />
-            <Artist />
-            <Artist />
-            <Artist />
-            <Artist />
+          <div className="grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-20 hidden md:grid">
+            {artists.map((i) => (
+              <Artist key={i} />
+            ))}
+          </div>
+          <div className="grid gap-20 md:hidden">
+            {artists.slice(0, 3).map((i) => (
+              <Artist key={i} />
+            ))}
+          </div>
+          <div className="w-full flex justify-center lg:hidden">
+            <Button
+              text="Explore Marketplace"
+              className="text-white border-white"
+              textStyles="w-[144px]"
+            />
           </div>
         </div>
       </div>
       {/* collectibles */}
-      <div className=" pt-10 pb-14">
-        <div className="contain space-y-14">
+      <div className=" pt-8 md:pt-10 md:pb-14 pb-6 ">
+        <div className="contain space-y-10 md:space-y-14">
           <div className=" flex justify-between items-center">
-            <h1 className="font-Playfair  font-bold !text-[40px] ">
-              Collectibles
-            </h1>
-            <Button text="View All Collectibles" textStyles="w-[183px]" />
+            <h1 className="heading">Collectibles</h1>
+            <Button
+              text="View All Collectibles"
+              textStyles="w-[183px]"
+              className="hidden lg:flex"
+            />
           </div>
-          <div className="grid grid-cols-3 gap-16">
+          <div className="grid lg:grid-cols-3 gap-16">
             <Collectible />
             <Collectible />
             <Collectible />
+          </div>
+          <div className="w-full flex justify-center lg:hidden">
+            <Button text="View More" textStyles="w-[144px]" />
           </div>
         </div>
       </div>
       {/* exhibitions */}
-      <div className="bg-grayTwo pt-10 pb-14">
-        <div className="contain space-y-14">
+      <div className="bg-grayTwo pt-8 md:pt-10 md:pb-14 pb-6 ">
+        <div className="contain space-y-10 lg:space-y-14">
           <div className=" flex justify-between items-center">
-            <h1 className="font-Playfair  font-bold !text-[40px] ">
-              Creath Exhibitions
-            </h1>
-            <Button text="View More Exhibitions" textStyles="w-[183px]" />
+            <h1 className="heading">Creath Exhibitions</h1>
+            <Button
+              text="View More Exhibitions"
+              textStyles="w-[183px]"
+              className="hidden lg:flex"
+            />
           </div>
-          <div className="grid grid-cols-2 gap-16">
+          <div className="grid lg:grid-cols-2 gap-6 md:gap-12 lg:gap-16">
             <EventCard />
             <EventCard />
+          </div>
+          <div className="w-full flex justify-center lg:hidden">
+            <Button text="View More" textStyles="w-[144px]" />
           </div>
         </div>
       </div>
       {/* faq */}
-      <div className="bg-grayTwo py-[104px]">
-        <div className="contain grid grid-cols-2 gap-16 items-center ">
+      <div className="bg-grayTwo py-8 lg:py-[104px]">
+        <div className="contain grid lg:grid-cols-2 gap-6 lg:gap-16 items-center ">
           <div className="space-y-6">
-            <h1 className="text-[40px] font-bold leading-[60px] font-Playfair  ">
-              Frequently Asked Questions
+            <h1 className=" text-[28px] text-center lg:text-left lg:text-[40px] font-bold leading-[45px] lg:leading-[60px] font-Playfair  ">
+              Frequently Asked <br className="lg:hidden" /> Questions
             </h1>
-            <h2 className="text-xl text-mainGray leading-[45px]">
+            <h2 className=" text-[17px] text-center lg:text-left lg:text-xl text-mainGray leading-[45px]">
               Everything you need to know about Creath marketplace
             </h2>
           </div>
@@ -84,18 +101,19 @@ export default function Home() {
         </div>
       </div>
       {/* news letter */}
-      <div className="py-10">
-        <div className="contain py-14 bg-black text-white">
-          <div className="grid grid-cols-5 px-20">
-            <div className="col-span-3  space-y-4">
-              <h1 className="text-[40px] font-Playfair font-bold leading-[60px] ">
+      <div className="py-4 md:py-10">
+        <div className="contain   text-white">
+          <div className="grid lg:grid-cols-5 px-4 py-6 lg:py-14 bg-black gap-y-8 lg:px-20">
+            <div className="lg:col-span-3  space-y-4">
+              <h1 className="heading leading-[60px] ">
                 Join our newsletter <br /> to stay updated
               </h1>
-              <h2 className="text-xl leading-[45px]  ">
-                Get the lastest information in your <br /> inbox, we dont spam.
+              <h2 className=" text-[17px] lg:text-xl leading-[45px]  ">
+                Get the lastest information in your{" "}
+                <br className="hidden md:block" /> inbox, we dont spam.
               </h2>
             </div>
-            <div className="col-span-2 w-full h-full flex flex-col justify-end">
+            <div className="lg:col-span-2 w-full h-full flex flex-col justify-end">
               <form className="space-y-10">
                 <input
                   placeholder="Enter Email"
@@ -103,7 +121,7 @@ export default function Home() {
                 />
                 <Button
                   text="Submit"
-                  textStyles="w-[183px]"
+                  textStyles="w-[144px] lg:w-[183px]"
                   className="text-white border-white"
                 />
               </form>
@@ -115,10 +133,14 @@ export default function Home() {
       <div className=" pt-8 pb-[72px] ">
         <div className="contain space-y-14">
           <div className=" flex justify-between items-center">
-            <h1 className="font-Playfair  font-bold !text-[40px] ">Blog</h1>
-            <Button text="View All Blogs" textStyles="w-[183px]" />
+            <h1 className="heading">Blog</h1>
+            <Button
+              text="View All Blogs"
+              textStyles="w-[183px]"
+              className="hidden lg:flex"
+            />
           </div>
-          <div className="grid grid-cols-3 gap-[34px]">
+          <div className="grid lg:grid-cols-3 gap-[34px]">
             <BlogCard />
             <BlogCard />
             <BlogCard />

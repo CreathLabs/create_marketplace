@@ -14,8 +14,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <div className="grid grid-cols-2 w-full h-screen">
-      <div className="w-full h-full relative">
+    <div className="grid lg:grid-cols-2 w-full h-screen">
+      <div className="w-full h-[323px] lg:h-full relative">
         <Image
           src="/auth.png"
           fill
@@ -23,20 +23,21 @@ export default function RootLayout({
           className="object-cover cursor-pointer "
         />
         <div className="absolute w-full top-0 left-0 bottom-0 right-0 bg-[#000000AD] flex justify-end  ">
-          <div className="container max-w-screen-sm pl-4 py-[60px] ">
-            <Link href="/" className=" ">
-              <Image
-                src="/logo2.svg"
-                width={128.48}
-                height={71}
-                alt=""
-                className="cursor-pointer"
-              />
+          <div className="container max-w-screen-sm pl-4 py-11 mx-auto lg:mx-0 lg:py-[60px] ">
+            <Link href="/">
+              <div className="w-[90.48px] h-[50px]  lg:h-[71px] lg:w-[128.48px] relative">
+                <Image
+                  src="/logo2.svg"
+                  fill
+                  alt=""
+                  className="cursor-pointer"
+                />
+              </div>
             </Link>
           </div>
         </div>
       </div>
-      <div className="flex justify-center items-center px-20  container max-w-screen-sm pr-16 ">
+      <div className="flex justify-center items-center px-4 lg:px-20  container max-w-screen-sm mx-auto lg:mx-0 lg:pr-16 ">
         {children}
       </div>
     </div>

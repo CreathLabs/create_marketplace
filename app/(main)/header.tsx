@@ -1,6 +1,8 @@
 "use client";
 import Button from "@/components/Button";
 import NavLink from "@/components/NavLink";
+import { MenuContext } from "@/contexts/menuContext";
+import { Icon } from "@iconify/react/dist/iconify.js";
 import {
   Bag2,
   Buildings,
@@ -12,15 +14,17 @@ import {
 } from "iconsax-react";
 import Image from "next/image";
 import Link from "next/link";
-import React from "react";
+import React, { useContext } from "react";
 
 interface Props {
   openModal: () => void;
 }
 
 const Header: React.FC<Props> = ({ openModal }) => {
+  const { toggleMenu, open } = useContext(MenuContext);
+
   return (
-    <main className="w-full h-[70px] bg-white !z-50 sticky top-0">
+    <main className="w-full h-[56px] lg:h-[70px] bg-white !z-50 sticky top-0">
       <div className="contain h-full flex justify-between items-center ">
         <Image
           src="/logo.svg"
@@ -53,11 +57,23 @@ const Header: React.FC<Props> = ({ openModal }) => {
             icon={<Clipboard size="20" variant="Outline" />}
           />
         </div>
-        <Button
-          text="Log In"
-          className="h-full flex justify-center !z-50 items-center py-0 w-[145px]"
-          action={openModal}
-        />
+        <div className="flex h-full gap-x-6 ">
+          <Button
+            text="Log In"
+            className="h-full flex justify-center !z-50 items-center py-0 w-[100px] lg:w-[145px]"
+            action={openModal}
+          />
+          <div
+            onClick={() => {
+              toggleMenu(!open);
+            }}
+            className="h-full xl:hidden flex items-center"
+          >
+            <div className=" bg-grayTwo w-6 h-6 flex justify-center items-center ">
+              <Icon icon="fe:app-menu" className="text-base" />
+            </div>
+          </div>
+        </div>
       </div>
     </main>
   );

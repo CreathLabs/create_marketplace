@@ -7,12 +7,12 @@ import Link from "next/link";
 
 const RegisterPage = () => {
   return (
-    <div className="w-full space-y-8">
-      <div className="space-y-3">
-        <h1 className="font-Playfair font-bold text-3xl leading-[60px] tracking-[3%] ">
+    <div className="w-full py-8 space-y-8">
+      <div className="space-y-6 lg:space-y-3">
+        <h1 className="font-Playfair font-bold text-[22px] leading-[29px] lg:text-3xl lg:leading-[60px] tracking-[3%] ">
           Create New Account
         </h1>
-        <h3 className="text-mainGray text-lg leading-[45px] ">
+        <h3 className="text-mainGray text-[15px] lg:text-lg lg:leading-[45px] ">
           Enter Email Address Below
         </h3>
       </div>
@@ -52,7 +52,7 @@ const RegisterPage = () => {
             leadingAccessory={<Image src={GoogleSvg} alt="" />}
           />
         </div>
-        <h1>
+        <h1 className="text-[15px] lg:text-base ">
           Do you have an Account?{" "}
           <span className="font-bold ">
             <Link href="/auth/login">Sign In Here</Link>

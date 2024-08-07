@@ -3,14 +3,18 @@
 @tailwind utilities;
 
 .contain {
-  @apply container max-w-screen-xl mx-auto px-6;
+  @apply container max-w-screen-xl mx-auto px-4;
 }
 .contain_right {
-  @apply container max-w-screen-sm pl-6;
+  @apply container max-w-screen-sm lg:pl-6;
 }
 
 .contain_left {
-  @apply container max-w-screen-sm pr-6;
+  @apply container max-w-screen-sm lg:pr-6;
+}
+
+.heading {
+  @apply font-Playfair font-bold text-[28px] lg:text-[40px];
 }
 
 .scroller::-webkit-scrollbar {

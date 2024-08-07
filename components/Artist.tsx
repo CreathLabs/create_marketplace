@@ -17,7 +17,9 @@ const Artist = ({ className = "" }: { className?: string }) => {
       <div className="w-[259px] h-[259px] rounded-full relative overflow-hidden ">
         <Image src="/featured.png" fill alt="Image" className="object-cover" />
       </div>
-      <h1 className="font-bold font-Playfair text-[27px] ">Alfredoakinmade</h1>
+      <h1 className="font-bold font-Playfair text-2xl lg::text-[27px] ">
+        Alfredoakinmade
+      </h1>
     </div>
   );
 };

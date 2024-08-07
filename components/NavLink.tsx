@@ -1,4 +1,5 @@
 "use client";
+import { MenuContext } from "@/contexts/menuContext";
 import { ArrowDown2 } from "iconsax-react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
@@ -24,6 +25,8 @@ const NavLink: React.FC<Props> = ({
   const dropdownRef = useRef<HTMLDivElement>(null);
   const dropdownRefMobile = useRef<HTMLDivElement>(null);
 
+  const { toggleMenu } = useContext(MenuContext);
+
   return (
     <div
       onMouseOver={() => {
@@ -44,12 +47,13 @@ const NavLink: React.FC<Props> = ({
         }
         setShow(!show);
       }}
-      className={`w-fit h-full flex flex-col xl:flex-row xl:items-center  relative ${
+      className={`w-fit pb-3 lg:pb-0 lg:h-full flex flex-col xl:flex-row xl:items-center  relative ${
         path === pathname ? "border-b-2 border-black" : "border-none"
       } `}
     >
       <Link
         href={!isdropdown ? `/${path}` : ""}
+        onClick={() => !isdropdown && toggleMenu(false)}
         className={`${
           path === pathname ? "text-black" : "text-mainGray"
         } font-medium text-base cursor-pointer pr-[13px] flex space-x-3 items-center `}
