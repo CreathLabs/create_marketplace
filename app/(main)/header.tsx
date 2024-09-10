@@ -3,6 +3,7 @@ import Button from "@/components/Button";
 import NavLink from "@/components/NavLink";
 import { MenuContext } from "@/contexts/menuContext";
 import { Icon } from "@iconify/react/dist/iconify.js";
+import { User } from "@prisma/client";
 import {
   Bag2,
   Buildings,
@@ -14,14 +15,18 @@ import {
 } from "iconsax-react";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import React, { useContext } from "react";
 
 interface Props {
   openModal: () => void;
+  current: User | null;
 }
 
-const Header: React.FC<Props> = ({ openModal }) => {
+const Header: React.FC<Props> = ({ openModal, current }) => {
   const { toggleMenu, open } = useContext(MenuContext);
+
+  const router = useRouter();
 
   return (
     <main className="w-full h-[56px] lg:h-[70px] bg-white !z-50 sticky top-0">
@@ -59,9 +64,9 @@ const Header: React.FC<Props> = ({ openModal }) => {
         </div>
         <div className="flex h-full gap-x-6 ">
           <Button
-            text="Log In"
-            className="h-full flex justify-center !z-50 items-center py-0 w-[100px] lg:w-[145px]"
-            action={openModal}
+            text={current ? current?.username : "Log In"}
+            className="h-full flex justify-center !z-50 items-center py-0 min-w-[100px] lg:min-w-[145px]"
+            action={current ? () => router.push("/profile") : openModal}
           />
           <div
             onClick={() => {

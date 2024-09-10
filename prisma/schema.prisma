@@ -12,3 +12,126 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+model User {
+  id                String      @id @default(uuid())
+  username          String      @unique
+  email             String      @unique
+  password          String
+  type              PROFILETYPE @default(ARTIST)
+  wallet_address    String?     @unique
+  bio               String?     @db.VarChar(1000)
+  instagram         String?
+  twitter           String?
+  country           String?
+  state             String?
+  address           String?
+  profile_image     String?
+  cover_image       String?
+  created_at        DateTime    @default(now())
+  updated_at        DateTime    @updatedAt
+  is_email_verified Boolean?    @default(false)
+  otp               String?
+  otp_expires_in    DateTime?
+  reset_token       String?     @unique
+  token_expies_in   DateTime?
+  is_approved       Boolean     @default(false)
+  is_artist         Boolean     @default(false)
+  artworks          Art[]
+  likes             Likes[]
+}
+
+model Exhibition {
+  id          String         @id @default(uuid())
+  name        String
+  description String
+  cover_image String
+  images      String
+  type        EXHIBITIONTYPE
+  link        String
+  date        String?
+  is_done     Boolean        @default(false)
+  is_featured Boolean        @default(false)
+  created_at  DateTime       @default(now())
+  updated_at  DateTime       @updatedAt
+  artworks    Art[]
+}
+
+model Blog {
+  id          String   @id @default(uuid())
+  title       String
+  description String
+  cover_image String
+  content     String
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+}
+
+model Category {
+  id         String   @id @default(uuid())
+  name       String
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  artworks   Art[]
+}
+
+model Art {
+  id            String      @id @default(uuid())
+  name          String
+  floor_price   Float
+  description   String      @db.VarChar()
+  dimensions    String
+  user_id       String
+  user          User        @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  category_id   String
+  category      Category    @relation(fields: [category_id], references: [id], onDelete: Cascade)
+  location      String?
+  contract      String?
+  published_by  String?
+  art_image     String?
+  exhibition_id String?
+  is_approved   Boolean     @default(false)
+  exhibition    Exhibition? @relation(fields: [exhibition_id], references: [id], onDelete: Cascade)
+  created_at    DateTime    @default(now())
+  updated_at    DateTime    @updatedAt
+  likes         Likes[]
+}
+
+model Likes {
+  user_id    String
+  user       User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  art_id     String
+  art        Art      @relation(fields: [art_id], references: [id], onDelete: Cascade)
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  @@id([user_id, art_id])
+}
+
+model Admin {
+  id            String   @id @default(uuid())
+  full_name     String
+  email         String   @unique
+  password      String
+  phone_no      String
+  role          ROLE     @default(ADMIN)
+  profile_image String
+  created_at    DateTime @default(now())
+  updated_at    DateTime @updatedAt
+  is_suspended  Boolean  @default(false)
+}
+
+enum PROFILETYPE {
+  GALLERY
+  ARTIST
+}
+
+enum ROLE {
+  SUPERADMIN
+  ADMIN
+}
+
+enum EXHIBITIONTYPE {
+  HYBRID
+  PHYSICAL
+}

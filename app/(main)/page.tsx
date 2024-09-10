@@ -7,14 +7,25 @@ import EventCard from "@/components/EventCard";
 import Accordion from "@/components/Accordion";
 import { accordionItems } from "@/lib/data";
 import BlogCard from "@/components/BlogCard";
+import {
+  getTopArtists,
+  getTopNfts,
+  getTopExhibitions,
+  getTopBlogs,
+} from "@/actions";
 
 const artists = [1, 2, 3, 4, 5, 6, 7, 8];
 
-export default function Home() {
+export default async function Home() {
+  const topNfts = await getTopNfts();
+  const artists = await getTopArtists();
+  const exhibitions = await getTopExhibitions();
+  const blogs = await getTopBlogs();
+
   return (
     <main className="w-full h-full">
-      <Hero />
-      <TopNFTs />
+      <Hero topNfts={topNfts} />
+      <TopNFTs topNfts={topNfts} />
       {/* artists */}
       <div className="bg-black  pt-8 md:pt-10 md:pb-14 pb-6">
         <div className="contain space-y-10 md:space-y-14">
@@ -27,13 +38,13 @@ export default function Home() {
             />
           </div>
           <div className="grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-20 hidden md:grid">
-            {artists.map((i) => (
-              <Artist key={i} />
+            {artists.map((a) => (
+              <Artist artist={a} key={a.id} />
             ))}
           </div>
           <div className="grid gap-20 md:hidden">
-            {artists.slice(0, 3).map((i) => (
-              <Artist key={i} />
+            {artists.slice(0, 3).map((a) => (
+              <Artist artist={a} key={a.id} />
             ))}
           </div>
           <div className="w-full flex justify-center lg:hidden">
@@ -78,8 +89,9 @@ export default function Home() {
             />
           </div>
           <div className="grid lg:grid-cols-2 gap-6 md:gap-12 lg:gap-16">
-            <EventCard />
-            <EventCard />
+            {exhibitions.map((ex) => (
+              <EventCard key={ex.id} {...ex} />
+            ))}
           </div>
           <div className="w-full flex justify-center lg:hidden">
             <Button text="View More" textStyles="w-[144px]" />
@@ -141,9 +153,9 @@ export default function Home() {
             />
           </div>
           <div className="grid lg:grid-cols-3 gap-[34px]">
-            <BlogCard />
-            <BlogCard />
-            <BlogCard />
+            {blogs?.map((blog) => (
+              <BlogCard key={blog.id} {...blog} />
+            ))}
           </div>
         </div>
       </div>

@@ -1,13 +1,30 @@
-"use client";
+import { getArtist } from "@/actions";
 import NftCard from "@/components/NftCard";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import Image from "next/image";
+import { redirect } from "next/navigation";
 import React from "react";
 
 const tabs = ["Created", "Collected", "Likes"];
 
-const AritistDetails = () => {
+const AritistDetails = async ({
+  params: { id },
+}: {
+  params: { id: string };
+}) => {
   const active = "Created";
+
+  let data = null;
+  try {
+    const res = await getArtist(id);
+    data = res;
+  } catch (error) {
+    console.log(error);
+  }
+
+  if (!data) {
+    redirect("/");
+  }
 
   return (
     <div className="w-full h-full space-y-[193px] ">
@@ -21,7 +38,7 @@ const AritistDetails = () => {
         <div className="absolute top-[65%] left-0 bottom-0 right-0 contain ">
           <div className="bg-grayTwo relative w-[264px]  h-[264px] ">
             <Image
-              src="/featured.png"
+              src={data.profile_image!}
               fill
               alt="Image"
               className="object-cover p-5"
@@ -32,13 +49,13 @@ const AritistDetails = () => {
       <div className="contain space-y-[105px] ">
         <div className="w-full space-y-4">
           <h1 className="font-Playfair font-bold text-[35px] leading-[46px] ">
-            Alfredoakinmade
+            {data.username}
           </h1>
           <div className="flex justify-between w-full">
             <h3 className="font-semibold text-xl leading-9 tracking-[5%] max-w-[50%]  ">
-              Lorem Ipsum Dolor consect leut wefLorem Ipsum Dolor consect leut
-              wefLorem Ipsum Dolor consect leut wefLorem Ipsum Dolor consect
-              leut wefLorem Ipsum
+              {data.bio && data.bio?.length > 300
+                ? `${data.bio.substring(0, 300)}...`
+                : data.bio || ""}
             </h3>
             <div className="flex flex-col items-end space-y-14">
               <div className="flex gap-x-10 divide-x ">
@@ -84,12 +101,9 @@ const AritistDetails = () => {
             ))}
           </div>
           <div className="grid grid-cols-3 gap-10">
-            <NftCard />
-            <NftCard />
-            <NftCard />
-            <NftCard />
-            <NftCard />
-            <NftCard />
+            {data.artworks?.map((a) => (
+              <NftCard key={a.id} {...a} />
+            ))}
           </div>
         </div>
       </div>

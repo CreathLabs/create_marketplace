@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-
-const inter = Inter({ subsets: ["latin"] });
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export const metadata: Metadata = {
   title: "Creath Art Marketplace",
@@ -39,7 +39,15 @@ export default function RootLayout({
           rel="stylesheet"
         ></link>
       </head>
-      <body className={`${inter.className} font-Manrope  `}>{children}</body>
+      <body className={`font-Manrope  `}>
+        <ToastContainer
+          position="top-right"
+          bodyStyle={{
+            color: "#494949",
+          }}
+        />
+        {children}
+      </body>
     </html>
   );
 }

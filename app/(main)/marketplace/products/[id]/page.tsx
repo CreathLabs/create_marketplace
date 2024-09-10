@@ -1,22 +1,50 @@
+import { getNft, getTopNfts } from "@/actions";
 import Button from "@/components/Button";
 import NftCard from "@/components/NftCard";
 import { Heart, InfoCircle, LoginCurve } from "iconsax-react";
 import Image from "next/image";
+import { redirect } from "next/navigation";
 import React from "react";
 
-const page = () => {
+const page = async ({ params: { id } }: { params: { id: string } }) => {
+  let data = null;
+  try {
+    const res = await getNft(id);
+    data = res;
+  } catch (error) {
+    console.log(error);
+  }
+
+  if (!data) {
+    redirect("/");
+  }
+
+  const topNfts = await getTopNfts();
+
+  const ext = data.art_image?.split(".");
+  const isVideo =
+    ext?.[ext.length - 1] && ext?.[ext.length - 1]?.includes("mp4");
+
   return (
     <div className="w-full h-full">
       <div className="h-full  relative grid lg:grid-cols-2">
         <div className="w-full lg:max-h-[calc(100vh-70px)] h-[398px] lg:h-[695px] bg-grayTwo flex justify-end ">
           <div className="contain_right ">
             <div className="w-full h-full relative ">
-              <Image
-                src="/featured.png"
-                fill
-                alt=""
-                className="object-cover p-4 lg:py-20 lg:pr-20"
-              />
+              {!isVideo ? (
+                <Image
+                  src={data.art_image || "/featured.png"}
+                  fill
+                  alt=""
+                  className="object-cover p-4 lg:py-20 lg:pr-20"
+                />
+              ) : (
+                <video
+                  src={data.art_image!}
+                  autoPlay
+                  className="absolute w-full h-full object-cover p-4 lg:py-20 lg:pr-20"
+                />
+              )}
             </div>
           </div>
         </div>
@@ -26,10 +54,10 @@ const page = () => {
               <div className="flex items-end lg:items-center justify-between ">
                 <div className="space-y-6">
                   <h1 className=" text-[22px] lg:text-3xl leading-[48px] font-Playfair font-bold ">
-                    Artwork Name
+                    {data.name}
                   </h1>
                   <h2 className="text-base lg:text-lg  font-medium ">
-                    By Okechi Emezue
+                    {`By ${data.published_by}`}
                   </h2>
                 </div>
                 <div className="flex items-center space-x-3 ">
@@ -47,7 +75,7 @@ const page = () => {
                   Floor Price
                 </h1>
                 <h1 className="font-bold text-lg lg:text-xl leading-9 ">
-                  34 CGT (49 USD)
+                  {`${data.floor_price} CGT (49 USD)`}
                 </h1>
               </div>
               <div className="flex items-center justify-between lg:justify-start lg:gap-x-14">
@@ -88,17 +116,17 @@ const page = () => {
                 Description
               </h1>
               <h2 className=" text-base lg:text-xl leading-[36px]  font-medium ">
-                Lorem Ipsum Dolor consect leut wefLorem Ipsum Dolor consect leut
-                wefLorem Ipsum Dolor consect leut wef
+                {data.description}
               </h2>
             </div>
             <div className=" space-y-8 lg:space-y-10">
-              <TitleValue title="Medium" value="Digital AI" />
-              <TitleValue title="Location" value="Lagos, Nigeria" />
-              <TitleValue title="Token ID" value="345" />
-              <TitleValue title="Dimensions" value="56”  X  56”" />
-              <TitleValue title="Contract" value="0x3467.....6779" />
-              <TitleValue title="Published by" value="One Art gallery" />
+              <TitleValue title="Medium" value={data.category?.name} />
+              <TitleValue title="Location" value={data.location || ""} />
+              <TitleValue title="Dimensions" value={data.dimensions} />
+              {data.contract && (
+                <TitleValue title="Contract" value={data.contract} />
+              )}
+              <TitleValue title="Published by" value={data.published_by!} />
             </div>
           </div>
         </div>
@@ -116,12 +144,9 @@ const page = () => {
         </div>
         <div className="container max-w-screen-xl mx-auto pl-6 ">
           <div className="w-full scroller flex gap-x-8 lg:gap-x-10 overflow-x-auto">
-            <NftCard />
-            <NftCard />
-            <NftCard />
-            <NftCard />
-            <NftCard />
-            <NftCard />
+            {topNfts.map((n) => (
+              <NftCard key={n.id} {...n} />
+            ))}
           </div>
         </div>
         <div className="w-full flex justify-center lg:hidden">

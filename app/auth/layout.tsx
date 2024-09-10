@@ -1,3 +1,4 @@
+import { getProfile } from "@/actions";
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
@@ -8,11 +9,23 @@ export const metadata: Metadata = {
   description: "Where Digital Meets Physical",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  let current = null;
+  try {
+    const res = await getProfile();
+    current = res;
+  } catch (error) {
+    console.log(error);
+  }
+
+  if (current) {
+    redirect("/");
+  }
+
   return (
     <div className="grid lg:grid-cols-2 w-full h-screen">
       <div className="w-full h-[323px] lg:h-full relative">

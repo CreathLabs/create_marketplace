@@ -1,6 +1,7 @@
 "use client";
 import { cn } from "@/lib";
 import React from "react";
+import ButtonLoader from "./ButtonLoader";
 
 interface Props {
   textStyles?: string;
@@ -8,6 +9,7 @@ interface Props {
   className?: string;
   action?: () => void;
   leadingAccessory?: React.ReactElement;
+  loading?: boolean;
 }
 
 const Button: React.FC<Props> = ({
@@ -16,11 +18,14 @@ const Button: React.FC<Props> = ({
   className = "",
   action,
   leadingAccessory,
+  loading = false,
 }) => {
   return (
     <button
-      onClick={async () => {
+      onClick={async (e) => {
         "use client";
+        e.preventDefault();
+        e.stopPropagation();
         action?.();
       }}
       className={cn(
@@ -29,7 +34,10 @@ const Button: React.FC<Props> = ({
       )}
     >
       {leadingAccessory && leadingAccessory}
-      <h1 className={cn("", textStyles)}>{text}</h1>
+      <h1 className={cn("", textStyles)}>
+        {" "}
+        {loading ? <ButtonLoader /> : text}
+      </h1>
     </button>
   );
 };

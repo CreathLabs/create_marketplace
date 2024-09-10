@@ -1,4 +1,5 @@
 "use client";
+import { Exhibition } from "@prisma/client";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
@@ -14,19 +15,19 @@ interface Props {
   };
 }
 
-const EventCard: React.FC<{}> = () => {
+const EventCard: React.FC<Exhibition> = ({ id, cover_image, name }) => {
   const [hoverd, setHovered] = useState(false);
-
   const router = useRouter();
+
   return (
     <div
       onMouseOver={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
-      onClick={() => router.push("/exhibitions/dwewe23re3r2refd2wef")}
+      onClick={() => router.push(`/exhibitions/${id}`)}
       className=" relative w-full h-[293px] md:h-[434px] overflow-hidden cursor-pointer "
     >
       <Image
-        src="/event.png"
+        src={cover_image}
         fill
         className={`object-cover transition-all  ease-in-out duration-500 ${
           hoverd ? "scale-105" : ""
@@ -36,7 +37,7 @@ const EventCard: React.FC<{}> = () => {
       <div className="absolute top-0 left-0 bottom-0 right-0 w-full h-full bg-[#000000CC] text-white flex items-end px-3 md:px-[52px] ">
         <div className="absolute top-0 left-0 right-0 bottom-0 flex justify-center items-center">
           <h1 className=" font-Playfair text-2xl md:text-[32px] font-bold ">
-            Two Boys, One Lambo
+            {name}
           </h1>
         </div>
         <div className=" py-4  md:py-8 w-full grid grid-cols-3 divide-x-2 divide-white ">

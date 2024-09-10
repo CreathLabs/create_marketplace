@@ -1,9 +1,9 @@
 import Button from "@/components/Button";
-import Input from "@/components/Input";
 import React from "react";
 import GoogleSvg from "@/public/google.svg";
 import Image from "next/image";
 import Link from "next/link";
+import { SigninForm } from "./Form";
 
 const LoginPage = () => {
   return (
@@ -18,26 +18,7 @@ const LoginPage = () => {
       </div>
 
       <div className="space-y-12">
-        <div className="space-y-6">
-          <Input
-            placeholder="Email Address"
-            label="Enter Email Address"
-            value=""
-            type="email"
-          />
-          <div className="space-y-3">
-            <Input
-              placeholder="Enter Password"
-              label="Enter Password"
-              value=""
-              type="password"
-            />
-            <div className="flex text-[15px] lg:text-base justify-end w-full">
-              <h1>Forgot Password?</h1>
-            </div>
-          </div>
-        </div>
-        <Button text="Log In" className="py-4 w-full" />
+        <SigninForm />
       </div>
       <div className="space-y-10 lg:space-y-12">
         <div className="space-y-6">

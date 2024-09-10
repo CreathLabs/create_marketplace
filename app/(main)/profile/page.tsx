@@ -1,20 +1,36 @@
-"use client";
+import { getProfile } from "@/actions";
 import Button from "@/components/Button";
 import NftCard from "@/components/NftCard";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import Image from "next/image";
+import { redirect } from "next/navigation";
 import React from "react";
 
 const tabs = ["Created", "Collected", "Likes"];
 
-const UserProfile = () => {
+const UserProfile = async () => {
+  let profile = null;
+  try {
+    const res = await getProfile();
+    profile = res;
+  } catch (error) {
+    console.log(error);
+  }
+
+  if (!profile) {
+    redirect("/auth/login");
+  }
+
   const active = "Created";
+  const profileImage =
+    profile?.profile_image ||
+    `https://api.dicebear.com/9.x/initials/png?seed=${profile?.username}`;
 
   return (
     <div className="w-full h-full  ">
       <div className="w-full h-[345px] relative  ">
         <Image
-          src="/artist_cover.png"
+          src={profile.cover_image || "/artist_cover.png"}
           className="object-cover"
           fill
           alt="Aritst cover"
@@ -22,7 +38,7 @@ const UserProfile = () => {
         <div className="absolute top-[65%] left-0 bottom-0 right-0 contain ">
           <div className="bg-grayTwo relative w-[264px]  h-[264px] ">
             <Image
-              src="/featured.png"
+              src={profileImage}
               fill
               alt="Image"
               className="object-cover p-5"
@@ -34,17 +50,32 @@ const UserProfile = () => {
         <div className="w-full grid grid-cols-2 gap-x-20 ">
           <div className="w-full space-y-4 mt-[193px]  ">
             <h1 className="font-Playfair font-bold text-[35px] leading-[46px] ">
-              Generated UserName
+              {profile?.username}
             </h1>
             <div className="space-y-6">
               <h3 className="font-semibold text-xl leading-9 tracking-[5%]  ">
-                Lorem Ipsum Dolor consect leut wefLorem Ipsum Dolor consect leut
-                wefLorem Ipsum Dolor consect leut wefLorem Ipsum Dolor consect
-                leut wefLorem Ipsum
+                {profile?.bio || "Your Bio goes here, Click below to edit"}
               </h3>
               <div className="w-full flex items-center gap-x-20 ">
-                <Button text="Upload Artwork" textStyles="w-[183px]" />
-                <Button text="Edit Profile" textStyles="w-[183px]" />
+                {profile.is_approved && (
+                  <Button
+                    text="Upload Artwork"
+                    action={async () => {
+                      "use server";
+                      redirect("/profile/artworks/upload");
+                    }}
+                    textStyles="w-[183px]"
+                  />
+                )}
+
+                <Button
+                  text="Edit Profile"
+                  action={async () => {
+                    "use server";
+                    redirect("/profile/edit");
+                  }}
+                  textStyles="w-[183px]"
+                />
               </div>
             </div>
           </div>
@@ -75,12 +106,9 @@ const UserProfile = () => {
             ))}
           </div>
           <div className="grid grid-cols-3 gap-10">
-            <NftCard />
-            <NftCard />
-            <NftCard />
-            <NftCard />
-            <NftCard />
-            <NftCard />
+            {profile?.artworks?.map((a) => (
+              <NftCard key={a.id} {...a} />
+            ))}
           </div>
         </div>
       </div>

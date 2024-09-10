@@ -1,9 +1,10 @@
+"use client";
 import Button from "@/components/Button";
-import Input from "@/components/Input";
 import Image from "next/image";
 import GoogleSvg from "@/public/google.svg";
 import React from "react";
 import Link from "next/link";
+import SignUpForm from "./Form";
 
 const RegisterPage = () => {
   return (
@@ -18,27 +19,7 @@ const RegisterPage = () => {
       </div>
 
       <div className="space-y-12">
-        <div className="space-y-6">
-          <Input
-            placeholder="Email Address"
-            label="Enter Email Address"
-            value=""
-            type="email"
-          />
-          <Input
-            placeholder="Enter Password"
-            label="Enter Password"
-            value=""
-            type="password"
-          />
-          <Input
-            placeholder="Confirm Password"
-            label="Confirm Password"
-            value=""
-            type="password"
-          />
-        </div>
-        <Button text="Create Account" className="py-4 w-full" />
+        <SignUpForm />
       </div>
       <div className="space-y-12">
         <div className="space-y-6">

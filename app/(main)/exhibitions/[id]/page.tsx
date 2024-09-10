@@ -1,9 +1,29 @@
+import { getExhibition, getTopNfts } from "@/actions";
 import Button from "@/components/Button";
 import NftCard from "@/components/NftCard";
 import Image from "next/image";
+import { redirect } from "next/navigation";
 import React from "react";
 
-const ExhibitionDetails = () => {
+const ExhibitionDetails = async ({
+  params: { id },
+}: {
+  params: { id: string };
+}) => {
+  let data = null;
+  try {
+    const res = await getExhibition(id);
+    data = res;
+  } catch (error) {
+    console.log(error);
+  }
+
+  if (!data) {
+    redirect("/");
+  }
+
+  const nfts = await getTopNfts();
+
   return (
     <div className="w-full h-full space-y-10 ">
       <div className="w-full h-[345px] relative  ">
@@ -38,13 +58,13 @@ const ExhibitionDetails = () => {
       <div className="contain space-y-[105px] ">
         <div className="w-full space-y-8 max-w-[50%]">
           <h1 className="font-Playfair font-bold text-[35px] leading-[46px] ">
-            Two Boys One Lambo
+            {data.name}
           </h1>
           <div className="flex flex-col space-y-10 w-full">
             <h3 className="font-semibold text-xl leading-9 tracking-[5%] ">
-              Lorem Ipsum Dolor consect leut wefLorem Ipsum Dolor consect leut
-              wefLorem Ipsum Dolor consect leut wefLorem Ipsum Dolor consect
-              leut wefLorem Ipsum sect leut wefLorem Ipsum
+              {data.description.length > 400
+                ? `${data.description.substring(0, 400)}...`
+                : data.description}
             </h3>
             <div className="flex items-center justify-between ">
               <div className="space-y-4">
@@ -67,12 +87,9 @@ const ExhibitionDetails = () => {
             Featured Artworks
           </h1>
           <div className="grid grid-cols-3 gap-10">
-            <NftCard />
-            <NftCard />
-            <NftCard />
-            <NftCard />
-            <NftCard />
-            <NftCard />
+            {nfts.map((n) => (
+              <NftCard key={n.id} {...n} />
+            ))}
           </div>
         </div>
       </div>
