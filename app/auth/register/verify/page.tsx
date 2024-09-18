@@ -16,9 +16,8 @@ interface verifyValues {
   otp: string;
 }
 
-const VerifyPage = () => {
-  const searchParams = useSearchParams();
-  const email = searchParams.get("email") || "";
+const VerifyPage = ({ searchParams }: { searchParams: any }) => {
+  const email = searchParams.email || "";
 
   const initialValues: verifyValues = {
     otp: "",
@@ -33,7 +32,7 @@ const VerifyPage = () => {
           Enter Authentication Code
         </h1>
         <h3 className="text-mainGray text-[15px] lg:text-lg lg:leading-[45px] ">
-          Please check email inbox for authentication code{" "}
+          Please check email inbox for authentication code
         </h3>
       </div>
 

@@ -16,7 +16,7 @@ import ArtworkUploadedEmail from "@/components/email-templates/ArtSuccess";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
-export async function getProfile() {
+export const getProfile = async () => {
   const token = await getSession("token");
   if (!token) {
     return null;
@@ -42,11 +42,11 @@ export async function getProfile() {
   } catch (error) {
     throw error;
   }
-}
+};
 
-export async function updateProfile(
+export const updateProfile = async (
   values: yup.InferType<typeof EditProfileSchema>
-) {
+) => {
   const token = await getSession("token");
 
   if (!token) {
@@ -75,11 +75,11 @@ export async function updateProfile(
   } catch (error) {
     throw error;
   }
-}
+};
 
-export async function uploadArtWork(
+export const uploadArtWork = async (
   values: yup.InferType<typeof UploadArtworkSchema>
-) {
+) => {
   const token = await getSession("token");
 
   if (!token) {
@@ -120,28 +120,28 @@ export async function uploadArtWork(
   } catch (error) {
     throw error;
   }
-}
+};
 
-export async function saveSession(name: string, value: string) {
+export const saveSession = async (name: string, value: string) => {
   // Create the session
   const expires = new Date(Date.now());
   expires.setMonth(expires.getMonth() + 1);
 
   // Save the session in a cookie
   cookies().set(name, value, { expires, httpOnly: true });
-}
+};
 
-export async function getSession(name: string) {
+export const getSession = async (name: string) => {
   const session = cookies().get(name)?.value;
   if (!session) return null;
   return session;
-}
+};
 
-export async function deleteSession(name: string) {
+export const deleteSession = async (name: string) => {
   const session = cookies().delete(name);
   console.log("Deleted", session);
   return session;
-}
+};
 
 export const currentUser = async (token: string) => {
   try {
