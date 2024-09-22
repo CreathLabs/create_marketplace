@@ -47,18 +47,18 @@ const AritistDetails = async ({
         </div>
       </div>
       <div className="contain space-y-[105px] ">
-        <div className="w-full space-y-4">
+        <div className="w-full md:flex-col  sm:flex-col space-y-4">
           <h1 className="font-Playfair font-bold text-[35px] leading-[46px] ">
             {data.username}
           </h1>
-          <div className="flex justify-between w-full">
-            <h3 className="font-semibold text-xl leading-9 tracking-[5%] max-w-[50%]  ">
+          <div className="justify-between lg:flex md:flex-col sm:flex-col w-full">
+            <h3 className="font-semibold text-xl leading-9 tracking-[5%] lg:max-w-[50%] sm:w-full md:w-full ">
               {data.bio && data.bio?.length > 300
                 ? `${data.bio.substring(0, 300)}...`
                 : data.bio || ""}
             </h3>
-            <div className="flex flex-col items-end space-y-14">
-              <div className="flex gap-x-10 divide-x ">
+            <div className="flex flex-col lg:items-end md:items-center sm:items-center space-y-14">
+              <div className="flex gap-x-10 divide-x lg:mt-0 mt-8">
                 <div className="flex space-x-6 items-center">
                   <h1 className="font-bold text-[25px] ">6</h1>
                   <h1 className="font-semibold text-lg">Minted Artworks</h1>
@@ -100,7 +100,7 @@ const AritistDetails = async ({
               </div>
             ))}
           </div>
-          <div className="grid grid-cols-3 gap-10">
+          <div className="w-full grid lg:grid-cols-3 gap-6 lg:gap-8">
             {data.artworks?.map((a) => (
               <NftCard key={a.id} {...a} />
             ))}

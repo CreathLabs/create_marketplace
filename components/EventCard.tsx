@@ -29,7 +29,7 @@ const EventCard: React.FC<Exhibition> = ({ id, cover_image, name }) => {
       <Image
         src={cover_image}
         fill
-        className={`object-cover transition-all  ease-in-out duration-500 ${
+        className={`object-cover p-5 transition-all  ease-in-out duration-500 ${
           hoverd ? "scale-105" : ""
         } `}
         alt="Blog_image"
