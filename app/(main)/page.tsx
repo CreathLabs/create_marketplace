@@ -20,7 +20,7 @@ export default async function Home() {
   const topNfts = await getTopNfts();
   const artists = await getTopArtists();
   const exhibitions = await getTopExhibitions();
-  // const blogs = await getTopBlogs();
+  const blogs = await getTopBlogs();
 
   return (
     <main className="w-full h-full">
@@ -152,11 +152,11 @@ export default async function Home() {
               className="hidden lg:flex"
             />
           </div>
-          {/* <div className="grid lg:grid-cols-3 gap-[34px]">
+          <div className="grid lg:grid-cols-3 gap-[34px]">
             {blogs?.map((blog) => (
               <BlogCard key={blog.id} {...blog} />
             ))}
-          </div> */}
+          </div>
         </div>
       </div>
     </main>
