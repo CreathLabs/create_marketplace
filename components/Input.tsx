@@ -10,7 +10,7 @@ interface Props {
   value: string | number;
   placeholder: string;
   type: React.HTMLInputTypeAttribute;
-  handleChange: any;
+  handleChange?: any;
   errors?: any;
   touched?: any;
   handleBlur?: any;
@@ -65,9 +65,12 @@ const Input: React.FC<Props> = ({
             handleBlur(e);
           }}
         />
-        {["password", "confirm_password", "password_confirmation"].includes(
-          name
-        ) && (
+        {[
+          "password",
+          "confirm_password",
+          "new_password",
+          "password_confirmation",
+        ].includes(name) && (
           <div className="absolute h-full top-0 bottom-0 right-4 flex flex-col justify-center">
             {inputType === "password" ? (
               <Icon

@@ -1,4 +1,5 @@
 "use client";
+import { deleteSession } from "@/actions";
 import Button from "@/components/Button";
 import NavLink from "@/components/NavLink";
 import { MenuContext } from "@/contexts/menuContext";
@@ -38,7 +39,7 @@ const Header: React.FC<Props> = ({ openModal, current }) => {
           className="!z-50 cursor-pointer"
           alt=""
         />
-        <div className=" hidden absolute top-0 left-0 right-0 bottom-0 xl:flex w-full h-full justify-center space-x-[88px] items-center">
+        <div className="  xl:flex w-full h-full justify-center space-x-20 items-center">
           <NavLink
             text="Home"
             icon={<House size="20" variant="Outline" />}
@@ -64,9 +65,21 @@ const Header: React.FC<Props> = ({ openModal, current }) => {
         </div>
         <div className="flex h-full gap-x-6 ">
           <Button
-            text={current ? current?.username : "Log In"}
-            className="h-full flex justify-center !z-50 items-center py-0 min-w-[100px] lg:min-w-[145px]"
+            text={current ? current?.username : "Sign Up"}
+            className="h-full flex justify-center !z-50 items-center py-0 min-w-[100px] lg:w-[145px]"
             action={current ? () => router.push("/profile") : openModal}
+          />
+          <Button
+            text={current ? "Log Out" : "Log In"}
+            className="h-full flex justify-center !z-50 items-center py-0 min-w-[100px] lg:w-[145px]"
+            action={
+              current
+                ? async () => {
+                    await deleteSession("token");
+                    router.refresh();
+                  }
+                : () => router.push("/auth/login")
+            }
           />
           <div
             onClick={() => {

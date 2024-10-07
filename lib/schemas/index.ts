@@ -4,3 +4,6 @@ export * from "./post";
 export * from "./follow";
 export * from "./profile";
 export * from "./subscription";
+export * from "./collectible";
+export * from "./blog";
+export * from "./admin";

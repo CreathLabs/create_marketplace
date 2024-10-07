@@ -1,10 +1,19 @@
 "use client";
+import { Collectibles } from "@prisma/client";
 import { Heart } from "iconsax-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import React from "react";
 
-const Collectible = () => {
+const Collectible: React.FC<Collectibles> = ({
+  image,
+  id,
+  name,
+  published_by,
+  total_minted,
+  mint_price,
+  total_unminted,
+}) => {
   const router = useRouter();
   return (
     <div
@@ -13,7 +22,7 @@ const Collectible = () => {
     >
       <div className="bg-grayTwo relative w-full  h-[370px] ">
         <Image
-          src="/collectible.png"
+          src={image || "/collectible.png"}
           fill
           alt="Image"
           className="object-cover p-5"
@@ -21,16 +30,16 @@ const Collectible = () => {
       </div>
       <div className="space-y-3">
         <h1 className="text-xl md:text-[22px] font-Playfair font-black ">
-          Batman Grey 1258
+          {name}
         </h1>
 
         <div className="space-y-3 md:space-y-4">
           <h1 className="text-mainGray font-medium text-base md:text-[17px]">
-            DC Comics
+            {published_by}
           </h1>
           <div className="flex justify-between w-full items-center ">
             <h1 className="text-navyBlue text-base md:text-lg font-bold ">
-              32/32 Minted
+              {`${total_minted}/${total_minted + total_unminted} Minted`}
             </h1>
             <div className="flex items-center space-x-3 ">
               <Heart

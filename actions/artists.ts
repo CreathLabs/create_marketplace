@@ -7,8 +7,12 @@ export async function getTopArtists() {
       where: {
         is_approved: true,
       },
+      orderBy: {
+        created_at: "desc",
+      },
       take: 8,
     });
+
     return res;
   } catch (error) {
     throw error;
@@ -25,6 +29,9 @@ export async function getArtists(page = 1, noPerPage = 16) {
     const data = await prisma.user.findMany({
       where: {
         is_approved: true,
+      },
+      orderBy: {
+        created_at: "desc",
       },
       take: noPerPage,
       skip: (page - 1) * noPerPage,
