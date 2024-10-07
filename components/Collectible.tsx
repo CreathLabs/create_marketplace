@@ -16,7 +16,7 @@ const Collectible = () => {
           src="/collectible.png"
           fill
           alt="Image"
-          className="object-cover"
+          className="object-cover p-5"
         />
       </div>
       <div className="space-y-3">

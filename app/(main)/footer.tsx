@@ -2,28 +2,29 @@
 import { Icon } from "@iconify/react/dist/iconify.js";
 import Image from "next/image";
 import React from "react";
+import { useRouter } from "next/navigation";
 
 const links = [
-  { name: "Become a Creator", url: "" },
-  { name: "Blog", url: "" },
-  { name: "Resources", url: "" },
-  { name: "Terms & Conditions", url: "" },
-  { name: "Hire a Talent", url: "" },
+  { name: "Blog", url: "/blogs" },
+  { name: "Terms & Conditions", url: "/terms" },
+  { name: "Shipping and Delivery", url: "/shipping" },
 ];
 
 const Footer = () => {
+  const router = useRouter();
   return (
     <div className="bg-black pb-8 pt-14">
       <div className="contain flex flex-col items-center space-y-16 ">
         <Image src="/logo2.svg" width={115} height={63.55} alt="" />
-        <div className="w-full  space-y-14 ">
-          <div className="w-full max-w-[184px] mx-auto lg:max-w-full lg:mx-0 grid lg:grid-cols-5 divide-y lg:divide-y-0 lg:divide-x  divide-white/20 border-b border-white/20">
+        <div className="w-full  space-y-14 flex flex-col items-center">
+          <div className="w-full max-w-[184px] mx-auto lg:max-w-[80%] lg:mx-0 grid lg:grid-cols-3 divide-y lg:divide-y-0 lg:divide-x  divide-white/20 border-b border-white/20">
             {links.map((item, index) => (
               <div
                 key={index}
                 className="py-6 lg:py-[14px] w-full flex justify-center text-white "
+                onClick={()=>(router.push(item.url))}
               >
-                <h1 className="leading-[45px] font-medium text-base lg:text-lg ">
+                <h1 className="leading-[45px] font-medium text-base lg:text-lg cursor-pointer">
                   {item.name}
                 </h1>
               </div>
