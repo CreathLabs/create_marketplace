@@ -1,3 +1,4 @@
+import { getCollectibles } from "@/actions";
 import Button from "@/components/Button";
 import Collectible from "@/components/Collectible";
 import NftCard from "@/components/NftCard";
@@ -5,7 +6,9 @@ import { Heart, InfoCircle, LoginCurve } from "iconsax-react";
 import Image from "next/image";
 import React from "react";
 
-const page = () => {
+const page = async () => {
+  const { data } = await getCollectibles(1);
+
   return (
     <div className="w-full h-full">
       <div className="h-full  relative grid lg:grid-cols-2">
@@ -29,15 +32,19 @@ const page = () => {
                   <h1 className="text-[22px] lg:text-3xl leading-[48px] font-Playfair font-bold ">
                     Collectible Name
                   </h1>
-                  <h2 className="text-base lg:text-lg  font-medium ">Four (4) Per Wallet</h2>
+                  <h2 className="text-base lg:text-lg  font-medium ">
+                    Four (4) Per Wallet
+                  </h2>
                 </div>
                 <div className="flex items-center space-x-3 ">
-                  <Heart size="24" variant="Outline"/>
+                  <Heart size="24" variant="Outline" />
                   <h1 className="font-bold text-base md:text-xl">2</h1>
                 </div>
               </div>
               <div className="space-y-3 lg:space-y-4">
-                <h1 className="text-base lg:text-lg font-medium ">Mint Price</h1>
+                <h1 className="text-base lg:text-lg font-medium ">
+                  Mint Price
+                </h1>
                 <h1 className="font-bold text-lg lg:text-xl leading-9 ">
                   34 CGT (49 USD)
                 </h1>
@@ -94,16 +101,17 @@ const page = () => {
           <h1 className="font-Playfair font-bold text-xl lg:text-[40px] ">
             More Collectibles
           </h1>
-          <Button text="Explore Marketplace" textStyles="w-[183px]" className="hidden lg:flex"/>
+          <Button
+            text="Explore Marketplace"
+            textStyles="w-[183px]"
+            className="hidden lg:flex"
+          />
         </div>
         <div className="container max-w-screen-xl mx-auto pl-6 ">
           <div className="w-full scroller flex gap-x-8 lg:gap-x-10 overflow-x-auto">
-            <Collectible />
-            <Collectible />
-            <Collectible />
-            <Collectible />
-            <Collectible />
-            <Collectible />
+            {data.splice(0, 4).map((i) => (
+              <Collectible key={i.id} {...i} />
+            ))}
           </div>
         </div>
       </div>
