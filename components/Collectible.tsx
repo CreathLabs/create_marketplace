@@ -25,7 +25,7 @@ const Collectible: React.FC<Collectibles> = ({
           src={image || "/collectible.png"}
           fill
           alt="Image"
-          className="object-cover"
+          className="object-cover p-5"
         />
       </div>
       <div className="space-y-3">

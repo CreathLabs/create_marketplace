@@ -33,8 +33,8 @@ const ExhibitionDetails = async ({
           fill
           alt="Aritst cover"
         />
-        <div className="absolute top-[65%] left-0 bottom-0 right-0 contain flex justify-end ">
-          <div className="bg-grayTwo relative w-[36%] space-y-12  h-fit p-8 ">
+        <div className="absolute top-[65%] left-0 bottom-0 right-0 contain lg:flex lg:justify-end">
+          <div className="bg-grayTwo relative lg:w-[36%] sm:w-full md:w-full space-y-12  h-fit p-8 ">
             <div className="space-y-4">
               <h3 className="text-lg font-bold ">Date</h3>
               <h2 className="font-bold text-2xl font-Playfair ">
@@ -56,7 +56,7 @@ const ExhibitionDetails = async ({
         </div>
       </div>
       <div className="contain space-y-[105px] ">
-        <div className="w-full space-y-8 max-w-[50%]">
+        <div className="w-full lg:space-y-8 space-y-80 lg:max-w-[50%]">
           <h1 className="font-Playfair font-bold text-[35px] leading-[46px] ">
             {data.name}
           </h1>
@@ -66,7 +66,7 @@ const ExhibitionDetails = async ({
                 ? `${data.description.substring(0, 400)}...`
                 : data.description}
             </h3>
-            <div className="flex items-center justify-between ">
+            <div className="flex items-center justify-between md:max-w-[50%] sm:max-w-[100%] ">
               <div className="space-y-4">
                 <h2 className="text-lg text-mainGray font-semibold ">
                   Artists
@@ -86,7 +86,7 @@ const ExhibitionDetails = async ({
           <h1 className="font-Playfair font-bold !text-3xl ">
             Featured Artworks
           </h1>
-          <div className="grid grid-cols-3 gap-10">
+          <div className="w-full grid lg:grid-cols-3 gap-6 lg:gap-8">
             {nfts.map((n) => (
               <NftCard key={n.id} {...n} />
             ))}
