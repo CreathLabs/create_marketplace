@@ -7,6 +7,7 @@ const Terms = () => {
       <div className="flex flex-col lg:flex-row gap-y-6 lg:gap-0 justify-between lg:items-center ">
         <h1 className=" heading leading-[60px] ">Terms and Condition</h1>
       </div>
+
       <div className="lg:px-14 flex flex-col gap-y-8 lg:items-start ">
         <h2 className=" heading lg:text-4xl font-semibold leading-[50px] ">
           Introduction
