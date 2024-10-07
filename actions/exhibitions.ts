@@ -18,6 +18,9 @@ export async function getExhibitions(page = 1, noPerPage = 6) {
     const data = await prisma.exhibition.findMany({
       take: noPerPage,
       skip: (page - 1) * noPerPage,
+      orderBy: {
+        created_at: "desc",
+      },
     });
     return { total, data, ipp: noPerPage };
   } catch (error) {

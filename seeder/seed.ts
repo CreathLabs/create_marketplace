@@ -5,6 +5,7 @@ import {
   seedBlogs,
   seedCategories,
   seedExhibitions,
+  seedNotifications,
   seedSuperAdmin,
   seedUsers,
 } from "./seeds";
@@ -19,6 +20,7 @@ async function main() {
   await seedArt();
   await seedSuperAdmin();
   await seedArtits();
+  await seedNotifications();
 }
 
 main()

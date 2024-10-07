@@ -35,6 +35,9 @@ export async function getNfts(page = 1, noPerPage = 9) {
       where: {
         is_approved: true,
       },
+      orderBy: {
+        created_at: "desc",
+      },
       take: noPerPage,
       skip: (page - 1) * noPerPage,
     });

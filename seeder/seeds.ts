@@ -1,4 +1,9 @@
-import { Category, PrismaClient } from "@prisma/client";
+import {
+  Category,
+  Notification,
+  NOTIFTYPE,
+  PrismaClient,
+} from "@prisma/client";
 import fs from "fs";
 import bcrypt from "bcryptjs";
 
@@ -320,6 +325,32 @@ export const seedSuperAdmin = async () => {
       },
     });
     console.log("Super Admin seeded");
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const seedNotifications = async () => {
+  const artWorks = await prisma.art.findMany({
+    where: { is_approved: false },
+  });
+
+  if (artWorks.length === 0) {
+    console.log("No unapproved artworks");
+    return;
+  }
+
+  const notifications = artWorks?.map((art) => ({
+    art_id: art.id,
+    user_id: art.user_id,
+    type: NOTIFTYPE.UPLOADS,
+  }));
+
+  try {
+    await prisma.notification.createMany({
+      data: notifications,
+    });
+    console.log("Noifications seeded");
   } catch (error) {
     console.log(error);
   }

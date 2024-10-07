@@ -3,6 +3,8 @@ import NftCard from "@/components/NftCard";
 import React from "react";
 import Filters from "./filters";
 import Collectible from "@/components/Collectible";
+import { getCollectibles } from "@/actions";
+import Pagination from "@/components/pagination";
 
 const tabs = [
   "All",
@@ -13,8 +15,15 @@ const tabs = [
   "Mixed Media",
 ];
 
-const CollectiblesPage = () => {
-  const active = "All";
+const CollectiblesPage = async ({
+  searchParams,
+}: {
+  searchParams: { page?: string };
+}) => {
+  const page = Number(searchParams?.page) || 1;
+
+  const { data, total, ipp } = await getCollectibles(page);
+
   return (
     <div className="py-14 contain space-y-[72px]">
       <div className="flex justify-between items-center ">
@@ -30,7 +39,7 @@ const CollectiblesPage = () => {
         </div>
       </div>
       <div className="space-y-12">
-        <div className="flex justify-between items-center">
+        {/* <div className="flex justify-between items-center">
           {tabs.map((item, index) => (
             <div
               key={index}
@@ -47,22 +56,21 @@ const CollectiblesPage = () => {
               </h1>
             </div>
           ))}
-        </div>
+        </div> */}
         <div className="flex gap-x-[54px] ">
           <div className="w-[200px] space-y-6 ">
             <h1 className="font-semibold text-xl font-Playfair ">Filters</h1>
             <Filters />
           </div>
-          <div className="w-full grid grid-cols-3 gap-8 ">
-            <Collectible />
-            <Collectible />
-            <Collectible />
-            <Collectible />
-            <Collectible />
-            <Collectible />
-            <Collectible />
-            <Collectible />
-            <Collectible />
+          <div className="flex w-full flex-col items-center gap-y-10">
+            <div className="w-full grid lg:grid-cols-3 gap-6 lg:gap-8 ">
+              {data?.map((collectible) => (
+                <Collectible key={collectible.id} {...collectible} />
+              ))}
+            </div>
+            {total > ipp && (
+              <Pagination itemsPerPage={16} page={page} totalItems={total} />
+            )}
           </div>
         </div>
       </div>

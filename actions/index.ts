@@ -5,3 +5,4 @@ export * from "./exhibitions";
 export * from "./blogs";
 export * from "./artists";
 export * from "./admin";
+export * from "./collectibles";

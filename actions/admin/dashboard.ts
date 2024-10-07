@@ -42,3 +42,47 @@ export async function getAdminDashStats() {
     throw error;
   }
 }
+
+export async function getTopArtistsAndGalleries() {
+  const token = await getSession("admin_token");
+  if (!token) {
+    return null;
+  }
+  try {
+    const res = await currentAdmin(token);
+    const isA = await isAdmin(res);
+
+    if (!isA) {
+      throw new NotAuthorizedError();
+    }
+
+    const artists = await prisma.user.findMany({
+      where: {
+        type: "ARTIST",
+        is_approved: true,
+      },
+      include: {
+        artworks: true,
+      },
+      take: 10,
+    });
+
+    const galleries = await prisma.user.findMany({
+      where: {
+        type: "GALLERY",
+        is_approved: true,
+      },
+      include: {
+        artworks: true,
+      },
+      take: 10,
+    });
+
+    return {
+      artists,
+      galleries,
+    };
+  } catch (error) {
+    throw error;
+  }
+}
