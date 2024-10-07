@@ -81,11 +81,8 @@ const UsersPage = async ({ searchParams }: { searchParams: any }) => {
               </div>
               <div className="">
                 {users?.data?.map((user, index) => (
-                  <Link href={`/admin/users/${user.id}`}>
-                    <div
-                      key={index}
-                      className="grid grid-cols-4 w-full h-auto  py-4 px-6  cursor-pointer  hover:bg-gray-50/70  "
-                    >
+                  <Link key={index} href={`/admin/users/${user.id}`}>
+                    <div className="grid grid-cols-4 w-full h-auto  py-4 px-6  cursor-pointer  hover:bg-gray-50/70  ">
                       <div className="flex items-center gap-x-3">
                         <Image
                           src={
