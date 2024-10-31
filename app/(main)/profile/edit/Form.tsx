@@ -169,6 +169,7 @@ const EditProfileForm: React.FC<{ profile: User }> = ({ profile }) => {
               handleBlur={handleBlur}
               errors={errors.wallet_address}
               touched={touched.wallet_address}
+              disabled
             />
             <Input
               label="Instagram Profile"
