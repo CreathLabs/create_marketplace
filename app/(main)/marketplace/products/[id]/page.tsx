@@ -6,6 +6,10 @@ import Image from "next/image";
 import { redirect } from "next/navigation";
 import React from "react";
 import VerifyButton from "@/app/providers/verifyNft";
+import { getProfile } from "@/actions/current";
+
+
+
 
 const page = async ({ params: { id } }: { params: { id: string } }) => {
   let data = null;
@@ -18,6 +22,14 @@ const page = async ({ params: { id } }: { params: { id: string } }) => {
 
   if (!data) {
     redirect("/");
+  }
+
+  let current = null;
+  try {
+    const res = await getProfile();
+    current = res;
+  } catch (error) {
+    console.log(error);
   }
 
   const topNfts = await getTopNfts();
@@ -80,12 +92,7 @@ const page = async ({ params: { id } }: { params: { id: string } }) => {
                 </h1>
               </div>
               <div className="flex items-center justify-between lg:justify-start lg:gap-x-14">
-                <VerifyButton id = {data.id}/>
-                <Button
-                  text="Make an Offer"
-                  textStyles=" w-[144px] lg:w-[183px]"
-                  className="text-white border-white"
-                />
+                <VerifyButton id = {data.id} current={current} price = {data.floor_price.toString()}/>
               </div>
               <div className="flex justify-center lg:justify-start items-center gap-x-12">
                 <div className="flex flex-col items-center space-y-3">
