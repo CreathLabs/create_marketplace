@@ -80,9 +80,8 @@ const UserProfile = async () => {
             </div>
           </div>
           <div className="mt-10 bg-grayTwo p-8 space-y-[60px] ">
-            <DashStat title="DashStat" value="$ 20.59" />
-            <DashStat title="CGT Balance" value="$ 240.59" />
-            <DashStat title="Collector’s Royalty" value="$ 240,599,988" />
+            <DashStat title="Wallet Balance" value="Balance" />
+            <DashStat title="Collector’s Royalty" value="Royalty" />
           </div>
         </div>
 
