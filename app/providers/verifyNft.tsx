@@ -9,17 +9,22 @@ import ABI from './ABI/ContractABI.json';
 import MockABI from './ABI/MockABI.json';
 import { handleError, parseErrors } from "@/lib/helpers";
 import { User } from "@prisma/client";
+import { usePaystackPayment } from "react-paystack";
+import { useFlutterwave, closePaymentModal } from 'flutterwave-react-v3';
 
 
 
 
 interface VerifyButtonProps {
-    id: string;
+    id: string,
     current: User | null,
-    price: string
+    price: string,
+    Innertext: string,
+    paymentType: string,
+    artName: string
 }
 
-const VerifyButton: React.FC<VerifyButtonProps> =  ( { id, current, price } )=>{
+const VerifyButton: React.FC<VerifyButtonProps> =  ( { id, current, price, Innertext, paymentType, artName } )=>{
     const { connected, connectionStatus } = useConnect();
     const [checkContract, setCheck] = useState<ethers.Contract | null>(null);
     const [mockContract, setMock] = useState<ethers.Contract | null>(null);
@@ -31,7 +36,30 @@ const VerifyButton: React.FC<VerifyButtonProps> =  ( { id, current, price } )=>{
     const creathAddress = "0x4DF3Fbf82df684A16E12e0ff3683E6888e51B994";
     const mockContractAddress = "0x7f5c764cbc14f9669b88837ca1490cca17c31607"
     const nft = "16";
-    const { provider } = useEthereum()
+    const { provider } = useEthereum();
+
+    
+
+    const config = {
+        public_key: 'FLWPUBK-0b212880f051f3e79e3b654d97a61fb7-X',
+        tx_ref: `${Date.now()}`,
+        amount: Number(price),
+        currency: 'USD',
+        payment_options: 'card, banktransfer, ussd, account, credit',
+        customer: {
+        email: `${current ? current.email : ''}`,
+        phone_number: ``,
+        name: `${current ? current.username : ''}`,
+        },
+        customizations: {
+        title: `Paying for artwork ${artName}`,
+        description: 'Payment for an artwork on Creath Marketplace',
+        logo: 'https://media.publit.io/file/creat-logo.webp',
+        },
+    };
+
+    const handleFlutterPayment = useFlutterwave(config);
+    
 
     useEffect(()=>{
         const assignContracts = async ()=>{
@@ -52,15 +80,24 @@ const VerifyButton: React.FC<VerifyButtonProps> =  ( { id, current, price } )=>{
             }
         }
 
-        assignContracts()
+        assignContracts();
     }, [connected])
 
     useEffect(() => {
         // Only run checkArtwork if checkContract has been set
-        if (checkContract) {
-            checkArtwork();
+        const verifyArtwork = async ()=>{
+            if (checkContract) {
+                checkArtwork()
+            }
         }
+
+        verifyArtwork()
+        
     }, [checkContract]);
+
+    const transferArtwork = async()=>{
+        
+    }
 
     const checkArtwork = async()=>{
         try{
@@ -85,34 +122,55 @@ const VerifyButton: React.FC<VerifyButtonProps> =  ( { id, current, price } )=>{
 
     const handleBuy =  async ()=>{
         if(current){
-            try{
-                let NFTprice = ethers.utils.parseUnits(price, 6)
-                let id = ethers.BigNumber.from(nft);
+            if(paymentType === "Wallet"){
                 try{
-                    let allowance = await mockContract?.allowance(address, contractAddress);
-                    if(2000 > parseInt(allowance._hex, 16)){
-                      let Txn = await mockContract?.approve(contractAddress, `${parseInt(NFTprice._hex)}`)
-                      let rec = await Txn.wait()
-                    }
-                  }
-                  catch(err){
+                    let NFTprice = ethers.utils.parseUnits(price, 6)
+                    let id = ethers.BigNumber.from(nft);
+                    try{
+                        let allowance = await mockContract?.allowance(address, contractAddress);
+                        if(2000 > parseInt(allowance._hex, 16)){
+                          let Txn = await mockContract?.approve(contractAddress, `${parseInt(NFTprice._hex)}`)
+                          let rec = await Txn.wait()
+                        }
+                      }
+                      catch(err){
+                        const error = parseErrors(err);
+                        handleError(error.errors);
+                      }
+                }
+                catch(err){
                     const error = parseErrors(err);
                     handleError(error.errors);
-                  }
+                }
             }
-            catch(err){
+            else{
+                try {
+                    handleFlutterPayment({
+                        callback: (response) => {
+                        console.log("Flutterwave response:", response);
+                        if (response.status === "successful") {
+                            transferArtwork(); // Trigger transfer logic after payment success
+                        }
+                        closePaymentModal(); // Close the Flutterwave modal
+                        },
+                        onClose: () => {
+                        console.log("Flutterwave modal closed");
+                        },
+                    });
+                } catch (err) {
                 const error = parseErrors(err);
                 handleError(error.errors);
+                }
             }
         }
     }
 
     return(
         <Button
-            text={available ? "Buy Now" : "Sold"}
+            text={available ? `${Innertext}` : "Sold"}
             textStyles=" w-[144px] lg:w-[183px]"
             className="text-white border-white"
-            disabled = {!available}
+            disabled={!available}
             loading =  {connectionStatus === "disconnected" ? false : !verified }
             action={handleBuy}
         />

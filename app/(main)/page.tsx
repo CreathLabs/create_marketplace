@@ -12,8 +12,8 @@ import {
   getTopArtists,
   getTopNfts,
   getTopExhibitions,
-  getTopCollectibless,
-  getTopBlogs
+  // getTopCollectibless,
+  // getTopBlogs
 } from "@/actions";
 
 const artists = [1, 2, 3, 4, 5, 6, 7, 8];
@@ -22,8 +22,8 @@ export default async function Home() {
   const topNfts = await getTopNfts();
   const artists = await getTopArtists();
   const exhibitions = await getTopExhibitions();
-  const collectibles = await getTopCollectibless();
-  const blogs = await getTopBlogs();
+  // const collectibles = await getTopCollectibless();
+  // const blogs = await getTopBlogs();
 
 
 
@@ -73,9 +73,9 @@ export default async function Home() {
             />
           </div>
           <div className="grid lg:grid-cols-3 gap-16">
-            {collectibles.map((item) => (
+            {/* {collectibles.map((item) => (
               <Collectible key={item.id} {...item} />
-            ))}
+            ))} */}
           </div>
           <div className="w-full flex justify-center lg:hidden">
             <Button text="View More" textStyles="w-[144px]" />
@@ -158,9 +158,9 @@ export default async function Home() {
             />
           </div>
           <div className="grid lg:grid-cols-3 gap-[34px]">
-            {blogs?.map((blog) => (
+            {/* {blogs?.map((blog) => (
               <BlogCard key={blog.id} {...blog} />
-            ))}
+            ))} */}
           </div>
         </div>
       </div>

@@ -32,7 +32,7 @@ const page = async ({ params: { id } }: { params: { id: string } }) => {
     console.log(error);
   }
 
-  const topNfts = await getTopNfts();
+  // const topNfts = await getTopNfts();
 
   const ext = data.art_image?.split(".");
   const isVideo =
@@ -92,7 +92,8 @@ const page = async ({ params: { id } }: { params: { id: string } }) => {
                 </h1>
               </div>
               <div className="flex items-center justify-between lg:justify-start lg:gap-x-14">
-                <VerifyButton id = {data.id} current={current} price = {data.floor_price.toString()}/>
+                <VerifyButton id = {data.id} current={current} price = {data.floor_price.toString()} Innertext="Buy With Wallet" paymentType="Wallet" artName = {data.name}  />
+                <VerifyButton id = {data.id} current={current} price = {data.floor_price.toString()} Innertext="Buy With Fiat" paymentType="Fiat" artName = {data.name} />
               </div>
               <div className="flex justify-center lg:justify-start items-center gap-x-12">
                 <div className="flex flex-col items-center space-y-3">
@@ -148,9 +149,9 @@ const page = async ({ params: { id } }: { params: { id: string } }) => {
         </div>
         <div className="container max-w-screen-xl mx-auto pl-6 ">
           <div className="w-full scroller flex gap-x-8 lg:gap-x-10 overflow-x-auto">
-            {topNfts.map((n) => (
+            {/* {topNfts.map((n) => (
               <NftCard key={n.id} {...n} />
-            ))}
+            ))} */}
           </div>
         </div>
         <div className="w-full flex justify-center lg:hidden">
