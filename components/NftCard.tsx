@@ -8,7 +8,7 @@ import React from "react";
 import { LikeButton } from "./buttons";
 
 interface ArtProps extends Art {
-  likesCount: number;
+  likesCount?: number;
 }
 
 const NftCard: React.FC<ArtProps> = async ({
@@ -17,7 +17,7 @@ const NftCard: React.FC<ArtProps> = async ({
   published_by,
   name,
   floor_price,
-  likesCount,
+  likesCount = 0,
 }) => {
   const allLikes = await getAllUserLikes();
   const ext = art_image?.split(".");

@@ -17,7 +17,7 @@ const Blogs = async () => {
       <div className="w-full flex flex-col items-center gap-y-10">
         <div className="w-full grid lg:grid-cols-2 gap-[60px] ">
           {data.map((a) => (
-            <BlogPageCard {...a} />
+            <BlogPageCard key={a.id} {...a} />
           ))}
         </div>
       </div>

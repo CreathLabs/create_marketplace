@@ -6,7 +6,7 @@ import React from "react";
 import { LikeButton } from "./buttons";
 
 interface CollectibleProps extends Collectibles {
-  likesCount: number;
+  likesCount?: number;
 }
 
 const Collectible: React.FC<CollectibleProps> = async ({
@@ -17,7 +17,7 @@ const Collectible: React.FC<CollectibleProps> = async ({
   total_minted,
   mint_price,
   total_unminted,
-  likesCount,
+  likesCount = 0,
 }) => {
   const allLikes = await getAllUserCollectibleLikes();
 
