@@ -37,7 +37,7 @@ const MarketPlacePage = async ({
         </div>
       </div>
       <div className="w-full space-y-12">
-        <div className="flex gap-x-8 justify-between w-full overflow-auto scroller items-center">
+        <div className="flex lg:sticky lg:top-[70px] lg:h-[70px] bg-white z-50 gap-x-8 justify-between w-full overflow-auto scroller items-center">
           {tabs.map((item, index) => (
             <div
               key={index}
@@ -56,7 +56,7 @@ const MarketPlacePage = async ({
           ))}
         </div>
         <div className="flex w-full lg:gap-x-[54px] ">
-          <div className="w-[200px] space-y-6 hidden lg:block ">
+          <div className="w-[200px] sticky top-[70px]   space-y-6 hidden lg:block ">
             <h1 className="font-semibold text-xl font-Playfair ">Filters</h1>
             <Filters />
           </div>

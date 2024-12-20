@@ -27,11 +27,11 @@ const RegisterPage = () => {
             <div className="absolute w-full left-0 right-0 border-t border-[#F0F2F5] "></div>
             <h1 className="text-sm text-[#667185] px-2 z-[10] bg-white ">Or</h1>
           </div>
-          <Button
+          {/* <Button
             text="Continue with Google"
             className="w-full py-[14px] "
             leadingAccessory={<Image src={GoogleSvg} alt="" />}
-          />
+          /> */}
         </div>
         <h1 className="text-[15px] lg:text-base ">
           Do you have an Account?{" "}

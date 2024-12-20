@@ -13,9 +13,9 @@ import {
   getTopExhibitions,
   getTopBlogs,
   getTopCollectibless,
+  getAllUserLikes,
 } from "@/actions";
-
-const artists = [1, 2, 3, 4, 5, 6, 7, 8];
+import Link from "next/link";
 
 export default async function Home() {
   const topNfts = await getTopNfts();
@@ -23,21 +23,24 @@ export default async function Home() {
   const exhibitions = await getTopExhibitions();
   const collectibles = await getTopCollectibless();
   const blogs = await getTopBlogs();
+  const allLikes = await getAllUserLikes();
 
   return (
     <main className="w-full h-full">
-      <Hero topNfts={topNfts} />
+      <Hero topNfts={topNfts} allLikes={allLikes} />
       <TopNFTs topNfts={topNfts} />
       {/* artists */}
       <div className="bg-black  pt-8 md:pt-10 md:pb-14 pb-6">
         <div className="contain space-y-10 md:space-y-14">
           <div className=" flex justify-between items-center">
             <h1 className="heading text-white ">Performing Artists</h1>
-            <Button
-              text="View All Artists"
-              textStyles="w-[183px]"
-              className="text-white border-white hidden lg:flex"
-            />
+            <Link href={"/artists"}>
+              <Button
+                text="View All Artists"
+                textStyles="w-[183px]"
+                className="text-white border-white hidden lg:flex"
+              />
+            </Link>
           </div>
           <div className="grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-20 hidden md:grid">
             {artists.map((a) => (
@@ -50,11 +53,13 @@ export default async function Home() {
             ))}
           </div>
           <div className="w-full flex justify-center lg:hidden">
-            <Button
-              text="Explore Marketplace"
-              className="text-white border-white"
-              textStyles="w-[144px]"
-            />
+            <Link href={"/artists"}>
+              <Button
+                text="Explore Marketplace"
+                className="text-white border-white"
+                textStyles="w-[144px]"
+              />
+            </Link>
           </div>
         </div>
       </div>
@@ -63,11 +68,13 @@ export default async function Home() {
         <div className="contain space-y-10 md:space-y-14">
           <div className=" flex justify-between items-center">
             <h1 className="heading">Collectibles</h1>
-            <Button
-              text="View All Collectibles"
-              textStyles="w-[183px]"
-              className="hidden lg:flex"
-            />
+            <Link href={"/collectibles"}>
+              <Button
+                text="View All Collectibles"
+                textStyles="w-[183px]"
+                className="hidden lg:flex"
+              />
+            </Link>
           </div>
           <div className="grid lg:grid-cols-3 gap-16">
             {collectibles.map((item) => (
@@ -75,7 +82,9 @@ export default async function Home() {
             ))}
           </div>
           <div className="w-full flex justify-center lg:hidden">
-            <Button text="View More" textStyles="w-[144px]" />
+            <Link href={"/collectibles"}>
+              <Button text="View More" textStyles="w-[144px]" />
+            </Link>
           </div>
         </div>
       </div>
@@ -84,11 +93,13 @@ export default async function Home() {
         <div className="contain space-y-10 lg:space-y-14">
           <div className=" flex justify-between items-center">
             <h1 className="heading">Creath Exhibitions</h1>
-            <Button
-              text="View More Exhibitions"
-              textStyles="w-[183px]"
-              className="hidden lg:flex"
-            />
+            <Link href={"/exhibitions"}>
+              <Button
+                text="View More Exhibitions"
+                textStyles="w-[183px]"
+                className="hidden lg:flex"
+              />
+            </Link>
           </div>
           <div className="grid lg:grid-cols-2 gap-6 md:gap-12 lg:gap-16">
             {exhibitions.map((ex) => (
@@ -96,7 +107,9 @@ export default async function Home() {
             ))}
           </div>
           <div className="w-full flex justify-center lg:hidden">
-            <Button text="View More" textStyles="w-[144px]" />
+            <Link href={"/exhibitions"}>
+              <Button text="View More" textStyles="w-[144px]" />
+            </Link>
           </div>
         </div>
       </div>
@@ -148,11 +161,13 @@ export default async function Home() {
         <div className="contain space-y-14">
           <div className=" flex justify-between items-center">
             <h1 className="heading">Blog</h1>
-            <Button
-              text="View All Blogs"
-              textStyles="w-[183px]"
-              className="hidden lg:flex"
-            />
+            <Link href={"/blogs"}>
+              <Button
+                text="View All Blogs"
+                textStyles="w-[183px]"
+                className="hidden lg:flex"
+              />
+            </Link>
           </div>
           <div className="grid lg:grid-cols-3 gap-[34px]">
             {blogs?.map((blog) => (

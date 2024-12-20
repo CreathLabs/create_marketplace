@@ -1,6 +1,7 @@
 import Button from "@/components/Button";
 import NftCard from "@/components/NftCard";
 import { Art } from "@prisma/client";
+import Link from "next/link";
 import React from "react";
 
 const TopNFTs: React.FC<{ topNfts: Art[] }> = ({ topNfts }) => {
@@ -10,11 +11,13 @@ const TopNFTs: React.FC<{ topNfts: Art[] }> = ({ topNfts }) => {
         <h1 className="font-Playfair font-bold text-[28px] lg:text-[40px] ">
           Top NFTs
         </h1>
-        <Button
-          text="Explore Marketplace"
-          textStyles="w-[183px]"
-          className="hidden lg:flex"
-        />
+        <Link href={"/marketplace"}>
+          <Button
+            text="Explore Marketplace"
+            textStyles="w-[183px]"
+            className="hidden lg:flex"
+          />
+        </Link>
       </div>
       <div className="flex flex-col gap-y-10">
         <div className="container max-w-screen-xl mx-auto pl-6 ">
@@ -25,7 +28,9 @@ const TopNFTs: React.FC<{ topNfts: Art[] }> = ({ topNfts }) => {
           </div>
         </div>
         <div className="w-full flex justify-center lg:hidden">
-          <Button text="Explore Marketplace" textStyles="w-[144px]" />
+          <Link href={"/marketplace"}>
+            <Button text="Explore Marketplace" textStyles="w-[144px]" />
+          </Link>
         </div>
       </div>
     </div>

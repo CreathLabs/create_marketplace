@@ -145,7 +145,7 @@ const EditProfileForm: React.FC<{ profile: User }> = ({ profile }) => {
               handleBlur={handleBlur}
               errors={errors.username}
               touched={touched.username}
-              disabled
+              // disabled
             />
             <Input
               label="Email Address"

@@ -14,3 +14,25 @@ export async function getTopBlogs() {
     throw error;
   }
 }
+
+export async function getBlog(id: string) {
+  try {
+    const data = await prisma.blog.findUniqueOrThrow({
+      where: {
+        id,
+      },
+    });
+    return data;
+  } catch (error) {
+    throw error;
+  }
+}
+
+export async function getBlogs() {
+  try {
+    const data = await prisma.blog.findMany();
+    return data;
+  } catch (error) {
+    throw error;
+  }
+}

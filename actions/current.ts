@@ -44,6 +44,52 @@ export const getProfile = async () => {
   }
 };
 
+export const getAllUserLikes = async () => {
+  const token = await getSession("token");
+  if (!token) {
+    return null;
+  }
+  try {
+    const res = await currentUser(token);
+    if (!res.id) {
+      return null;
+    }
+
+    const user = await prisma.likes.findMany({
+      where: {
+        user_id: res.id,
+      },
+    });
+
+    return user;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const getAllUserCollectibleLikes = async () => {
+  const token = await getSession("token");
+  if (!token) {
+    return null;
+  }
+  try {
+    const res = await currentUser(token);
+    if (!res.id) {
+      return null;
+    }
+
+    const user = await prisma.collectibleLikes.findMany({
+      where: {
+        user_id: res.id,
+      },
+    });
+
+    return user;
+  } catch (error) {
+    throw error;
+  }
+};
+
 export const updateProfile = async (
   values: yup.InferType<typeof EditProfileSchema>
 ) => {

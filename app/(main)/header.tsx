@@ -39,7 +39,7 @@ const Header: React.FC<Props> = ({ openModal, current }) => {
           className="!z-50 cursor-pointer"
           alt=""
         />
-        <div className="  xl:flex w-full h-full justify-center space-x-20 items-center">
+        <div className=" hidden  xl:flex w-full h-full justify-center space-x-20 items-center">
           <NavLink
             text="Home"
             icon={<House size="20" variant="Outline" />}

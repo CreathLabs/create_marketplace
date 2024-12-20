@@ -47,7 +47,7 @@ const UserProfile = async () => {
         </div>
       </div>
       <div className="contain space-y-[105px] ">
-        <div className="w-full grid grid-cols-2 gap-x-20 ">
+        <div className="w-full grid grid-cols-2 items-start gap-x-20 ">
           <div className="w-full space-y-4 mt-[193px]  ">
             <h1 className="font-Playfair font-bold text-[35px] leading-[46px] ">
               {profile?.username}
@@ -79,10 +79,8 @@ const UserProfile = async () => {
               </div>
             </div>
           </div>
-          <div className="mt-10 bg-grayTwo p-8 space-y-[60px] ">
-            <DashStat title="DashStat" value="$ 20.59" />
-            <DashStat title="CGT Balance" value="$ 240.59" />
-            <DashStat title="Collector’s Royalty" value="$ 240,599,988" />
+          <div className="mt-10   bg-grayTwo p-8 space-y-[60px] ">
+            <DashStat title="USDC Balance" value="$ 20.59" />
           </div>
         </div>
 

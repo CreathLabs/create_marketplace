@@ -40,7 +40,7 @@ const EventCard: React.FC<Exhibition> = ({ id, cover_image, name }) => {
             {name}
           </h1>
         </div>
-        <div className=" py-4  md:py-8 w-full grid grid-cols-3 divide-x-2 divide-white ">
+        <div className=" py-4  md:py-8 w-full grid grid-cols-3 divide-x-2 justify-center items-center divide-white ">
           <div className="w-full flex flex-col items-center">
             <h1 className="font-semibold text-sm md:text-lg leading-[20px] md:leading-[45px] text-center ">
               Available Art
@@ -49,22 +49,22 @@ const EventCard: React.FC<Exhibition> = ({ id, cover_image, name }) => {
               12
             </h1>
           </div>
-          <div className="w-full flex flex-col items-center">
+          {/* <div className="w-full flex flex-col items-center">
             <h1 className="font-semibold text-sm md:text-lg leading-[20px] md:leading-[45px] text-center ">
               Sold Art
             </h1>
             <h1 className="font-bold text-lg md:text-2xl leading-[45px] text-center ">
               2
             </h1>
-          </div>
-          <div className="w-full flex flex-col items-center">
+          </div> */}
+          {/* <div className="w-full flex flex-col items-center">
             <h1 className="font-semibold text-sm md:text-lg leading-[20px] md:leading-[45px] text-center ">
               Total Sales
             </h1>
             <h1 className="font-bold text-lg md:text-2xl leading-[45px] text-center ">
               5.5 CGT
             </h1>
-          </div>
+          </div> */}
         </div>
       </div>
     </div>

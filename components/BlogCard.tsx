@@ -1,11 +1,15 @@
 import { Blog } from "@prisma/client";
 import moment from "moment";
 import Image from "next/image";
+import Link from "next/link";
 import React from "react";
 
-const BlogCard: React.FC<Blog> = ({ cover_image, title, created_at }) => {
+const BlogCard: React.FC<Blog> = ({ cover_image, title, created_at, id }) => {
   return (
-    <div className="w-full h-full pb-5 lg:pb-10 border-b border-mainGray/30 space-y-6 md:space-y-8">
+    <Link
+      href={`/blogs/${id}`}
+      className="w-full h-full pb-5 lg:pb-10 border-b border-mainGray/30 space-y-6 md:space-y-8"
+    >
       <div className="relative w-full h-[246px]">
         <Image src={cover_image} fill className="object-cover" alt="" />
       </div>
@@ -17,7 +21,7 @@ const BlogCard: React.FC<Blog> = ({ cover_image, title, created_at }) => {
           {moment(created_at).format("LL")}
         </h2>
       </div>
-    </div>
+    </Link>
   );
 };
 
