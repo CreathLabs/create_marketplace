@@ -29,7 +29,7 @@ const page = async ({ params: { id } }: { params: { id: string } }) => {
     console.log(error);
   }
 
-  // const topNfts = await getTopNfts();
+  const topNfts = await getTopNfts();
 
   const ext = data.art_image?.split(".");
   const isVideo =
@@ -160,9 +160,9 @@ const page = async ({ params: { id } }: { params: { id: string } }) => {
         </div>
         <div className="container max-w-screen-xl mx-auto pl-6 ">
           <div className="w-full scroller flex gap-x-8 lg:gap-x-10 overflow-x-auto">
-            {/* {topNfts.map((n) => (
+            {topNfts.map((n) => (
               <NftCard key={n.id} {...n} />
-            ))} */}
+            ))}
           </div>
         </div>
         <div className="w-full flex justify-center lg:hidden">

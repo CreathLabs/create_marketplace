@@ -78,9 +78,9 @@ export default async function Home() {
             </Link>
           </div>
           <div className="grid lg:grid-cols-3 gap-16">
-            {/* {collectibles.map((item) => (
+            {collectibles.map((item) => (
               <Collectible key={item.id} {...item} />
-            ))} */}
+            ))}
           </div>
           <div className="w-full flex justify-center lg:hidden">
             <Link href={"/collectibles"}>
@@ -171,9 +171,9 @@ export default async function Home() {
             </Link>
           </div>
           <div className="grid lg:grid-cols-3 gap-[34px]">
-            {/* {blogs?.map((blog) => (
+            {blogs?.map((blog) => (
               <BlogCard key={blog.id} {...blog} />
-            ))} */}
+            ))}
           </div>
         </div>
       </div>
