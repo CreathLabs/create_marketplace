@@ -18,16 +18,48 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useContext } from "react";
+import { useConnect } from '@particle-network/authkit';
+import { userSignin, saveSession } from "@/actions";
+import { handleError, parseErrors } from "@/lib/helpers";
 
 interface Props {
   openModal: () => void;
   current: User | null;
 }
 
+interface UserInfo {
+  email: string;
+  // add other properties if needed
+}
+
 const Header: React.FC<Props> = ({ openModal, current }) => {
   const { toggleMenu, open } = useContext(MenuContext);
+  const { connect, disconnect } = useConnect();
 
   const router = useRouter();
+
+  const handleLogin = async ()=>{
+    try{
+      const userInfo = await connect() as UserInfo;
+      const email = userInfo?.email || "";
+      const res = await userSignin({
+        email: email,
+        password: "Dummy"
+      });
+      await saveSession("token", res?.data?.token || "");
+      router.push("/");
+    }
+    catch (err){
+      const error = parseErrors(err);
+      handleError(error.errors);
+      disconnect()
+    }
+    // disconnect()
+  }
+
+  const handleLogout = async ()=>{
+    await disconnect()
+  }
 
   return (
     <main className="w-full h-[56px] lg:h-[70px] bg-white !z-50 sticky top-0">
@@ -77,8 +109,9 @@ const Header: React.FC<Props> = ({ openModal, current }) => {
                 ? async () => {
                     await deleteSession("token");
                     router.refresh();
+                    handleLogout();
                   }
-                : () => router.push("/auth/login")
+                : () => handleLogin()
             }
           />
           <div

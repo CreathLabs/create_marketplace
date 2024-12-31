@@ -7,6 +7,8 @@ export const RegisterSchema = yup.object({
     .email("Invalid email address")
     .required("Email is required"),
   password: yup.string().required("Password is required"),
+  wallet_address: yup.string(),
+  type: yup.string()
 });
 
 export const SignInSchema = yup.object({

@@ -26,7 +26,7 @@ const resend = new Resend(process.env.RESEND_API_KEY);
 export const createUser = async (
   values: yup.InferType<typeof RegisterSchema>
 ) => {
-  const { email, password } = await validateRegisterSchema(values);
+  const { email, password, wallet_address } = await validateRegisterSchema(values);
 
   const existingUser = await user.findUnique({ where: { email } });
 
@@ -46,23 +46,24 @@ export const createUser = async (
         email,
         password: hashedPassword,
         username,
+        wallet_address,
         otp: hashedOtp,
         otp_expires_in,
       },
     });
 
-    const { error } = await resend.emails.send({
-      from: "Creath Marketplace <info@trustfynd.com>",
-      to: [res.email],
-      subject: "Verify your Email address",
-      react: OtpEmailTemplate({ otp }),
-    });
+    // const { error } = await resend.emails.send({
+    //   from: "Creath Marketplace <info@trustfynd.com>",
+    //   to: [res.email],
+    //   subject: "Verify your Email address",
+    //   react: OtpEmailTemplate({ otp }),
+    // });
 
-    if (error) {
-      throw error;
-    }
+    // if (error) {
+    //   throw error;
+    // }
 
-    return res;
+    return { res, otp:otp };
   } catch (error) {
     throw error;
   }
