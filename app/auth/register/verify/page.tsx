@@ -7,6 +7,7 @@ import Input from "@/components/Input";
 import { verifyOtp, saveSession } from "@/actions";
 import { useRouter, useSearchParams } from "next/navigation";
 import { handleError, parseErrors } from "@/lib/helpers";
+import { toast } from "react-toastify";
 
 const verifySchema = yup.object().shape({
   otp: yup.string().required("This field is required."),
@@ -46,6 +47,7 @@ const VerifyPage = ({ searchParams }: { searchParams: any }) => {
               otp: data.otp,
             });
             resetForm();
+            toast.success("Account Verification Successful");
             setSubmitting(false);
             await saveSession("token", res?.data?.token || "");
             router.push("/");

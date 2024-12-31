@@ -66,12 +66,12 @@ const Header: React.FC<Props> = ({ openModal, current }) => {
         <div className="flex h-full gap-x-6 ">
           <Button
             text={current ? current?.username : "Sign Up"}
-            className="h-full flex justify-center !z-50 items-center py-0 min-w-[100px] lg:w-[145px]"
+            className="h-full lg:flex justify-center !z-50 items-center py-0 hidden w-[145px]"
             action={current ? () => router.push("/profile") : openModal}
           />
           <Button
             text={current ? "Log Out" : "Log In"}
-            className="h-full flex justify-center !z-50 items-center py-0 min-w-[100px] lg:w-[145px]"
+            className="h-full lg:flex justify-center !z-50 items-center py-0 hidden w-[145px]"
             action={
               current
                 ? async () => {

@@ -14,9 +14,20 @@ import {
   Shop,
 } from "iconsax-react";
 import Link from "next/link";
+import { User } from "@prisma/client";
+import Button from "@/components/Button";
+import { deleteSession } from "@/actions";
 
-const Menu = () => {
+const Menu = ({
+  current,
+  openModal,
+}: {
+  current: User | null;
+  openModal: () => void;
+}) => {
   const { toggleMenu, open } = useContext(MenuContext);
+
+  const router = useRouter();
 
   return (
     <div
@@ -38,7 +49,7 @@ const Menu = () => {
           className="text-xl text-mainGray"
           onClick={() => toggleMenu(false)}
         />
-        <ul className="w-full h-full flex flex-col space-y-12">
+        <ul className="w-full h-fit flex flex-col space-y-12">
           <NavLink
             text="Home"
             icon={<House size="20" variant="Outline" />}
@@ -62,6 +73,27 @@ const Menu = () => {
             icon={<Clipboard size="20" variant="Outline" />}
           />
         </ul>
+      </div>
+      <div className="absolute bottom-0 left-0 right-0 w-full contain pb-20">
+        <div className="w-full  flex self-baseline gap-x-6 h-14 ">
+          <Button
+            text={current ? current?.username : "Sign Up"}
+            className="h-full flex justify-center items-center py-0 w-full"
+            action={current ? () => router.push("/profile") : openModal}
+          />
+          <Button
+            text={current ? "Log Out" : "Log In"}
+            className="h-full flex justify-center items-center py-0 w-full"
+            action={
+              current
+                ? async () => {
+                    await deleteSession("token");
+                    router.refresh();
+                  }
+                : () => router.push("/auth/login")
+            }
+          />
+        </div>
       </div>
     </div>
   );

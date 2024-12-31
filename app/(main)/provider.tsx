@@ -19,7 +19,7 @@ const Provider = ({
   return (
     <MenuContextProvider>
       <>
-        <Menu />
+        <Menu current={current} openModal={() => setShowModal(true)} />
         <Header openModal={() => setShowModal(true)} current={current} />
         {children}
         <Footer />

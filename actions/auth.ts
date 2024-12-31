@@ -4,9 +4,11 @@ import prisma from "@/lib/prisma";
 import {
   OtpSchema,
   RegisterSchema,
+  ResetPasswordSchema,
   SignInSchema,
   validateOtpSchema,
   validateRegisterSchema,
+  validateResetPasswordSchema,
   validateSignInSchema,
 } from "@/lib/schemas";
 import { generateFromEmail } from "unique-username-generator";
@@ -15,6 +17,8 @@ import bcrypt from "bcryptjs";
 import { generateOtp, jwtSignCustomer } from "@/lib/helpers";
 import { Resend } from "resend";
 import OtpEmailTemplate from "@/components/email-templates/OTP";
+import { randomBytes } from "crypto";
+import ResetPasswordEmail from "@/components/email-templates/ResetPassword";
 
 const { user } = prisma;
 const resend = new Resend(process.env.RESEND_API_KEY);
@@ -174,7 +178,7 @@ export const verifyOtp = async (values: yup.InferType<typeof OtpSchema>) => {
   }
 };
 
-const resendOtp = async (email: string) => {
+export const resendOtp = async (email: string) => {
   const otp = generateOtp();
   const hashedOtp = await bcrypt.hash(otp, 10);
   const otp_expires_in = new Date(Date.now() + 600000);
@@ -201,4 +205,111 @@ const resendOtp = async (email: string) => {
   }
 
   return res;
+};
+
+export const forgotPassword = async (email: string, otp: string) => {
+  console.log(email);
+  const existingUser = await user.findUnique({
+    where: {
+      email,
+    },
+  });
+
+  if (!existingUser) {
+    throw new BadRequestError("Email doesn't exist");
+  }
+
+  try {
+    if (!existingUser.otp) {
+      throw new BadRequestError("Invalid or Expired Otp");
+    }
+
+    if (!existingUser.otp_expires_in) {
+      throw new BadRequestError("Invalid or Expired Otp");
+    }
+
+    const expires = existingUser.otp_expires_in.getTime();
+    const current = Date.now();
+
+    if (expires < current) {
+      throw new BadRequestError("Invalid or Expired Otp");
+    }
+
+    const isMatch = await bcrypt.compare(otp, existingUser.otp);
+
+    if (!isMatch) {
+      throw new BadRequestError("Invalid or Expired Otp");
+    }
+
+    const token_expies_in = new Date(Date.now() + 300000);
+    const reset_token = randomBytes(20).toString("hex");
+
+    const res = await user.update({
+      where: {
+        email,
+      },
+      data: {
+        otp: null,
+        otp_expires_in: null,
+        reset_token,
+        token_expies_in,
+      },
+    });
+
+    return {
+      success: true,
+      message: "Here is your Reset Password token",
+      data: res.reset_token,
+    };
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const resetPassword = async (
+  values: yup.InferType<typeof ResetPasswordSchema>
+) => {
+  const { password, reset_token } = await validateResetPasswordSchema(values);
+
+  const existingUser = await user.findUnique({ where: { reset_token } });
+
+  try {
+    if (!existingUser) {
+      throw new BadRequestError("Invalid or Expired Reset token");
+    }
+
+    if (!existingUser.reset_token) {
+      throw new BadRequestError("Invalid or Expired Reset token");
+    }
+
+    if (!existingUser.token_expies_in) {
+      throw new BadRequestError("Invalid or Expired Reset token");
+    }
+
+    const expires = existingUser.token_expies_in.getTime();
+    const current = Date.now();
+
+    if (expires < current) {
+      throw new BadRequestError("Invalid or Expired Reset token");
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    await user.update({
+      where: {
+        reset_token,
+      },
+      data: {
+        password: hashedPassword,
+        reset_token: null,
+        token_expies_in: null,
+      },
+    });
+    return {
+      success: true,
+      message: "Password Reset Successful",
+    };
+  } catch (error) {
+    throw error;
+  }
 };

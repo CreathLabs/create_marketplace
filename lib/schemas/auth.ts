@@ -47,6 +47,24 @@ export const validateOtpSchema = async (values: any) => {
   }
 };
 
+export const ResetPasswordSchema = yup.object({
+  reset_token: yup.string().required("Reset token is required"),
+  password: yup.string().required("Password is required"),
+});
+
+export const validateResetPasswordSchema = async (values: any) => {
+  try {
+    const data = await ResetPasswordSchema.validate(values, {
+      abortEarly: false,
+    });
+
+    return data;
+  } catch (error: any) {
+    const err = error as yup.ValidationError;
+    throw new YupValidationError(err);
+  }
+};
+
 export const validateRegisterSchema = async (values: any) => {
   try {
     const data = await RegisterSchema.validate(values, { abortEarly: false });

@@ -91,6 +91,7 @@ model Art {
   published_by  String?
   art_image     String?
   exhibition_id String?
+  nft_id        String?
   is_approved   Boolean        @default(false)
   exhibition    Exhibition?    @relation(fields: [exhibition_id], references: [id], onDelete: Cascade)
   created_at    DateTime       @default(now())

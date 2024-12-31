@@ -84,11 +84,6 @@ const page = async ({ params: { id } }: { params: { id: string } }) => {
                   textStyles=" w-[144px] lg:w-[183px]"
                   className="text-white border-white"
                 />
-                <Button
-                  text="Make an Offer"
-                  textStyles=" w-[144px] lg:w-[183px]"
-                  className="text-white border-white"
-                />
               </div>
               <div className="flex justify-center lg:justify-start items-center gap-x-12">
                 <div className="flex flex-col items-center space-y-3">

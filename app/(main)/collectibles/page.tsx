@@ -1,5 +1,4 @@
 import Button from "@/components/Button";
-import NftCard from "@/components/NftCard";
 import React from "react";
 import Filters from "./filters";
 import Collectible from "@/components/Collectible";
@@ -37,26 +36,8 @@ const CollectiblesPage = async ({
         </div>
       </div>
       <div className="space-y-12">
-        {/* <div className="flex justify-between items-center">
-          {tabs.map((item, index) => (
-            <div
-              key={index}
-              className={`lg:px-6 pb-3 lg:pb-5 ${
-                active === item ? "border-b-2 border-black" : "border-none"
-              } `}
-            >
-              <h1
-                className={` text-base lg:text-xl ${
-                  active === item ? "text-black" : "text-mainGray"
-                }  leading-[30px] !whitespace-nowrap font-semibold `}
-              >
-                {item}
-              </h1>
-            </div>
-          ))}
-        </div> */}
-        <div className="flex gap-x-[54px] ">
-          <div className="w-[200px] space-y-6 ">
+        <div className="flex w-full lg:gap-x-[54px] ">
+          <div className="w-[200px] sticky top-[70px]   space-y-6 hidden lg:block ">
             <h1 className="font-semibold text-xl font-Playfair ">Filters</h1>
             <Filters />
           </div>
