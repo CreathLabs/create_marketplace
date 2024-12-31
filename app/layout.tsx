@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { ToastContainer } from "react-toastify";
+import ParticleProvider from "./providers/ParticleProvider";
 import "react-toastify/dist/ReactToastify.css";
 
 export const metadata: Metadata = {
@@ -45,7 +46,9 @@ export default function RootLayout({
             color: "#494949",
           }}
         />
-        {children}
+        <ParticleProvider>
+          {children}
+        </ParticleProvider>
       </body>
     </html>
   );

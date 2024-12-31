@@ -10,6 +10,7 @@ interface Props {
   action?: () => void;
   leadingAccessory?: React.ReactElement;
   loading?: boolean;
+  disabled?: boolean;
 }
 
 const Button: React.FC<Props> = ({
@@ -19,6 +20,7 @@ const Button: React.FC<Props> = ({
   action,
   leadingAccessory,
   loading = false,
+  disabled 
 }) => {
   return (
     <button
@@ -28,6 +30,7 @@ const Button: React.FC<Props> = ({
         e.stopPropagation();
         action?.();
       }}
+      disabled={disabled}
       className={cn(
         "text-black font-semibold px-3 py-[14px] text-sm lg:text-base leading-[23.22px] flex justify-center items-center gap-x-4 border-b-2 border-black",
         className

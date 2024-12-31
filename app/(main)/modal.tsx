@@ -3,14 +3,65 @@ import Button from "@/components/Button";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import React from "react";
+import React, { useState } from "react";
+import { useConnect, useEthereum } from '@particle-network/authkit';
+import { createUser, verifyOtp, saveSession } from "@/actions";
+import { handleError, parseErrors } from "@/lib/helpers";
+import { ethers } from "ethers";
+import { disconnect } from "process";
 
 interface Props {
   handleClose: () => void;
 }
 
+interface UserInfo {
+  email: string;
+  // add other properties if needed
+}
+
+
+
 const Modal: React.FC<Props> = ({ handleClose }) => {
   const router = useRouter();
+  const { connect } = useConnect();
+  const { provider } =  useEthereum()
+
+  const handleConnect = async (type: string)=>{
+    console.log(type)
+    try{
+      const userInfo = await connect() as UserInfo;
+      const ethersProvider = new ethers.providers.Web3Provider(provider);
+      const accounts = await ethersProvider.listAccounts();
+      const email = userInfo?.email || "";
+      await createUser({
+        email: userInfo?.email,
+        password: "Dummy",
+        wallet_address: accounts[0],
+        type: type
+      }).then(async (resp) => {
+        console.log(resp)
+        try {
+          const res = await verifyOtp({
+            email,
+            otp: resp?.otp || "",
+          });
+          await saveSession("token", res?.data?.token || "");
+          router.push("/");
+        } catch (err) {
+          const error = parseErrors(err);
+          handleError(error.errors);
+          disconnect()
+        }
+      })
+      handleClose()
+    }
+    catch (err) {
+      const error = parseErrors(err);
+      handleError(error.errors);
+      disconnect()
+      handleClose()
+    }
+  }
 
   return (
     <div className="w-full h-full fixed top-0 lef-0 right-0 bottom-0 z-[999] bg-[#00000099] ">
@@ -29,8 +80,7 @@ const Modal: React.FC<Props> = ({ handleClose }) => {
               <div
                 className="w-full h-[119px] lg:h-[267px] relative cursor-pointer "
                 onClick={() => {
-                  handleClose();
-                  router.push("/auth/login");
+                  handleConnect("ARTIST")
                 }}
               >
                 <Image
@@ -48,8 +98,7 @@ const Modal: React.FC<Props> = ({ handleClose }) => {
               <div
                 className="w-full h-[119px] lg:h-[267px] relative cursor-pointer "
                 onClick={() => {
-                  handleClose();
-                  router.push("/auth/login");
+                  handleConnect("GALLERY")
                 }}
               >
                 <Image

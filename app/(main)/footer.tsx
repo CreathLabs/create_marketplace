@@ -12,6 +12,9 @@ const links = [
 
 const Footer = () => {
   const router = useRouter();
+
+
+
   return (
     <div className="bg-black pb-8 pt-14">
       <div className="contain flex flex-col items-center space-y-16 ">
