@@ -17,7 +17,7 @@ import {
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import { useConnect } from '@particle-network/authkit';
 import { userSignin, saveSession } from "@/actions";
 import { handleError, parseErrors } from "@/lib/helpers";
@@ -34,9 +34,23 @@ interface UserInfo {
 
 const Header: React.FC<Props> = ({ openModal, current }) => {
   const { toggleMenu, open } = useContext(MenuContext);
-  const { connect, disconnect } = useConnect();
-
+  const { connect, disconnect, connected } = useConnect();
   const router = useRouter();
+
+  useEffect(() => {
+    const handleSession = async () => {
+      if (!current) {
+        disconnect();
+      }
+  
+      if (!connected) {
+        await deleteSession("token");
+        router.refresh();
+      }
+    };
+  
+    handleSession();
+  }, []);
 
   const handleLogin = async ()=>{
     try{
