@@ -93,7 +93,7 @@ const page = async ({ params: { id } }: { params: { id: string } }) => {
                   id={data.id}
                   current={current}
                   price={data.floor_price.toString()}
-                  Innertext="Buy With Wallet"
+                  Innertext="Buy With Crypto"
                   paymentType="Wallet"
                   artName={data.name}
                 />
