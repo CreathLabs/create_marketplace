@@ -12,10 +12,33 @@ export async function getTopExhibitions() {
   }
 }
 
-export async function getExhibitions(page = 1, noPerPage = 6) {
+export async function getExhibitions(page = 1, query = "", noPerPage = 6) {
   try {
-    const total = await prisma.exhibition.count();
+    const total = await prisma.exhibition.count({
+      where: {
+        ...(query
+          ? {
+              AND: {
+                name: {
+                  search: query,
+                },
+              },
+            }
+          : {}),
+      },
+    });
     const data = await prisma.exhibition.findMany({
+      where: {
+        ...(query
+          ? {
+              AND: {
+                name: {
+                  search: query,
+                },
+              },
+            }
+          : {}),
+      },
       take: noPerPage,
       skip: (page - 1) * noPerPage,
       orderBy: {

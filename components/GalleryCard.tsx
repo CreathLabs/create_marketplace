@@ -1,21 +1,21 @@
 "use client";
-import { Exhibition } from "@prisma/client";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 
 interface Props {
-  event: {
-    image: string;
-    title: string;
-    description: string;
-    gate_fee: string;
-    location: string;
-    date: string;
-  };
+  id: string;
+  name: string;
+  cover_image: string;
+  artworks_count: number;
 }
 
-const EventCard: React.FC<Exhibition> = ({ id, cover_image, name }) => {
+const GalleryCard: React.FC<Props> = ({
+  id,
+  artworks_count,
+  name,
+  cover_image,
+}) => {
   const [hoverd, setHovered] = useState(false);
   const router = useRouter();
 
@@ -23,7 +23,7 @@ const EventCard: React.FC<Exhibition> = ({ id, cover_image, name }) => {
     <div
       onMouseOver={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
-      onClick={() => router.push(`/exhibitions/${id}`)}
+      onClick={() => router.push(`/galleries/${id}`)}
       className=" relative w-full h-[293px] md:h-[434px] overflow-hidden cursor-pointer "
     >
       <Image
@@ -46,29 +46,13 @@ const EventCard: React.FC<Exhibition> = ({ id, cover_image, name }) => {
               Available Art
             </h1>
             <h1 className="font-bold text-lg md:text-2xl leading-[45px] text-center ">
-              12
+              {artworks_count}
             </h1>
           </div>
-          {/* <div className="w-full flex flex-col items-center">
-            <h1 className="font-semibold text-sm md:text-lg leading-[20px] md:leading-[45px] text-center ">
-              Sold Art
-            </h1>
-            <h1 className="font-bold text-lg md:text-2xl leading-[45px] text-center ">
-              2
-            </h1>
-          </div> */}
-          {/* <div className="w-full flex flex-col items-center">
-            <h1 className="font-semibold text-sm md:text-lg leading-[20px] md:leading-[45px] text-center ">
-              Total Sales
-            </h1>
-            <h1 className="font-bold text-lg md:text-2xl leading-[45px] text-center ">
-              5.5 CGT
-            </h1>
-          </div> */}
         </div>
       </div>
     </div>
   );
 };
 
-export default EventCard;
+export default GalleryCard;

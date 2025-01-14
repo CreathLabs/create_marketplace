@@ -33,12 +33,41 @@ export const getProfile = async () => {
       },
       include: {
         artworks: {
-          take: 6,
+          include: {
+            _count: {
+              select: {
+                likes: true,
+              },
+            },
+          },
+        },
+        likes: {
+          include: {
+            art: {
+              include: {
+                _count: {
+                  select: {
+                    likes: true,
+                  },
+                },
+              },
+            },
+          },
         },
       },
     });
 
-    return user;
+    return {
+      ...user,
+      artworks: user.artworks.map((art) => ({
+        ...art,
+        likesCount: art._count.likes,
+      })),
+      likes: user.likes.map((item) => ({
+        ...item.art,
+        likesCount: item.art._count.likes,
+      })),
+    };
   } catch (error) {
     throw error;
   }

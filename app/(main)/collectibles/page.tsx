@@ -1,45 +1,43 @@
-import Button from "@/components/Button";
 import React from "react";
-import Filters from "./filters";
 import Collectible from "@/components/Collectible";
 import { getCollectibles } from "@/actions";
 import Pagination from "@/components/pagination";
-
-const tabs = [
-  "All",
-  "Sculpture",
-  "Painting",
-  "Digital Art",
-  "Photography",
-  "Mixed Media",
-];
+import SearchInput from "@/components/SearchInput";
+import Filters from "@/components/filters";
 
 const CollectiblesPage = async ({
   searchParams,
 }: {
-  searchParams: { page?: string };
+  searchParams: {
+    page?: string;
+    search?: string;
+    sortby?: "popularity" | "recent" | "lowest" | "highest" | "sold";
+    media?: string;
+    min?: string;
+    max?: string;
+  };
 }) => {
+  const { search, sortby, media, min, max } = searchParams;
   const page = Number(searchParams?.page) || 1;
 
-  const { data, total, ipp } = await getCollectibles(page);
+  const { data, total, ipp } = await getCollectibles(page, sortby, {
+    name: search,
+    media,
+    min,
+    max,
+  });
 
   return (
-    <div className="py-14 w-full contain space-y-8 lg:space-y-[72px]">
+    <div className="py-14 w-full contain space-y-8 lg:space-y-[72px] min-h-[calc(100vh-70px)]">
       <div className="flex flex-col lg:flex-row gap-y-8 lg:gap-0 justify-between lg:items-center ">
         <h1 className=" heading leading-[60px]  ">Collectibles</h1>
-        <div className="w-full lg:max-w-[50%] flex space-x-8 ">
-          <input
-            placeholder="Search Collectible"
-            className="py-[14px] w-full px-4 placeholder:text-black outline-none placeholder:font-light bg-grayTwo"
-          />
-          <Button text="Search" className="w-[145px] h-full hidden lg:flex" />
-        </div>
+        <SearchInput placeholder="Search Collectibles" defaultValue={search} />
       </div>
       <div className="space-y-12">
         <div className="flex w-full lg:gap-x-[54px] ">
           <div className="w-[200px] sticky top-[70px]   space-y-6 hidden lg:block ">
             <h1 className="font-semibold text-xl font-Playfair ">Filters</h1>
-            <Filters />
+            <Filters sortby={sortby} media={media} min={min} max={max} />
           </div>
           <div className="flex w-full flex-col items-center gap-y-10">
             <div className="w-full grid lg:grid-cols-3 gap-6 lg:gap-8 ">

@@ -2,6 +2,8 @@
 import prisma from "@/lib/prisma";
 import { currentUser, getSession } from "./current";
 import { NotAuthorizedError } from "@/lib/errors";
+import { Prisma } from "@prisma/client";
+import { Sort } from "@/lib/types";
 
 export async function getTopNfts() {
   try {
@@ -37,16 +39,98 @@ export async function getCategories() {
   }
 }
 
-export async function getNfts(page = 1, noPerPage = 9) {
+export async function getNfts(
+  page = 1,
+  sortby: Sort = "popularity",
+  filters: {
+    category_id?: string;
+    media?: string;
+    min?: string;
+    max?: string;
+    name?: string;
+  } = { category_id: "", media: "", min: "", max: "", name: "" },
+  noPerPage = 9
+) {
+  const sortOptions: Record<Sort, any> = {
+    popularity: {
+      likes: {
+        _count: "desc",
+      },
+    },
+    recent: {
+      created_at: "desc",
+    },
+    lowest: {
+      floor_price: "asc",
+    },
+    highest: {
+      floor_price: "desc",
+    },
+    sold: {},
+  };
+
+  const filterObject: Prisma.ArtWhereInput = {};
+
+  Object.keys(filters).forEach((key) => {
+    const value = filters[key as keyof typeof filters];
+
+    if (!value) {
+      return;
+    }
+
+    if (key === "name") {
+      filterObject[key] = {
+        search: value,
+      };
+    }
+
+    if (key === "category_id") {
+      filterObject[key] = value;
+    }
+
+    if (key === "min") {
+      filterObject["floor_price"] = {
+        gte: Number(value),
+      };
+    }
+
+    if (key === "max") {
+      filterObject["floor_price"] = {
+        lte: Number(value),
+      };
+    }
+  });
+
   try {
     const total = await prisma.art.count({
       where: {
         is_approved: true,
+        AND: filterObject,
+        ...(filters.media
+          ? {
+              OR: filters.media.split(",").map((type) => ({
+                art_image: {
+                  endsWith: `.${type}`,
+                },
+              })),
+            }
+          : {}),
       },
     });
+
     const data = await prisma.art.findMany({
       where: {
         is_approved: true,
+        AND: filterObject,
+        ...(filters.media
+          ? {
+              OR: filters.media.split(",").map((type) => ({
+                art_image: {
+                  endsWith: `.${type}`,
+                },
+              })),
+            }
+          : {}),
       },
       include: {
         _count: {
@@ -55,9 +139,7 @@ export async function getNfts(page = 1, noPerPage = 9) {
           },
         },
       },
-      orderBy: {
-        created_at: "desc",
-      },
+      orderBy: sortOptions[sortby],
       take: noPerPage,
       skip: (page - 1) * noPerPage,
     });
@@ -67,6 +149,7 @@ export async function getNfts(page = 1, noPerPage = 9) {
         ...art,
         likesCount: art._count.likes,
       })),
+      ipp: noPerPage,
     };
   } catch (error) {
     throw error;

@@ -5,7 +5,7 @@ import { getBlogs } from "@/actions";
 const Blogs = async () => {
   const data = await getBlogs();
   return (
-    <div className="py-14 w-full contain space-y-8 lg:space-y-[30px]">
+    <div className="py-14 w-full contain space-y-8 lg:space-y-[30px] min-h-[calc(100vh-70px)]">
       <div className="flex flex-col lg:flex-row gap-y-6 lg:gap-0 justify-between lg:items-center ">
         <h1 className=" heading leading-[60px] ">Creath Blog</h1>
       </div>

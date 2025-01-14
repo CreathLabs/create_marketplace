@@ -2,6 +2,8 @@
 import prisma from "@/lib/prisma";
 import { currentUser, getSession } from "./current";
 import { NotAuthorizedError } from "@/lib/errors";
+import { Sort } from "@/lib/types";
+import { Prisma } from "@prisma/client";
 
 export async function getTopCollectibless() {
   try {
@@ -25,13 +27,92 @@ export async function getTopCollectibless() {
   }
 }
 
-export async function getCollectibles(page = 1, noPerPage = 9) {
-  try {
-    const total = await prisma.collectibles.count({});
-    const data = await prisma.collectibles.findMany({
-      orderBy: {
-        created_at: "desc",
+export async function getCollectibles(
+  page = 1,
+  sortby: Sort = "popularity",
+  filters: {
+    media?: string;
+    min?: string;
+    max?: string;
+    name?: string;
+  } = { media: "", min: "", max: "", name: "" },
+  noPerPage = 9
+) {
+  const sortOptions: Record<Sort, any> = {
+    popularity: {
+      likes: {
+        _count: "desc",
       },
+    },
+    recent: {
+      created_at: "desc",
+    },
+    lowest: {
+      mint_price: "asc",
+    },
+    highest: {
+      mint_price: "desc",
+    },
+    sold: {},
+  };
+
+  const filterObject: Prisma.CollectiblesWhereInput = {};
+
+  Object.keys(filters).forEach((key) => {
+    const value = filters[key as keyof typeof filters];
+
+    if (!value) {
+      return;
+    }
+
+    if (key === "name") {
+      filterObject[key] = {
+        search: value,
+      };
+    }
+
+    if (key === "min") {
+      filterObject["mint_price"] = {
+        gte: Number(value),
+      };
+    }
+
+    if (key === "max") {
+      filterObject["mint_price"] = {
+        lte: Number(value),
+      };
+    }
+  });
+
+  try {
+    const total = await prisma.collectibles.count({
+      where: {
+        ...filterObject,
+        ...(filters.media
+          ? {
+              OR: filters.media.split(",").map((type) => ({
+                image: {
+                  endsWith: `.${type}`,
+                },
+              })),
+            }
+          : {}),
+      },
+    });
+    const data = await prisma.collectibles.findMany({
+      where: {
+        ...filterObject,
+        ...(filters.media
+          ? {
+              OR: filters.media.split(",").map((type) => ({
+                image: {
+                  endsWith: `.${type}`,
+                },
+              })),
+            }
+          : {}),
+      },
+      orderBy: sortOptions[sortby],
       include: {
         _count: {
           select: {

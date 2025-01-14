@@ -5,10 +5,29 @@ import DashStat from "@/components/DashStat";
 import Image from "next/image";
 import { redirect } from "next/navigation";
 import React from "react";
+import UserTabs from "@/components/UserTabs";
+import { Art } from "@prisma/client";
 
-const tabs = ["Created", "Collected", "Likes"];
-
-const UserProfile = async () => {
+const tabs = [
+  {
+    name: "Created",
+    value: "artworks",
+  },
+  {
+    name: "Collected",
+    value: "collected",
+  },
+  {
+    name: "Likes",
+    value: "likes",
+  },
+];
+const UserProfile = async ({
+  searchParams: { tab },
+}: {
+  params: { id: string };
+  searchParams: { tab?: string };
+}) => {
   let profile = null;
   try {
     const res = await getProfile();
@@ -21,13 +40,12 @@ const UserProfile = async () => {
     redirect("/auth/login");
   }
 
-  const active = "Created";
   const profileImage =
     profile?.profile_image ||
     `https://api.dicebear.com/9.x/initials/png?seed=${profile?.username}`;
 
   return (
-    <div className="w-full h-full  ">
+    <div className="w-full h-full min-h-[calc(100vh-70px)]  ">
       <div className="w-full h-[345px] relative  ">
         <Image
           src={profile.cover_image || "/artist_cover.png"}
@@ -86,26 +104,11 @@ const UserProfile = async () => {
         </div>
 
         <div className="pb-[98px] space-y-6">
-          <div className="flex space-x-24 items-center">
-            {tabs.map((item, index) => (
-              <div
-                key={index}
-                className={`px-1 pb-3 ${
-                  active === item ? "border-b-2 border-black" : "border-none"
-                } `}
-              >
-                <h1
-                  className={` text-xl ${
-                    active === item ? "text-black" : "text-mainGray"
-                  }  leading-[30px] font-semibold `}
-                >
-                  {item}
-                </h1>
-              </div>
-            ))}
-          </div>
-          <div className="grid grid-cols-3 gap-10">
-            {profile?.artworks?.map((a) => (
+          <UserTabs tab={tab || "artworks"} tabs={tabs} />
+          <div className="w-full grid lg:grid-cols-3 gap-6 lg:gap-8">
+            {(
+              profile[(tab as keyof typeof profile) || "artworks"] as Art[]
+            )?.map((a) => (
               <NftCard key={a.id} {...a} />
             ))}
           </div>

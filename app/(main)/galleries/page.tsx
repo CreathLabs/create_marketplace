@@ -1,31 +1,32 @@
-import { getArtists } from "@/actions";
-import Artist from "@/components/Artist";
+import { getGalleries } from "@/actions";
+import EventCard from "@/components/EventCard";
+import GalleryCard from "@/components/GalleryCard";
 import Pagination from "@/components/pagination";
 import SearchInput from "@/components/SearchInput";
 import React from "react";
 
-const ArtistsPage = async ({
+const Exhibitions = async ({
   searchParams,
 }: {
   searchParams: { page?: string; search?: string };
 }) => {
   const page = Number(searchParams?.page) || 1;
 
-  const { data, total, ipp } = await getArtists(page, searchParams.search);
+  const { data, total, ipp } = await getGalleries(page, searchParams.search);
 
   return (
     <div className="py-14 contain space-y-[72px] min-h-[calc(100vh-70px)]">
       <div className="flex flex-col lg:flex-row gap-y-8 lg:gap-0 justify-between lg:items-center ">
-        <h1 className="heading leading-[60px] ">Creath Artists</h1>
+        <h1 className=" heading leading-[60px] ">Creath Galleries</h1>
         <SearchInput
-          placeholder="Search Artists"
+          placeholder="Search Galleries"
           defaultValue={searchParams.search}
         />
       </div>
       <div className="w-full flex flex-col items-center gap-y-10">
-        <div className="w-full grid lg:grid-cols-3 gap-6 lg:gap-8 ">
-          {data.map((a) => (
-            <Artist key={a.id} className="text-black" artist={a} />
+        <div className="w-full grid lg:grid-cols-2 gap-[60px] ">
+          {data.map((e) => (
+            <GalleryCard key={e.id} {...e} />
           ))}
         </div>
         {total > ipp && (
@@ -36,4 +37,4 @@ const ArtistsPage = async ({
   );
 };
 
-export default ArtistsPage;
+export default Exhibitions;
