@@ -13,6 +13,7 @@ const page = async ({ params: { id } }: { params: { id: string } }) => {
   try {
     const res = await getNft(id);
     data = res;
+    console.log(data)
   } catch (error) {
     console.log(error);
   }
