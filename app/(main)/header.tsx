@@ -34,18 +34,13 @@ interface UserInfo {
 
 const Header: React.FC<Props> = ({ openModal, current }) => {
   const { toggleMenu, open } = useContext(MenuContext);
-  const { connect, disconnect, connected } = useConnect();
+  const { connect, disconnect } = useConnect();
   const router = useRouter();
 
   useEffect(() => {
     const handleSession = async () => {
       if (!current) {
         disconnect();
-      }
-  
-      if (!connected) {
-        await deleteSession("token");
-        router.refresh();
       }
     };
   

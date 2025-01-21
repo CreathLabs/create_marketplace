@@ -17,6 +17,15 @@ import Link from "next/link";
 import { User } from "@prisma/client";
 import Button from "@/components/Button";
 import { deleteSession } from "@/actions";
+import { useConnect } from '@particle-network/authkit';
+import { userSignin, saveSession } from "@/actions";
+import { handleError, parseErrors } from "@/lib/helpers";
+
+
+interface UserInfo {
+  email: string;
+  // add other properties if needed
+}
 
 const Menu = ({
   current,
@@ -28,6 +37,30 @@ const Menu = ({
   const { toggleMenu, open } = useContext(MenuContext);
 
   const router = useRouter();
+  const { connect, disconnect } = useConnect();
+
+  const handleLogin = async ()=>{
+      try{
+        const userInfo = await connect() as UserInfo;
+        const email = userInfo?.email || "";
+        const res = await userSignin({
+          email: email,
+          password: "Dummy"
+        });
+        await saveSession("token", res?.data?.token || "");
+        router.push("/");
+      }
+      catch (err){
+        const error = parseErrors(err);
+        handleError(error.errors);
+        disconnect()
+      }
+      // disconnect()
+    }
+
+    const handleLogout = async ()=>{
+      await disconnect()
+    }
 
   return (
     <div
@@ -89,8 +122,9 @@ const Menu = ({
                 ? async () => {
                     await deleteSession("token");
                     router.refresh();
+                    handleLogout();
                   }
-                : () => router.push("/auth/login")
+                : () => handleLogin()
             }
           />
         </div>
