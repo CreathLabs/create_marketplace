@@ -10,6 +10,7 @@ export const uploadToCloudinary = async (image: File) => {
       "https://api.cloudinary.com/v1_1/dk6uhtgvo/image/upload",
       data
     );
+
     const { secure_url }: { secure_url: string } = res.data;
     return secure_url;
   } catch (error) {
