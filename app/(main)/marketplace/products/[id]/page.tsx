@@ -1,19 +1,23 @@
 import { getNft, getTopNfts } from "@/actions";
 import Button from "@/components/Button";
 import NftCard from "@/components/NftCard";
-import { Heart, InfoCircle, LoginCurve } from "iconsax-react";
 import Image from "next/image";
 import { redirect } from "next/navigation";
 import React from "react";
 import VerifyButton from "@/app/providers/verifyNft";
-import { getProfile } from "@/actions/current";
+import {
+  getAllUserFlags,
+  getAllUserLikes,
+  getProfile,
+} from "@/actions/current";
+import { FlagButton, LikeButton, ShareButton } from "@/components/buttons";
 
 const page = async ({ params: { id } }: { params: { id: string } }) => {
   let data = null;
   try {
     const res = await getNft(id);
     data = res;
-    console.log(data)
+    console.log(data);
   } catch (error) {
     console.log(error);
   }
@@ -31,6 +35,8 @@ const page = async ({ params: { id } }: { params: { id: string } }) => {
   }
 
   const topNfts = await getTopNfts();
+  const allLikes = await getAllUserLikes();
+  const allFlags = await getAllUserFlags();
 
   const ext = data.art_image?.split(".");
   const isVideo =
@@ -39,7 +45,7 @@ const page = async ({ params: { id } }: { params: { id: string } }) => {
   return (
     <div className="w-full h-full">
       <div className="h-full  relative grid lg:grid-cols-2">
-        <div className="w-full lg:max-h-[calc(100vh-70px)] h-[398px] lg:h-[695px] bg-grayTwo flex justify-end ">
+        <div className="w-full lg:sticky lg:top-[70px] lg:max-h-[calc(100vh-70px)] h-[398px] lg:h-[695px] bg-grayTwo flex justify-end ">
           <div className="contain_right ">
             <div className="w-full h-full relative ">
               {!isVideo ? (
@@ -71,22 +77,18 @@ const page = async ({ params: { id } }: { params: { id: string } }) => {
                     {`By ${data.published_by}`}
                   </h2>
                 </div>
-                <div className="flex items-center space-x-3 ">
-                  <Heart
-                    size={24}
-                    variant="Outline"
-                    className="hidden md:block"
-                  />
-                  <Heart size={20} variant="Outline" className="md:hidden" />
-                  <h1 className="font-bold text-base md:text-xl">2</h1>
-                </div>
+                <LikeButton
+                  id={id}
+                  isLiked={!!allLikes?.find((i) => i.art_id === id)}
+                  likesCount={data.likesCount}
+                />
               </div>
               <div className="space-y-3 lg:space-y-4">
                 <h1 className="text-base lg:text-lg font-medium ">
                   Floor Price
                 </h1>
                 <h1 className="font-bold text-lg lg:text-xl leading-9 ">
-                  {`${data.floor_price} CGT (49 USD)`}
+                  {`${data.floor_price} USDC`}
                 </h1>
               </div>
               <div className="flex items-center justify-between lg:justify-start lg:gap-x-14">
@@ -108,22 +110,11 @@ const page = async ({ params: { id } }: { params: { id: string } }) => {
                 />
               </div>
               <div className="flex justify-center lg:justify-start items-center gap-x-12">
-                <div className="flex flex-col items-center space-y-3">
-                  <div className=" w-12 h-12 bg-white text-black flex items-center justify-center ">
-                    <InfoCircle variant="Outline" />
-                  </div>
-                  <h3 className="text-sm font-semibold text-white text-center ">
-                    Flag
-                  </h3>
-                </div>
-                <div className="flex flex-col items-center space-y-3">
-                  <div className=" w-12 h-12 bg-white text-black flex items-center justify-center ">
-                    <LoginCurve variant="Outline" />
-                  </div>
-                  <h3 className="text-sm font-semibold text-white text-center ">
-                    Share
-                  </h3>
-                </div>
+                <FlagButton
+                  id={id}
+                  isFlagged={!!allFlags?.find((i) => i.art_id === id)}
+                />
+                <ShareButton title={data.name} type="collectible" />
               </div>
             </div>
           </div>

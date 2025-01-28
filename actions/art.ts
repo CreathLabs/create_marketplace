@@ -164,9 +164,17 @@ export async function getNft(id: string) {
       },
       include: {
         category: true,
+        _count: {
+          select: {
+            likes: true,
+          },
+        },
       },
     });
-    return data;
+    return {
+      ...data,
+      likesCount: data._count.likes,
+    };
   } catch (error) {
     throw error;
   }
@@ -205,6 +213,52 @@ export const likeNft = async (id: string) => {
       });
     } else {
       await prisma.likes.create({
+        data: {
+          art_id: id,
+          user_id: res.id,
+        },
+      });
+    }
+
+    return;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const flagNft = async (id: string) => {
+  const token = await getSession("token");
+
+  if (!token) {
+    throw new NotAuthorizedError();
+  }
+
+  try {
+    const res = await currentUser(token);
+    if (!res.id) {
+      throw new NotAuthorizedError();
+    }
+
+    const data = await prisma.flags.findUnique({
+      where: {
+        user_id_art_id: {
+          art_id: id,
+          user_id: res.id,
+        },
+      },
+    });
+
+    if (data) {
+      await prisma.flags.delete({
+        where: {
+          user_id_art_id: {
+            art_id: id,
+            user_id: res.id,
+          },
+        },
+      });
+    } else {
+      await prisma.flags.create({
         data: {
           art_id: id,
           user_id: res.id,

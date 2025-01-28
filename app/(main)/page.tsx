@@ -15,6 +15,7 @@ import {
   getTopBlogs,
   getTopCollectibless,
   getAllUserLikes,
+  getProfile,
 } from "@/actions";
 import Link from "next/link";
 

@@ -3,7 +3,6 @@ import React, { useState } from "react";
 import { Icon } from "@iconify/react";
 import Button from "@/components/Button";
 import Image from "next/image";
-import { Heart } from "iconsax-react";
 import { Art } from "@prisma/client";
 import { useRouter } from "next/navigation";
 import { LikeButton } from "@/components/buttons";
@@ -58,7 +57,6 @@ const Hero: React.FC<{
               textStyles="lg:w-[183px]"
               action={() => router.push("/marketplace")}
             />
-            {/* <Button text="Become a Creathor" textStyles="lg:w-[183px]" /> */}
           </div>
         </div>
         <div className="space-y-12">
@@ -78,11 +76,18 @@ const Hero: React.FC<{
                 <h1 className=" text-base md:text-lg font-medium  text-mainGray">
                   {topNfts?.[current]?.published_by}
                 </h1>
-                <h1 className="font-Playfair font-bold text-xl md:text-2xl ">
+                <h1
+                  onClick={() =>
+                    router.push(
+                      `/marketplace/products/${topNfts?.[current]?.id}`
+                    )
+                  }
+                  className="font-Playfair cursor-pointer font-bold text-xl md:text-2xl "
+                >
                   {topNfts?.[current]?.name}
                 </h1>
                 <h1 className="font-bold text-navyBlue text-base md:text-xl">
-                  {`${topNfts?.[current]?.floor_price} CGT (49 USD)`}
+                  {`${topNfts?.[current]?.floor_price} USDC`}
                 </h1>
               </div>
               <LikeButton

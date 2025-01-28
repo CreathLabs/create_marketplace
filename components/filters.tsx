@@ -108,6 +108,24 @@ const Filters = ({
     router.push(newUrl);
   };
 
+  const handleClear = () => {
+    const currentParams = new URLSearchParams(window.location.search);
+
+    if (currentParams.has("min")) {
+      currentParams.delete("min");
+    }
+    if (currentParams.has("max")) {
+      currentParams.delete("max");
+    }
+    setMinMax({
+      min: "",
+      max: "",
+    });
+    const newUrl = `${window.location.pathname}?${currentParams.toString()}`;
+
+    router.push(newUrl);
+  };
+
   return (
     <div className="space-y-10">
       <div className="space-y-4">
@@ -146,16 +164,26 @@ const Filters = ({
               className="outline-none py-[6px] px-3 text-sm font-light placeholder:text-sm placeholder:text-mainGray placeholder:font-light border border-mainGray/20  "
             />
           </div>
-          {minMax.min! > minMax.max && (
-            <div className="w-full flex justify-center  ">
+          {
+            <div className="w-full flex justify-between  ">
+              <Button
+                text="Clear"
+                textStyles="text-xs"
+                className="py-2"
+                action={handleClear}
+                disabled={!minMax.min && !minMax.max}
+              />
               <Button
                 text="Done"
                 textStyles="text-xs"
                 className="py-2"
                 action={handleMinMax}
+                disabled={
+                  (!minMax.min && !minMax.max) || minMax.min > minMax.max
+                }
               />
             </div>
-          )}
+          }
         </form>
       </div>
       <div className="space-y-4 text-base">

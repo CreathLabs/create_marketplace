@@ -33,9 +33,10 @@ interface UserInfo {
 }
 
 const Header: React.FC<Props> = ({ openModal, current }) => {
-  const { toggleMenu, open } = useContext(MenuContext);
+  const { toggleMenu, open, setIsLoggedIn } = useContext(MenuContext);
   const { connect, disconnect } = useConnect();
   const router = useRouter();
+
 
   useEffect(() => {
     const handleSession = async () => {
@@ -46,6 +47,10 @@ const Header: React.FC<Props> = ({ openModal, current }) => {
   
     handleSession();
   }, []);
+
+  useEffect(() => {
+    setIsLoggedIn(!!current)
+  }, [current]);
 
   const handleLogin = async ()=>{
     try{

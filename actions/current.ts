@@ -96,6 +96,29 @@ export const getAllUserLikes = async () => {
   }
 };
 
+export const getAllUserFlags = async () => {
+  const token = await getSession("token");
+  if (!token) {
+    return null;
+  }
+  try {
+    const res = await currentUser(token);
+    if (!res.id) {
+      return null;
+    }
+
+    const user = await prisma.flags.findMany({
+      where: {
+        user_id: res.id,
+      },
+    });
+
+    return user;
+  } catch (error) {
+    throw error;
+  }
+};
+
 export const getAllUserCollectibleLikes = async () => {
   const token = await getSession("token");
   if (!token) {

@@ -3,6 +3,7 @@ import { Icon } from "@iconify/react/dist/iconify.js";
 import Image from "next/image";
 import React from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 const links = [
   { name: "Blog", url: "/blogs" },
@@ -12,8 +13,6 @@ const links = [
 
 const Footer = () => {
   const router = useRouter();
-
-
 
   return (
     <div className="bg-black pb-8 pt-14">
@@ -25,7 +24,7 @@ const Footer = () => {
               <div
                 key={index}
                 className="py-6 lg:py-[14px] w-full flex justify-center text-white "
-                onClick={()=>(router.push(item.url))}
+                onClick={() => router.push(item.url)}
               >
                 <h1 className="leading-[45px] font-medium text-base lg:text-lg cursor-pointer">
                   {item.name}
@@ -35,26 +34,37 @@ const Footer = () => {
           </div>
           <div className="flex flex-col items-center w-full space-y-12 ">
             <div className="flex items-center gap-x-8 lg:gap-x-28">
-              <Icon
-                icon="ant-design:instagram-filled"
-                className="text-white text-2xl lg:text-[26px]"
-              />
-              <Icon
-                icon="ant-design:twitter-outlined"
-                className="text-white text-2xl lg:text-[26px]"
-              />
-              <Icon
-                icon="dashicons:linkedin"
-                className="text-white text-2xl lg:text-[26px]"
-              />
-              <Icon
-                icon="bi:discord"
-                className="text-white text-2xl lg:text-[26px]"
-              />
-              <Icon
-                icon="carbon:logo-medium"
-                className="text-white text-2xl lg:text-[26px]"
-              />
+              <Link href="https://www.instagram.com/Creathlabs">
+                <Icon
+                  icon="ant-design:instagram-filled"
+                  className="text-white text-2xl lg:text-[26px]"
+                />
+              </Link>
+
+              <Link href="https://twitter.com/CreathLabs">
+                <Icon
+                  icon="ant-design:twitter-outlined"
+                  className="text-white text-2xl lg:text-[26px]"
+                />
+              </Link>
+              <Link href="https://www.linkedin.com/company/creathlabs/">
+                <Icon
+                  icon="dashicons:linkedin"
+                  className="text-white text-2xl lg:text-[26px]"
+                />
+              </Link>
+              <Link href="https://discord.gg/Sqgb9hsZ5B">
+                <Icon
+                  icon="bi:discord"
+                  className="text-white text-2xl lg:text-[26px]"
+                />
+              </Link>
+              <Link href="https://medium.com/@creath">
+                <Icon
+                  icon="carbon:logo-medium"
+                  className="text-white text-2xl lg:text-[26px]"
+                />
+              </Link>
             </div>
             <h1 className="font-medium text-white text-sm lg:text-base leading-[45px] ">
               © 2024 Creath. All Rights Reserved

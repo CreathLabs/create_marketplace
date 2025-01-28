@@ -142,8 +142,18 @@ export async function getCollectible(id: string) {
       where: {
         id,
       },
+      include: {
+        _count: {
+          select: {
+            likes: true,
+          },
+        },
+      },
     });
-    return data;
+    return {
+      ...data,
+      likesCount: data._count.likes,
+    };
   } catch (error) {
     throw error;
   }
@@ -182,6 +192,52 @@ export const likeCollectible = async (id: string) => {
       });
     } else {
       await prisma.collectibleLikes.create({
+        data: {
+          collectible_id: id,
+          user_id: res.id,
+        },
+      });
+    }
+
+    return;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const flagCollectible = async (id: string) => {
+  const token = await getSession("token");
+
+  if (!token) {
+    throw new NotAuthorizedError();
+  }
+
+  try {
+    const res = await currentUser(token);
+    if (!res.id) {
+      throw new NotAuthorizedError();
+    }
+
+    const data = await prisma.collectibleFlags.findUnique({
+      where: {
+        user_id_collectible_id: {
+          collectible_id: id,
+          user_id: res.id,
+        },
+      },
+    });
+
+    if (data) {
+      await prisma.collectibleFlags.delete({
+        where: {
+          user_id_collectible_id: {
+            collectible_id: id,
+            user_id: res.id,
+          },
+        },
+      });
+    } else {
+      await prisma.collectibleFlags.create({
         data: {
           collectible_id: id,
           user_id: res.id,

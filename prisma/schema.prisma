@@ -40,8 +40,10 @@ model User {
   is_artist         Boolean            @default(false)
   artworks          Art[]
   likes             Likes[]
+  flags             Flags[]
   notifications     Notification[]
   collectibleLikes  CollectibleLikes[]
+  collectibleFlags  CollectibleFlags[]
 }
 
 model Exhibition {
@@ -98,6 +100,7 @@ model Art {
   created_at    DateTime       @default(now())
   updated_at    DateTime       @updatedAt
   likes         Likes[]
+  flags         Flags[]
   notifications Notification[]
 }
 
@@ -115,6 +118,7 @@ model Collectibles {
   created_at      DateTime           @default(now())
   updated_at      DateTime           @updatedAt
   likes           CollectibleLikes[]
+  flags           CollectibleFlags[]
 }
 
 model Likes {
@@ -128,7 +132,29 @@ model Likes {
   @@id([user_id, art_id])
 }
 
+model Flags {
+  user_id    String
+  user       User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  art_id     String
+  art        Art      @relation(fields: [art_id], references: [id], onDelete: Cascade)
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  @@id([user_id, art_id])
+}
+
 model CollectibleLikes {
+  user_id        String
+  user           User         @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  collectible_id String
+  collectible    Collectibles @relation(fields: [collectible_id], references: [id], onDelete: Cascade)
+  created_at     DateTime     @default(now())
+  updated_at     DateTime     @updatedAt
+
+  @@id([user_id, collectible_id])
+}
+
+model CollectibleFlags {
   user_id        String
   user           User         @relation(fields: [user_id], references: [id], onDelete: Cascade)
   collectible_id String
