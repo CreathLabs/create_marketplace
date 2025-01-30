@@ -7,6 +7,7 @@ import Header from "../header";
 import { truncate } from "lodash";
 import Button from "@/components/Button";
 import { redirect } from "next/navigation";
+import Link from "next/link";
 
 const CollectoiblesPage = async () => {
   const collectibles = await getAdminCollectibles();
@@ -72,7 +73,8 @@ const CollectoiblesPage = async () => {
             </div>
             <div className="">
               {collectibles?.data?.map((collectible, index) => (
-                <div
+                <Link
+                  href={`/admin/collectibles/${collectible.id}`}
                   key={index}
                   className="grid grid-cols-5 w-full h-auto  py-4 px-6   "
                 >
@@ -103,7 +105,7 @@ const CollectoiblesPage = async () => {
                   <h1 className="text-sm text-[#2D3748] font-medium ">
                     {moment(collectible.created_at).format("ll")}
                   </h1>
-                </div>
+                </Link>
               ))}
             </div>
           </div>

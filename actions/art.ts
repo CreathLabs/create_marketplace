@@ -2,7 +2,7 @@
 import prisma from "@/lib/prisma";
 import { currentUser, getSession } from "./current";
 import { NotAuthorizedError } from "@/lib/errors";
-import { Prisma } from "@prisma/client";
+import { NOTIFTYPE, Prisma } from "@prisma/client";
 import { Sort } from "@/lib/types";
 
 export async function getTopNfts() {
@@ -262,6 +262,14 @@ export const flagNft = async (id: string) => {
         data: {
           art_id: id,
           user_id: res.id,
+        },
+      });
+
+      await prisma.notification.create({
+        data: {
+          art_id: id,
+          user_id: res.id,
+          type: NOTIFTYPE.FLAGS,
         },
       });
     }

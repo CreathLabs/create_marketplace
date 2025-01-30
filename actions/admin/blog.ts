@@ -30,6 +30,39 @@ export async function addBlog(values: InferType<typeof UploadBlogSchema>) {
   }
 }
 
+export async function updateBlog(
+  id: string,
+  values: InferType<typeof UploadBlogSchema>
+) {
+  const token = await getSession("admin_token");
+  if (!token) {
+    return null;
+  }
+  try {
+    const res = await currentAdmin(token);
+    const isA = await isAdmin(res);
+
+    if (!isA) {
+      throw new NotAuthorizedError();
+    }
+
+    const data = await validateUploadBlogSchema(values);
+
+    const blog = await prisma.blog.update({
+      where: {
+        id,
+      },
+      data: {
+        ...data,
+      },
+    });
+
+    return blog;
+  } catch (error) {
+    throw error;
+  }
+}
+
 export async function getAdminBlogs(page = 1, ipp = 10) {
   const token = await getSession("admin_token");
   if (!token) {

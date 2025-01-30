@@ -4,7 +4,7 @@ import {
   seedArtits,
   seedBlogs,
   seedCategories,
-  seedExhibitions,
+  // seedExhibitions,
   seedNotifications,
   seedSuperAdmin,
   seedUsers,
@@ -15,7 +15,7 @@ const prisma = new PrismaClient();
 async function main() {
   await seedCategories();
   await seedBlogs();
-  await seedExhibitions();
+  // await seedExhibitions();
   await seedUsers();
   await seedArt();
   await seedSuperAdmin();

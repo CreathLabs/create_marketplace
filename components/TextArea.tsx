@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { ErrorMessage, Field } from "formik";
 import { Icon } from "@iconify/react";
+import { cn } from "@/lib";
 
 interface Props {
   label: string;
@@ -13,6 +14,7 @@ interface Props {
   handleBlur?: any;
   disabled?: boolean;
   rows?: number;
+  className?: string;
 }
 
 const TextArea: React.FC<Props> = ({
@@ -26,6 +28,7 @@ const TextArea: React.FC<Props> = ({
   handleBlur,
   disabled,
   rows,
+  className = "",
 }) => {
   return (
     <div className="space-y-3 h-fit w-full">
@@ -38,7 +41,10 @@ const TextArea: React.FC<Props> = ({
           name={name}
           value={value}
           as="textarea"
-          className={`w-full px-4 py-[14px] bg-grayTwo placeholder:text-black/80 placeholder:font-light text-base text-black outline-none autofill:bg-white`}
+          className={cn(
+            `w-full px-4 py-[14px] bg-grayTwo placeholder:text-black/80 placeholder:font-light text-base text-black outline-none autofill:bg-white`,
+            className
+          )}
           onChange={handleChange}
           autoComplete="off"
           disabled={disabled}

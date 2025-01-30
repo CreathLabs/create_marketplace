@@ -15,19 +15,23 @@ const Table = ({
   const router = useRouter();
   return (
     <div className=" overflow-hidden rounded-t-[6px] border border-[#E2E8F0]/50 ">
-      <div className="grid grid-cols-4 w-full bg-grayTwo py-4 px-6   ">
+      <div className="grid grid-cols-5 w-full bg-grayTwo py-4 px-6   ">
         {[
           {
             title: "Name",
             icon: "material-symbols:person",
           },
           {
-            title: "Type",
+            title: "Creator",
             icon: "ph:bank-fill",
           },
           {
-            title: "Date",
+            title: "Location",
             icon: "heroicons:identification-20-solid",
+          },
+          {
+            title: "Number of Artwork",
+            icon: "clarity:date-solid",
           },
           {
             title: "Creation Date",
@@ -45,7 +49,7 @@ const Table = ({
           <div
             key={e.id}
             onClick={() => router.push(`/admin/exhibitions/${e.id}`)}
-            className="grid grid-cols-4 cursor-pointer w-full h-auto  py-4 px-6   "
+            className="grid grid-cols-5 cursor-pointer w-full h-full items-center  py-4 px-6   "
           >
             <div className="flex items-center gap-x-3">
               <Image
@@ -63,11 +67,12 @@ const Table = ({
               </h1>
             </div>
             <h1 className="text-sm text-[#2D3748] capitalize font-medium ">
-              {e.type}
+              {e.artist_name}
             </h1>
-            <h1 className="text-sm text-[#2D3748] font-medium ">
-              {e.date || "NIL"}
+            <h1 className="text-sm text-[#2D3748] capitalize font-medium ">
+              {e.location}
             </h1>
+            <h1 className="text-sm text-[#2D3748] font-medium ">0</h1>
             <h1 className="text-sm text-[#2D3748] font-medium ">
               {moment(e.created_at).format("ll")}
             </h1>

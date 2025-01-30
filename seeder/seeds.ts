@@ -1,9 +1,4 @@
-import {
-  Category,
-  Notification,
-  NOTIFTYPE,
-  PrismaClient,
-} from "@prisma/client";
+import { Category, NOTIFTYPE, PrismaClient } from "@prisma/client";
 import fs from "fs";
 import bcrypt from "bcryptjs";
 
@@ -138,49 +133,49 @@ export const seedBlogs = async () => {
   }
 };
 
-export const seedExhibitions = async () => {
-  const exhibitionsCount = await prisma.exhibition.count();
+// export const seedExhibitions = async () => {
+//   const exhibitionsCount = await prisma.exhibition.count();
 
-  if (exhibitionsCount > 0) {
-    return;
-  }
+//   if (exhibitionsCount > 0) {
+//     return;
+//   }
 
-  const data = fs.readFileSync("seeder/data/exhibitions.json", {
-    encoding: "utf8",
-  });
+//   const data = fs.readFileSync("seeder/data/exhibitions.json", {
+//     encoding: "utf8",
+//   });
 
-  const exhibitions: ExhibitionType[] = JSON.parse(data);
+//   const exhibitions: ExhibitionType[] = JSON.parse(data);
 
-  try {
-    await prisma.exhibition.createMany({
-      data: exhibitions.map(
-        ({
-          cover_image,
-          description,
-          date,
-          is_done,
-          is_featured,
-          images,
-          name,
-          link,
-        }) => ({
-          cover_image,
-          date,
-          description,
-          images,
-          link,
-          name,
-          type: "PHYSICAL",
-          is_done: Boolean(is_done),
-          is_featured: Boolean(is_featured),
-        })
-      ),
-    });
-    console.log("Exhibitions seeded");
-  } catch (error) {
-    console.log(error);
-  }
-};
+//   try {
+//     await prisma.exhibition.createMany({
+//       data: exhibitions.map(
+//         ({
+//           cover_image,
+//           description,
+//           date,
+//           is_done,
+//           is_featured,
+//           images,
+//           name,
+//           link,
+//         }) => ({
+//           cover_image,
+//           date,
+//           description,
+//           images,
+//           link,
+//           name,
+//           type: "PHYSICAL",
+//           is_done: Boolean(is_done),
+//           is_featured: Boolean(is_featured),
+//         })
+//       ),
+//     });
+//     console.log("Exhibitions seeded");
+//   } catch (error) {
+//     console.log(error);
+//   }
+// };
 
 export const seedUsers = async () => {
   const usersCount = await prisma.user.count();

@@ -26,14 +26,21 @@ interface Props {
   name: string;
   placeholder: string;
   handleChange: any;
+  value?: string;
 }
 
-const CustomEditor: React.FC<Props> = ({ handleChange, name, placeholder }) => {
+const CustomEditor: React.FC<Props> = ({
+  handleChange,
+  name,
+  placeholder,
+  value = "",
+}) => {
   return (
     <div className="flex flex-col w-full gap-y-3">
       <CKEditor
         editor={ClassicEditor}
         onChange={(_, e) => handleChange(name, e.getData())}
+        data={value}
         config={{
           toolbar: {
             items: [

@@ -6,7 +6,6 @@ import Footer from "./footer";
 import MenuContextProvider, { MenuContext } from "@/contexts/menuContext";
 import Menu from "./menu";
 import { User } from "@prisma/client";
-import { AppProgressBar as ProgressBar } from "next-nprogress-bar";
 
 const Provider = ({
   children,
@@ -40,12 +39,6 @@ const Main = ({
       {children}
       <Footer />
       {showModal && <Modal handleClose={() => setShowModal(false)} />}
-      <ProgressBar
-        height="4px"
-        color="#000"
-        options={{ showSpinner: false }}
-        shallowRouting
-      />
     </>
   );
 };

@@ -4,17 +4,6 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 
-interface Props {
-  event: {
-    image: string;
-    title: string;
-    description: string;
-    gate_fee: string;
-    location: string;
-    date: string;
-  };
-}
-
 const EventCard: React.FC<Exhibition> = ({ id, cover_image, name }) => {
   const [hoverd, setHovered] = useState(false);
   const router = useRouter();

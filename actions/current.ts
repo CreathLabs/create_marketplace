@@ -1,7 +1,7 @@
 "use server";
 import { cookies } from "next/headers";
 import jwt from "jsonwebtoken";
-import { Admin, User } from "@prisma/client";
+import { Admin, NOTIFTYPE, User } from "@prisma/client";
 import prisma from "@/lib/prisma";
 import { NotAuthorizedError } from "@/lib/errors";
 import * as yup from "yup";
@@ -197,6 +197,12 @@ export const uploadArtWork = async (
         ...data,
         user_id: res.id,
         published_by: res.username,
+        notifications: {
+          create: {
+            type: NOTIFTYPE.UPLOADS,
+            user_id: res.id,
+          },
+        },
       },
     });
 

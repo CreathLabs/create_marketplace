@@ -47,19 +47,21 @@ model User {
 }
 
 model Exhibition {
-  id          String         @id @default(uuid())
-  name        String
-  description String
-  cover_image String
-  images      String
-  type        EXHIBITIONTYPE
-  link        String
-  date        String?
-  is_done     Boolean        @default(false)
-  is_featured Boolean        @default(false)
-  created_at  DateTime       @default(now())
-  updated_at  DateTime       @updatedAt
-  artworks    Art[]
+  id           String          @id @default(uuid())
+  name         String
+  description  String
+  cover_image  String
+  images       String[]
+  country      String
+  location     String
+  address      String
+  date         DateTime
+  time         DateTime
+  artist_name  String
+  curator_name String
+  created_at   DateTime        @default(now())
+  updated_at   DateTime        @updatedAt
+  artworks     ExhibitionArt[]
 }
 
 model Blog {
@@ -72,11 +74,12 @@ model Blog {
 }
 
 model Category {
-  id         String   @id @default(uuid())
-  name       String
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
-  artworks   Art[]
+  id                  String          @id @default(uuid())
+  name                String
+  created_at          DateTime        @default(now())
+  updated_at          DateTime        @updatedAt
+  artworks            Art[]
+  exhibition_artworks ExhibitionArt[]
 }
 
 model Art {
@@ -93,15 +96,29 @@ model Art {
   contract      String?
   published_by  String?
   art_image     String?
-  exhibition_id String?
   nft_id        String?
   is_approved   Boolean        @default(false)
-  exhibition    Exhibition?    @relation(fields: [exhibition_id], references: [id], onDelete: Cascade)
   created_at    DateTime       @default(now())
   updated_at    DateTime       @updatedAt
   likes         Likes[]
   flags         Flags[]
   notifications Notification[]
+}
+
+model ExhibitionArt {
+  id            String     @id @default(uuid())
+  name          String
+  floor_price   Float
+  description   String     @db.VarChar()
+  dimensions    String
+  category_id   String
+  category      Category   @relation(fields: [category_id], references: [id], onDelete: Cascade)
+  exhibition_id String
+  exhibition    Exhibition @relation(fields: [exhibition_id], references: [id], onDelete: Cascade)
+  art_image     String
+  nft_id        String?
+  created_at    DateTime   @default(now())
+  updated_at    DateTime   @updatedAt
 }
 
 model Collectibles {

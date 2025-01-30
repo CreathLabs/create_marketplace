@@ -6,6 +6,8 @@ export async function getTopArtists() {
     const res = await prisma.user.findMany({
       where: {
         is_approved: true,
+        is_artist: true,
+        type: "ARTIST",
       },
       orderBy: {
         created_at: "desc",
@@ -40,6 +42,7 @@ export async function getArtists(page = 1, query = "", noPerPage = 15) {
       where: {
         is_approved: true,
         type: "ARTIST",
+        is_artist: true,
         ...(query
           ? {
               AND: {

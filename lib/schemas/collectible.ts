@@ -9,7 +9,7 @@ export const UploadCollectibleSchema = yup.object({
   total_unminted: yup.number().required("Total Unminted field is required."),
   description: yup.string().required("Description field is required."),
   published_by: yup.string().required("Published by field is required."),
-  contract: yup.string().optional(),
+  contract: yup.string().nullable().optional(),
   image: yup.string().required("Image field is required"),
 });
 

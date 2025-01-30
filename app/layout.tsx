@@ -3,6 +3,7 @@ import "./globals.css";
 import { ToastContainer } from "react-toastify";
 import ParticleProvider from "./providers/ParticleProvider";
 import "react-toastify/dist/ReactToastify.css";
+import MainProvider from "./provider";
 
 export const metadata: Metadata = {
   title: "Creath Art Marketplace",
@@ -40,15 +41,16 @@ export default function RootLayout({
         ></link>
       </head>
       <body className={`font-Manrope  `}>
-        <ToastContainer
-          position="top-right"
-          bodyStyle={{
-            color: "#494949",
-          }}
-        />
-        <ParticleProvider>
-          {children}
-        </ParticleProvider>
+        <MainProvider>
+          <ToastContainer
+            position="top-right"
+            bodyStyle={{
+              color: "#494949",
+            }}
+          />
+
+          <ParticleProvider>{children}</ParticleProvider>
+        </MainProvider>
       </body>
     </html>
   );

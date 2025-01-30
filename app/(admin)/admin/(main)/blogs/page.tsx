@@ -7,6 +7,7 @@ import Header from "../header";
 import { truncate } from "lodash";
 import Button from "@/components/Button";
 import { redirect } from "next/navigation";
+import Link from "next/link";
 
 const BlogsPage = async () => {
   const blogs = await getAdminBlogs();
@@ -64,7 +65,8 @@ const BlogsPage = async () => {
             </div>
             <div className="">
               {blogs?.data?.map((blog, index) => (
-                <div
+                <Link
+                  href={`/admin/blogs/${blog.id}`}
                   key={index}
                   className="grid grid-cols-3 w-full h-auto  py-4 px-6   "
                 >
@@ -89,7 +91,7 @@ const BlogsPage = async () => {
                   <h1 className="text-sm text-[#2D3748] font-medium ">
                     {moment(blog.created_at).format("ll")}
                   </h1>
-                </div>
+                </Link>
               ))}
             </div>
           </div>
