@@ -47,8 +47,8 @@ const UserProfile = async ({
     `https://api.dicebear.com/9.x/initials/png?seed=${profile?.username}`;
 
   const isEmpty =
-    (profile[(tab as keyof typeof profile) || "artworks"] as Art[])?.length ||
-    0 === 0;
+    ((profile[(tab as keyof typeof profile) || "artworks"] as Art[])?.length ||
+      0) === 0;
 
   return (
     <div className="w-full h-full min-h-[calc(100vh-70px)] space-y-[80px] lg:space-y-[193px]  ">
