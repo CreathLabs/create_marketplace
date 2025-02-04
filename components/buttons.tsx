@@ -1,8 +1,14 @@
 "use client";
-import { flagCollectible, flagNft, likeCollectible, likeNft } from "@/actions";
+import {
+  deleteExhibitionArtWork,
+  flagCollectible,
+  flagNft,
+  likeCollectible,
+  likeNft,
+} from "@/actions";
 import { MenuContext } from "@/contexts/menuContext";
 import { Icon } from "@iconify/react/dist/iconify.js";
-import { Heart, InfoCircle, LoginCurve } from "iconsax-react";
+import { Heart, InfoCircle, Trash, LoginCurve } from "iconsax-react";
 import { useRouter } from "next/navigation";
 import React, { useContext, useEffect, useState } from "react";
 import { toast } from "react-toastify";
@@ -192,6 +198,39 @@ export const FilterButton = () => {
     >
       <Icon icon="bx:filter" className="!text-xl text-black" />
       <h3 className="text-[14px] font-bold ">Filters</h3>
+    </div>
+  );
+};
+
+export const DeleteButton: React.FC<{
+  id: string;
+}> = ({ id }) => {
+  const router = useRouter();
+
+  const handleLikeResource = async (
+    e: React.MouseEvent<SVGElement, MouseEvent>
+  ) => {
+    e.stopPropagation();
+    e.preventDefault();
+    await deleteExhibitionArtWork(id);
+    toast.success("Artwork Deleted Successfully");
+    router.refresh();
+  };
+
+  return (
+    <div className="flex text-red-500">
+      <Trash
+        size={24}
+        variant={"Bold"}
+        className="hidden md:block cursor-pointer"
+        onClick={handleLikeResource}
+      />
+      <Trash
+        size={20}
+        variant={"Bold"}
+        className="md:hidden cursor-pointer"
+        onClick={handleLikeResource}
+      />
     </div>
   );
 };

@@ -4,7 +4,16 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 
-const EventCard: React.FC<Exhibition> = ({ id, cover_image, name }) => {
+interface ExhibitionProps extends Exhibition {
+  artworks_count: number;
+}
+
+const EventCard: React.FC<ExhibitionProps> = ({
+  id,
+  cover_image,
+  name,
+  artworks_count,
+}) => {
   const [hoverd, setHovered] = useState(false);
   const router = useRouter();
 
@@ -35,25 +44,9 @@ const EventCard: React.FC<Exhibition> = ({ id, cover_image, name }) => {
               Available Art
             </h1>
             <h1 className="font-bold text-lg md:text-2xl leading-[45px] text-center ">
-              12
+              {artworks_count}
             </h1>
           </div>
-          {/* <div className="w-full flex flex-col items-center">
-            <h1 className="font-semibold text-sm md:text-lg leading-[20px] md:leading-[45px] text-center ">
-              Sold Art
-            </h1>
-            <h1 className="font-bold text-lg md:text-2xl leading-[45px] text-center ">
-              2
-            </h1>
-          </div> */}
-          {/* <div className="w-full flex flex-col items-center">
-            <h1 className="font-semibold text-sm md:text-lg leading-[20px] md:leading-[45px] text-center ">
-              Total Sales
-            </h1>
-            <h1 className="font-bold text-lg md:text-2xl leading-[45px] text-center ">
-              5.5 CGT
-            </h1>
-          </div> */}
         </div>
       </div>
     </div>

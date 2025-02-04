@@ -24,6 +24,7 @@ interface Props {
   options: Option[];
   disabled?: boolean;
   setValue?: any;
+  className?: string;
 }
 
 const DropdownIndicator = (props: DropdownIndicatorProps<Option, false>) => {
@@ -43,6 +44,7 @@ const SelectComp: React.FC<Props> = ({
   options,
   placeholder,
   setValue,
+  className = "",
 }) => {
   return (
     <div className="space-y-3 h-fit w-full">
@@ -86,15 +88,15 @@ const SelectComp: React.FC<Props> = ({
           }),
           control: (styles) => ({
             ...styles,
-            borderRadius: "0px",
+            borderRadius: className ? "9999px" : "0px",
             boxShadow: "none",
-            border: "none",
-            backgroundColor: "#F6F6F6",
+            border: className ? "1px solid #E2E8F0" : "none",
+            backgroundColor: className ? "white" : "#F6F6F6",
             ":focus": {
               border: "none",
             },
             ":hover": {
-              border: "none",
+              border: className ? "1px solid #E2E8F0" : "none",
             },
             height: "52px",
             ...inter.style,

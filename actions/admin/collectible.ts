@@ -35,6 +35,39 @@ export async function addCollectible(
   }
 }
 
+export async function updateCollectible(
+  id: string,
+  values: InferType<typeof UploadCollectibleSchema>
+) {
+  const token = await getSession("admin_token");
+  if (!token) {
+    return null;
+  }
+  try {
+    const res = await currentAdmin(token);
+    const isA = await isAdmin(res);
+
+    if (!isA) {
+      throw new NotAuthorizedError();
+    }
+
+    const data = await validateUploadCollectibleSchema(values);
+
+    const collectible = await prisma.collectibles.update({
+      where: {
+        id,
+      },
+      data: {
+        ...data,
+      },
+    });
+
+    return collectible;
+  } catch (error) {
+    throw error;
+  }
+}
+
 export async function getAdminCollectibles(page = 1, ipp = 10) {
   const token = await getSession("admin_token");
   if (!token) {

@@ -32,7 +32,7 @@ const UserTabs: React.FC<{
   };
 
   return (
-    <div className="flex space-x-24 items-center">
+    <div className="flex justify-between lg:justify-start lg:space-x-24 items-center">
       {tabs.map((item, index) => (
         <div
           key={index}
@@ -41,7 +41,7 @@ const UserTabs: React.FC<{
           } `}
         >
           <h1
-            className={` text-xl cursor-pointer ${
+            className={` text-base lg:text-xl cursor-pointer ${
               active === item.value ? "text-black" : "text-mainGray"
             }  leading-[30px] font-semibold `}
             onClick={() => handleSwitchTab(item.value)}

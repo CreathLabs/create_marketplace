@@ -6,6 +6,7 @@ import SearchInput from "@/components/SearchInput";
 import Filters from "@/components/filters";
 import FilterModal from "@/components/FilterModal";
 import { FilterButton } from "@/components/buttons";
+import EmptyComponent from "@/components/EmptyComponent";
 
 const CollectiblesPage = async ({
   searchParams,
@@ -34,7 +35,7 @@ const CollectiblesPage = async ({
 
   return (
     <>
-      <div className="py-14 w-full contain space-y-8 lg:space-y-[72px] min-h-[calc(100vh-70px)]">
+      {/* <div className="py-14 w-full contain space-y-8 lg:space-y-[72px] min-h-[calc(100vh-70px)]">
         <div className="flex flex-col lg:flex-row gap-y-8 lg:gap-0 justify-between lg:items-center ">
           <h1 className=" heading leading-[60px]  ">Collectibles</h1>
           <SearchInput
@@ -64,7 +65,13 @@ const CollectiblesPage = async ({
       </div>
       <FilterModal showModal={Boolean(showModal)}>
         <Filters sortby={sortby} media={media} min={min} max={max} />
-      </FilterModal>
+      </FilterModal> */}
+      <div className="py-16 min-h-[calc(100vh-70px)]">
+        <EmptyComponent
+          text="Thank you! For Using Creath But Collectibles Are Currently Unavailable"
+          className="max-w-[631px]"
+        />
+      </div>
     </>
   );
 };

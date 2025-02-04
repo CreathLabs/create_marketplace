@@ -27,3 +27,26 @@ export const validateUploadExhibitionSchema = async (values: any) => {
     throw new YupValidationError(err);
   }
 };
+
+export const UploadExhibitionArtworkSchema = yup.object({
+  name: yup.string().required("Name is required."),
+  floor_price: yup.number().required("Floor price is required."),
+  description: yup.string().required("Description is required."),
+  dimensions: yup.string().required("Dimensions is required."),
+  category_id: yup.string().required("Medium is required."),
+  art_image: yup.string().required("Art Image is required"),
+  exhibition_id: yup.string().required("Medium is required."),
+});
+
+export const validateUploadExhibitionArtworkSchema = async (values: any) => {
+  try {
+    const data = await UploadExhibitionArtworkSchema.validate(values, {
+      abortEarly: false,
+    });
+
+    return data;
+  } catch (error: any) {
+    const err = error as yup.ValidationError;
+    throw new YupValidationError(err);
+  }
+};

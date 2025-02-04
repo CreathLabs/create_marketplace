@@ -23,6 +23,9 @@ const editProfileSchema = yup.object().shape({
   wallet_address: yup.string().required("This field is required."),
   instagram: yup.string().required("This field is required."),
   twitter: yup.string().required("This field is required."),
+  country: yup.string().optional().nullable().default(null),
+  state: yup.string().optional().nullable().default(null),
+  address: yup.string().optional().nullable().default(null),
   profile_image: yup.mixed().required("This field is required"),
   cover_image: yup.mixed().required("This field is required"),
 });
@@ -42,6 +45,10 @@ const EditProfileForm: React.FC<{ profile: User }> = ({ profile }) => {
     wallet_address,
     profile_image,
     cover_image,
+    country,
+    state,
+    address,
+    type,
   } = profile;
 
   const existingPI = profile_image
@@ -64,6 +71,9 @@ const EditProfileForm: React.FC<{ profile: User }> = ({ profile }) => {
     wallet_address: wallet_address || "",
     profile_image: existingPI,
     cover_image: existingCI,
+    country,
+    state,
+    address,
   };
 
   const router = useRouter();
@@ -113,8 +123,8 @@ const EditProfileForm: React.FC<{ profile: User }> = ({ profile }) => {
         isSubmitting,
         setFieldValue,
       }) => (
-        <Form className=" w-full space-y-24 ">
-          <div className="grid grid-cols-2 gap-14">
+        <Form className=" w-full  space-y-16 lg:space-y-24 ">
+          <div className="grid lg:grid-cols-2 gap-8 lg:gap-14">
             <MediaPicker
               label="Profile Picture"
               name="profile_image"
@@ -204,7 +214,53 @@ const EditProfileForm: React.FC<{ profile: User }> = ({ profile }) => {
               touched={touched.bio}
             />
           </div>
-          <div className="grid grid-cols-2 gap-x-14">
+          {type === "GALLERY" && (
+            <div className="space-y-10 lg:space-y-14">
+              <h1 className="font-bold text-xl lg:text-3xl font-Playfair ">
+                Additional Information
+              </h1>
+              <div className="grid lg:grid-cols-2 gap-8 lg:gap-14">
+                <Input
+                  label="Country"
+                  name="country"
+                  type="text"
+                  value={values.country || ""}
+                  handleChange={handleChange}
+                  placeholder="Enter Country"
+                  handleBlur={handleBlur}
+                  errors={errors.country}
+                  touched={touched.country}
+                  // disabled
+                />
+
+                <Input
+                  label="State"
+                  name="state"
+                  type="text"
+                  value={values.state || ""}
+                  handleChange={handleChange}
+                  placeholder="Enter State"
+                  handleBlur={handleBlur}
+                  errors={errors.state}
+                  touched={touched.state}
+                  disabled
+                />
+                <Input
+                  label="Address"
+                  name="address"
+                  type="text"
+                  value={values.address || ""}
+                  handleChange={handleChange}
+                  placeholder="Enter Address"
+                  handleBlur={handleBlur}
+                  errors={errors.address}
+                  touched={touched.address}
+                />
+              </div>
+            </div>
+          )}
+
+          <div className="grid grid-cols-1 justify-center lg:justify-start lg:grid-cols-2 gap-x-14">
             <Button
               text="Save Changes"
               action={handleSubmit}

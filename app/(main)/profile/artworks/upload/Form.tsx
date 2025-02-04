@@ -80,8 +80,8 @@ const UploadArtworkForm: React.FC<{ categories: Category[] }> = ({
         isSubmitting,
         setFieldValue,
       }) => (
-        <Form className=" w-full space-y-24 ">
-          <div className="grid grid-cols-2 gap-14">
+        <Form className=" w-full  space-y-16 lg:space-y-24 ">
+          <div className="grid lg:grid-cols-2 gap-8 lg:gap-14">
             <MediaPicker
               label="Upload Artwork ( JPG, PNG, GIF)"
               name="art_image"
@@ -170,7 +170,7 @@ const UploadArtworkForm: React.FC<{ categories: Category[] }> = ({
               touched={touched.contract}
             />
           </div>
-          <div className="grid grid-cols-2 gap-x-14">
+          <div className="grid grid-cols-1 justify-center lg:justify-start lg:grid-cols-2 gap-x-14">
             <Button
               text="Save Changes"
               action={handleSubmit}

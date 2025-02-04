@@ -72,7 +72,7 @@ const Table = ({
             <h1 className="text-sm text-[#2D3748] capitalize font-medium ">
               {e.location}
             </h1>
-            <h1 className="text-sm text-[#2D3748] font-medium ">0</h1>
+            <h1 className="text-sm text-[#2D3748] font-medium ">{e.count}</h1>
             <h1 className="text-sm text-[#2D3748] font-medium ">
               {moment(e.created_at).format("ll")}
             </h1>

@@ -63,10 +63,13 @@ export const jwtSignAdmin = (user: Admin) => {
 };
 
 export function convertTimeToDateTime(timeString: string) {
-  const today = new Date(); // Get today's date
-  const [hours, minutes] = timeString.split(":").map(Number);
+  const today = new Date();
+  const [time, modifier] = timeString.split(" ");
+  let [hours, minutes] = time.split(":").map(Number);
 
-  today.setHours(hours, minutes, 0, 0); // Set the time part
+  if (modifier === "PM" && hours !== 12) hours += 12;
+  if (modifier === "AM" && hours === 12) hours = 0;
 
+  today.setHours(hours, minutes, 0, 0);
   return today.toISOString();
 }

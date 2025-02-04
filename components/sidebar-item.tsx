@@ -13,7 +13,10 @@ type Props = {
 const SideBarItem: React.FC<Props> = ({ label, iconSrc, href }) => {
   const pathname = usePathname();
 
-  const active = href === "" ? pathname === "/admin" : pathname.includes(href);
+  const active =
+    href === ""
+      ? pathname === "/admin"
+      : pathname.split("/")?.[2]?.includes(href);
 
   return (
     <Link

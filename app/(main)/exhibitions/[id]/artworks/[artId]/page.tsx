@@ -1,22 +1,18 @@
-import { getNft, getTopNfts } from "@/actions";
+import { getExhibitionArtwork, getTopNfts } from "@/actions";
 import Button from "@/components/Button";
 import NftCard from "@/components/NftCard";
 import Image from "next/image";
 import { redirect } from "next/navigation";
 import React from "react";
 import VerifyButton from "@/app/providers/verifyNft";
-import {
-  getAllUserFlags,
-  getAllUserLikes,
-  getProfile,
-} from "@/actions/current";
-import { FlagButton, LikeButton, ShareButton } from "@/components/buttons";
+import { getProfile } from "@/actions/current";
+import { ShareButton } from "@/components/buttons";
 import Link from "next/link";
 
-const page = async ({ params: { id } }: { params: { id: string } }) => {
+const page = async ({ params: { artId } }: { params: { artId: string } }) => {
   let data = null;
   try {
-    const res = await getNft(id);
+    const res = await getExhibitionArtwork(artId);
     data = res;
   } catch (error) {
     console.log(error);
@@ -35,8 +31,6 @@ const page = async ({ params: { id } }: { params: { id: string } }) => {
   }
 
   const topNfts = await getTopNfts();
-  const allLikes = await getAllUserLikes();
-  const allFlags = await getAllUserFlags();
 
   const ext = data.art_image?.split(".");
   const isVideo =
@@ -73,15 +67,7 @@ const page = async ({ params: { id } }: { params: { id: string } }) => {
                   <h1 className=" text-[22px] lg:text-3xl leading-[48px] font-Playfair font-bold ">
                     {data.name}
                   </h1>
-                  <h2 className="text-base lg:text-lg  font-medium ">
-                    {`By ${data.published_by}`}
-                  </h2>
                 </div>
-                <LikeButton
-                  id={id}
-                  isLiked={!!allLikes?.find((i) => i.art_id === id)}
-                  likesCount={data.likesCount}
-                />
               </div>
               <div className="space-y-3 lg:space-y-4">
                 <h1 className="text-base lg:text-lg font-medium ">
@@ -110,10 +96,6 @@ const page = async ({ params: { id } }: { params: { id: string } }) => {
                 />
               </div>
               <div className="flex justify-center lg:justify-start items-center gap-x-12">
-                <FlagButton
-                  id={id}
-                  isFlagged={!!allFlags?.find((i) => i.art_id === id)}
-                />
                 <ShareButton title={data.name} type="collectible" />
               </div>
             </div>
@@ -129,12 +111,7 @@ const page = async ({ params: { id } }: { params: { id: string } }) => {
             </div>
             <div className=" space-y-8 lg:space-y-10">
               <TitleValue title="Medium" value={data.category?.name} />
-              <TitleValue title="Location" value={data.location || ""} />
               <TitleValue title="Dimensions" value={data.dimensions} />
-              {data.contract && (
-                <TitleValue title="Contract" value={data.contract} />
-              )}
-              <TitleValue title="Published by" value={data.published_by!} />
             </div>
           </div>
         </div>
@@ -142,7 +119,7 @@ const page = async ({ params: { id } }: { params: { id: string } }) => {
       <div className="pt-10 pb-14 space-y-8">
         <div className="contain flex justify-between items-center">
           <h1 className="font-Playfair font-bold text-xl lg:text-[40px] ">
-            More Artworks From Creath
+            Artworks From Creath
           </h1>
           <Button
             text="Explore Marketplace"

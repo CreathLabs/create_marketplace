@@ -15,7 +15,6 @@ import {
   getTopBlogs,
   getTopCollectibless,
   getAllUserLikes,
-  getProfile,
 } from "@/actions";
 import Link from "next/link";
 
@@ -66,7 +65,7 @@ export default async function Home() {
         </div>
       </div>
       {/* collectibles */}
-      <div className=" pt-8 md:pt-10 md:pb-14 pb-6 ">
+      {/* <div className=" pt-8 md:pt-10 md:pb-14 pb-6 ">
         <div className="contain space-y-10 md:space-y-14">
           <div className=" flex justify-between items-center">
             <h1 className="heading">Collectibles</h1>
@@ -89,7 +88,7 @@ export default async function Home() {
             </Link>
           </div>
         </div>
-      </div>
+      </div> */}
       {/* exhibitions */}
       <div className="bg-grayTwo pt-8 md:pt-10 md:pb-14 pb-6 ">
         <div className="contain space-y-10 lg:space-y-14">

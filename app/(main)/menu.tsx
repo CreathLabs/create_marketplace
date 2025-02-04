@@ -17,10 +17,9 @@ import Link from "next/link";
 import { User } from "@prisma/client";
 import Button from "@/components/Button";
 import { deleteSession } from "@/actions";
-import { useConnect } from '@particle-network/authkit';
+import { useConnect } from "@particle-network/authkit";
 import { userSignin, saveSession } from "@/actions";
 import { handleError, parseErrors } from "@/lib/helpers";
-
 
 interface UserInfo {
   email: string;
@@ -39,28 +38,27 @@ const Menu = ({
   const router = useRouter();
   const { connect, disconnect } = useConnect();
 
-  const handleLogin = async ()=>{
-      try{
-        const userInfo = await connect() as UserInfo;
-        const email = userInfo?.email || "";
-        const res = await userSignin({
-          email: email,
-          password: "Dummy"
-        });
-        await saveSession("token", res?.data?.token || "");
-        router.push("/");
-      }
-      catch (err){
-        const error = parseErrors(err);
-        handleError(error.errors);
-        disconnect()
-      }
-      // disconnect()
+  const handleLogin = async () => {
+    try {
+      const userInfo = (await connect()) as UserInfo;
+      const email = userInfo?.email || "";
+      const res = await userSignin({
+        email: email,
+        password: "Dummy",
+      });
+      await saveSession("token", res?.data?.token || "");
+      router.push("/");
+    } catch (err) {
+      const error = parseErrors(err);
+      handleError(error.errors);
+      disconnect();
     }
+    // disconnect()
+  };
 
-    const handleLogout = async ()=>{
-      await disconnect()
-    }
+  const handleLogout = async () => {
+    await disconnect();
+  };
 
   return (
     <div
@@ -112,7 +110,17 @@ const Menu = ({
           <Button
             text={current ? current?.username : "Sign Up"}
             className="h-full flex justify-center items-center py-0 w-full"
-            action={current ? () => router.push("/profile") : openModal}
+            action={
+              current
+                ? () => {
+                    router.push("/profile");
+                    toggleMenu(false);
+                  }
+                : () => {
+                    openModal();
+                    toggleMenu(false);
+                  }
+            }
           />
           <Button
             text={current ? "Log Out" : "Log In"}
@@ -123,8 +131,12 @@ const Menu = ({
                     await deleteSession("token");
                     router.refresh();
                     handleLogout();
+                    toggleMenu(false);
                   }
-                : () => handleLogin()
+                : () => {
+                    handleLogin();
+                    toggleMenu(false);
+                  }
             }
           />
         </div>

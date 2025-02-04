@@ -6,59 +6,42 @@ import Button from "@/components/Button";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { Formik, Form } from "formik";
-import { addCollectible, updateCollectible } from "@/actions";
+import { uploadExhibitionArtWork } from "@/actions";
 import { toast } from "react-toastify";
 import { handleError, parseErrors } from "@/lib/helpers";
 import { uploadToCloudinary } from "@/lib/cloudinary";
-import { Collectibles } from "@prisma/client";
+import { Category, Collectibles } from "@prisma/client";
+import SelectComp from "@/components/Select";
+import TextArea from "@/components/TextArea";
 
-const collectibleSchema = yup.object().shape({
+const uploadArtworkSchema = yup.object().shape({
   name: yup.string().required("This field is required."),
-  mint_price: yup.number().required("This field is required."),
-  mint_per_wallet: yup.number().required("This field is required."),
-  total_minted: yup.number().required("This field is required."),
-  total_unminted: yup.number().required("This field is required."),
+  floor_price: yup.number().required("This field is required."),
   description: yup.string().required("This field is required."),
-  published_by: yup.string().required("This field is required."),
-  contract: yup.string().nullable().optional(),
-  image: yup.mixed().required("This field is required"),
+  dimensions: yup.string().required("This field is required."),
+  category_id: yup.string().required("This field is required."),
+  art_image: yup.mixed().required("This field is required"),
 });
 
-interface collectibleValues extends yup.InferType<typeof collectibleSchema> {
-  image: any;
-  mint_price: any;
-  total_minted: any;
-  total_unminted: any;
-  mint_per_wallet: any;
+interface uploadArtworkValues
+  extends yup.InferType<typeof uploadArtworkSchema> {
+  art_image: any;
+  floor_price: any;
 }
 
-const FormComp = ({
-  data: {
-    image,
-    id,
-    contract,
-    description,
-    mint_per_wallet,
-    mint_price,
-    total_minted,
-    total_unminted,
-    published_by,
-    name,
-  },
-}: {
-  data: Collectibles;
-}) => {
-  const [url, setUrl] = useState(image);
-  const initialValues: collectibleValues = {
-    image,
-    contract,
-    description,
-    mint_per_wallet,
-    mint_price,
-    total_minted,
-    total_unminted,
-    published_by,
-    name,
+const UploadExhibitionArt: React.FC<{
+  categories: Category[];
+  exhibition_id: string;
+}> = ({ categories, exhibition_id }) => {
+  const [url, setUrl] = useState("");
+
+  const initialValues: uploadArtworkValues = {
+    art_image: "",
+    category_id: "",
+    description: "",
+    dimensions: "",
+    floor_price: "",
+    name: "",
   };
 
   const router = useRouter();
@@ -85,29 +68,27 @@ const FormComp = ({
 
     reader.readAsDataURL(file);
 
-    setFieldValue("image", file);
+    setFieldValue("art_image", file);
   };
 
   return (
     <div className="px-10 py-8 space-y-6">
       <Formik
         initialValues={initialValues}
-        validationSchema={collectibleSchema}
+        validationSchema={uploadArtworkSchema}
         onSubmit={(data, { resetForm, setSubmitting }) => {
           (async () => {
             try {
-              let c_image = null;
-              if (data.image !== image) {
-                c_image = await uploadToCloudinary(data.image);
-              }
-              await updateCollectible(id, {
+              const art_image = await uploadToCloudinary(data.art_image);
+              await uploadExhibitionArtWork({
                 ...data,
-                image: c_image ? c_image : image,
+                art_image: art_image,
+                exhibition_id,
               });
               resetForm();
               setSubmitting(false);
-              toast.success("Collectible updated Successfully");
-              router.push("/admin/collectibles");
+              toast.success("Exhibition Art uploaded Successfully");
+              router.push(`/admin/exhibitions/${exhibition_id}`);
             } catch (error) {
               const err = parseErrors(error);
               handleError(err.errors);
@@ -130,89 +111,66 @@ const FormComp = ({
             <div className="grid grid-cols-2 w-full gap-x-10">
               <div className="space-y-8">
                 <Input
-                  label="Collectible Name"
+                  label="Artwork Name"
                   name="name"
                   type="text"
                   value={values.name}
                   handleChange={handleChange}
-                  placeholder="Collectible Name"
+                  placeholder="Artwork Name"
                   handleBlur={handleBlur}
                   errors={errors.name}
                   touched={touched.name}
                   className="rounded-full bg-white border border-[#E2E8F0] placeholder:text-[#0000005C] "
                 />
                 <Input
-                  label="Collectible Description (300 Characters)"
+                  label="Floor Price"
+                  name="floor_price"
+                  type="number"
+                  value={values.floor_price}
+                  handleChange={handleChange}
+                  placeholder="Floor Price"
+                  handleBlur={handleBlur}
+                  errors={errors.floor_price}
+                  touched={touched.floor_price}
+                  className="rounded-full bg-white border border-[#E2E8F0] placeholder:text-[#0000005C] "
+                />
+                <TextArea
+                  label="Description (300 Characters)"
                   name="description"
-                  type="text"
                   value={values.description}
                   handleChange={handleChange}
-                  placeholder="Collectible Description"
+                  placeholder="Description"
                   handleBlur={handleBlur}
                   errors={errors.description}
                   touched={touched.description}
                   className="rounded-full bg-white border border-[#E2E8F0] placeholder:text-[#0000005C] "
                 />
+
                 <Input
-                  label="Mint Price"
-                  name="mint_price"
+                  label="Dimensions ( Sizing )"
+                  name="dimensions"
                   type="text"
-                  value={values.mint_price}
+                  value={values.dimensions}
                   handleChange={handleChange}
-                  placeholder="Mint Price"
+                  placeholder="e.g 56”  X  56”"
                   handleBlur={handleBlur}
-                  errors={errors.mint_price}
-                  touched={touched.mint_price}
+                  errors={errors.dimensions}
+                  touched={touched.dimensions}
                   className="rounded-full bg-white border border-[#E2E8F0] placeholder:text-[#0000005C] "
                 />
-                <Input
-                  label="Mint per Wallet"
-                  name="mint_per_wallet"
-                  type="text"
-                  value={values.mint_per_wallet}
-                  handleChange={handleChange}
-                  placeholder="Mint per Wallet"
+                <SelectComp
+                  label="Medium"
+                  name="category_id"
+                  value={values.category_id}
+                  handleChange={setFieldValue}
+                  placeholder="Enter Medium"
                   handleBlur={handleBlur}
-                  errors={errors.mint_per_wallet}
-                  touched={touched.mint_per_wallet}
-                  className="rounded-full bg-white border border-[#E2E8F0] placeholder:text-[#0000005C] "
-                />
-                <div className="grid grid-cols-2 gap-x-[30px]">
-                  <Input
-                    label="Total Mint Number"
-                    name="total_minted"
-                    type="text"
-                    value={values.total_minted}
-                    handleChange={handleChange}
-                    placeholder="Total Mint Number"
-                    handleBlur={handleBlur}
-                    errors={errors.total_minted}
-                    touched={touched.total_minted}
-                    className="rounded-full bg-white border border-[#E2E8F0] placeholder:text-[#0000005C] "
-                  />
-                  <Input
-                    label="Total Unminted Number"
-                    name="total_unminted"
-                    type="text"
-                    value={values.total_unminted}
-                    handleChange={handleChange}
-                    placeholder="Total Unminted Number"
-                    handleBlur={handleBlur}
-                    errors={errors.total_unminted}
-                    touched={touched.total_unminted}
-                    className="rounded-full bg-white border border-[#E2E8F0] placeholder:text-[#0000005C] "
-                  />
-                </div>
-                <Input
-                  label="Publisher Name"
-                  name="published_by"
-                  type="text"
-                  value={values.published_by}
-                  handleChange={handleChange}
-                  placeholder="Publisher Name"
-                  handleBlur={handleBlur}
-                  errors={errors.published_by}
-                  touched={touched.published_by}
+                  error={errors.category_id}
+                  touched={touched.category_id}
+                  options={categories.map((c) => ({
+                    value: c.id,
+                    label: c.name,
+                  }))}
                   className="rounded-full bg-white border border-[#E2E8F0] placeholder:text-[#0000005C] "
                 />
               </div>
@@ -228,14 +186,14 @@ const FormComp = ({
                   )}
                 </div>
                 <label
-                  htmlFor="image"
+                  htmlFor="art_image"
                   onClick={(e) => e.stopPropagation()}
                   className=" w-fit cursor-pointer"
                 >
                   <input
                     type="file"
-                    id="image"
-                    name="image"
+                    id="art_image"
+                    name="art_image"
                     onBlur={handleBlur}
                     multiple={false}
                     onChange={(e) => processMedia(e, setFieldValue)}
@@ -244,7 +202,7 @@ const FormComp = ({
                   />
 
                   <div className="py-4 rounded-full border border-black bg-white text-[15px] flex justify-center items-center text-black w-[196px]">
-                    <h1>Upload Collectible</h1>
+                    <h1>Select Art</h1>
                   </div>
                 </label>
               </div>
@@ -269,4 +227,4 @@ const FormComp = ({
   );
 };
 
-export default FormComp;
+export default UploadExhibitionArt;
