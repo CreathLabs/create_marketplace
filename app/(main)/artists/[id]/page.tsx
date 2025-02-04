@@ -1,4 +1,5 @@
 import { getArtist } from "@/actions";
+import EmptyComponent from "@/components/EmptyComponent";
 import NftCard from "@/components/NftCard";
 import UserTabs from "@/components/UserTabs";
 import { Icon } from "@iconify/react/dist/iconify.js";
@@ -40,6 +41,10 @@ const AritistDetails = async ({
   if (!data) {
     redirect("/");
   }
+
+  const isEmpty =
+    (data[(tab as keyof typeof data) || "artworks"] as Art[])?.length ||
+    0 === 0;
 
   return (
     <div className="w-full h-full space-y-[193px] min-h-[calc(100vh-70px)] ">
@@ -98,6 +103,19 @@ const AritistDetails = async ({
         </div>
         <div className="pb-[98px] space-y-6">
           <UserTabs tab={tab || "artworks"} tabs={tabs} />
+          {isEmpty && (
+            <div className="py-16">
+              <EmptyComponent
+                text={
+                  tab === "likes"
+                    ? `Oops! ${data.username} has not liked any artwork`
+                    : tab === "collected"
+                    ? `Oops! ${data.username} has not made any purchases`
+                    : `Oops! ${data.username} has not created any artwork`
+                }
+              />
+            </div>
+          )}
           <div className="w-full grid lg:grid-cols-3 gap-6 lg:gap-8">
             {(data[(tab as keyof typeof data) || "artworks"] as Art[])?.map(
               (a) => (
