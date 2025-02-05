@@ -26,6 +26,7 @@ const Button: React.FC<Props> = ({
     <button
       onClick={async (e) => {
         "use client";
+        e.preventDefault();
         e.stopPropagation();
         action?.();
       }}

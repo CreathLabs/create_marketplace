@@ -56,18 +56,22 @@ const ExhibitionDetails = async ({
                   {moment(data.time).format("h:mm A")}
                 </h2>
               </div>
-              <div className="space-y-4">
+              <div className="space-y-4 overflow-hidden">
                 <h3 className="text-lg font-bold ">Venue</h3>
                 <h2 className="font-bold text-2xl font-Playfair ">
                   {`${data.address}, ${data.location}, ${data.country}`}
                 </h2>
               </div>
 
-              <a href="#gallery">
-                <div>
-                  <Button text="View Gallery" textStyles="w-[183px]" />
-                </div>
-              </a>
+              <Link
+                href="#gallery"
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                }}
+              >
+                <Button text="View Gallery" textStyles="w-[183px]" />
+              </Link>
             </div>
           </div>
         </div>
@@ -115,13 +119,19 @@ const ExhibitionDetails = async ({
                 {moment(data.time).format("h:mm A")}
               </h2>
             </div>
-            <div className="space-y-4 w-full">
+            <div className="space-y-4 overflow-hidden w-full">
               <h3 className="text-base font-bold ">Venue</h3>
-              <h2 className="font-bold text-[22px] font-Playfair ">
+              <h2 className="font-bold text-[22px] font-Playfair  ">
                 {`${data.address}, ${data.location}, ${data.country}`}
               </h2>
             </div>
-            <Link href="#gallery">
+            <Link
+              href="#gallery"
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+              }}
+            >
               <Button text="View Gallery" textStyles="w-[183px]" />
             </Link>
           </div>
