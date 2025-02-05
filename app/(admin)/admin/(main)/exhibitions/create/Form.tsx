@@ -20,13 +20,14 @@ const exhibitionSchema = yup.object().shape({
   description: yup.string().required("This field is required."),
   country: yup.string().required("This field is required."),
   location: yup.string().required("This field is required."),
-  address: yup.string(),
+  address: yup.string().required("This field is required."),
   date: yup.string().required("This field is required."),
   time: yup.string().required("This field is required."),
   artist_name: yup.string().required("This field is required."),
   curator_name: yup.string().required("This field is required."),
   cover_image: yup.mixed().required("This field is required"),
   images: yup.array(yup.mixed().required()).optional(),
+  nft_address: yup.string(),
 });
 
 const collectionContractAddress = '0x0578b23FE97D6Ac801007D259b03334F57276384' // for creating collections
@@ -58,6 +59,7 @@ const FormComp = () => {
     location: "",
     name: "",
     time: "",
+    nft_address: "",
   };
 
   const router = useRouter();
@@ -119,7 +121,7 @@ const FormComp = () => {
                 cover_image,
                 date: new Date(data.date).toISOString(),
                 time: convertTimeToDateTime(data.time),
-                address: receipt.events[0].address,
+                nft_address: receipt.events[0].address,
               });
               resetForm();
               setSubmitting(false);
@@ -223,6 +225,18 @@ const FormComp = () => {
                 handleBlur={handleBlur}
                 errors={errors.location}
                 touched={touched.location}
+                className="rounded-full bg-white border border-[#E2E8F0] placeholder:text-[#0000005C] "
+              />
+              <Input
+                label="Address Line"
+                name="address"
+                type="text"
+                value={values.address}
+                handleChange={handleChange}
+                placeholder="Address Line"
+                handleBlur={handleBlur}
+                errors={errors.address}
+                touched={touched.address}
                 className="rounded-full bg-white border border-[#E2E8F0] placeholder:text-[#0000005C] "
               />
               <Input
