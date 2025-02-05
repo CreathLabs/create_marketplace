@@ -63,14 +63,14 @@ const ExhibitionDetails = async ({
                 </h2>
               </div>
 
-              <Link
-                href="#gallery"
-                onClick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                }}
-              >
-                <Button text="View Gallery" textStyles="w-[183px]" />
+              <Link href="#gallery">
+                <button
+                  className={
+                    "text-black font-semibold px-3 py-[14px] text-sm lg:text-base leading-[23.22px] flex justify-center items-center gap-x-4 border-b-2 border-black"
+                  }
+                >
+                  <h1 className={"w-[183px]"}>View Gallery</h1>
+                </button>
               </Link>
             </div>
           </div>
@@ -125,14 +125,14 @@ const ExhibitionDetails = async ({
                 {`${data.address}, ${data.location}, ${data.country}`}
               </h2>
             </div>
-            <Link
-              href="#gallery"
-              onClick={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-              }}
-            >
-              <Button text="View Gallery" textStyles="w-[183px]" />
+            <Link href="#gallery">
+              <button
+                className={
+                  "text-black font-semibold px-3 py-[14px] text-sm lg:text-base leading-[23.22px] flex justify-center items-center gap-x-4 border-b-2 border-black"
+                }
+              >
+                <h1 className={"w-[183px]"}>View Gallery</h1>
+              </button>
             </Link>
           </div>
           <div className="space-y-6">
