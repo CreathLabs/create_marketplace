@@ -18,6 +18,7 @@ const exhibitionSchema = yup.object().shape({
   country: yup.string().required("This field is required."),
   location: yup.string().required("This field is required."),
   address: yup.string().required("This field is required."),
+  nft_address: yup.string().required("This field is required."),
   date: yup.string().required("This field is required."),
   time: yup.string().required("This field is required."),
   artist_name: yup.string().required("This field is required."),
@@ -45,6 +46,7 @@ const FormComp = () => {
     location: "",
     name: "",
     time: "",
+    nft_address: "",
   };
 
   const router = useRouter();
@@ -125,7 +127,7 @@ const FormComp = () => {
                 touched={touched.name}
                 className="rounded-full bg-white border border-[#E2E8F0] placeholder:text-[#0000005C] "
               />
-              <div className="w-full flex flex-col row-span-5 gap-y-12 items-center">
+              <div className="w-full flex flex-col row-span-4 gap-y-12 items-center">
                 <div className="w-full h-[400px] bg-grayTwo relative">
                   {url && (
                     <Image
@@ -251,6 +253,18 @@ const FormComp = () => {
                 handleBlur={handleBlur}
                 errors={errors.curator_name}
                 touched={touched.curator_name}
+                className="rounded-full bg-white border border-[#E2E8F0] placeholder:text-[#0000005C] "
+              />
+              <Input
+                label="Nft Address"
+                name="nft_address"
+                type="text"
+                value={values.nft_address}
+                handleChange={handleChange}
+                placeholder="Nft Address"
+                handleBlur={handleBlur}
+                errors={errors.nft_address}
+                touched={touched.nft_address}
                 className="rounded-full bg-white border border-[#E2E8F0] placeholder:text-[#0000005C] "
               />
             </div>

@@ -59,6 +59,7 @@ model Exhibition {
   time         DateTime
   artist_name  String
   curator_name String
+  nft_address  String?
   created_at   DateTime        @default(now())
   updated_at   DateTime        @updatedAt
   artworks     ExhibitionArt[]

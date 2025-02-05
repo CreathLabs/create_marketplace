@@ -7,6 +7,7 @@ export const UploadExhibitionSchema = yup.object({
   country: yup.string().required("This field is required."),
   location: yup.string().required("This field is required."),
   address: yup.string().required("This field is required."),
+  nft_address: yup.string().required("This field is required."),
   date: yup.string().required("This field is required."),
   time: yup.string().required("This field is required."),
   artist_name: yup.string().required("This field is required."),
