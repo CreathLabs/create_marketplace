@@ -2,7 +2,7 @@
 
 import { AuthType } from '@particle-network/auth-core';
 import { AuthCoreContextProvider } from '@particle-network/authkit';
-import { optimism } from '@particle-network/authkit/chains';
+import { optimism, mainnet, solana } from '@particle-network/authkit/chains';
 import { Buffer } from 'buffer';
 import { ReactNode } from "react";
 
@@ -28,7 +28,7 @@ const ParticleProvider = ({ children }: ParticleProviderProps) => {
                     projectName: "Creath Marketplace",
                     subtitle: "Login or Sign Up"
                 },
-                chains: [optimism],
+                chains: [optimism, mainnet, solana],
                 authTypes: [AuthType.email, AuthType.google, AuthType.twitter],
                 themeType: "light", // Login modal theme
                 fiatCoin: "USD",

@@ -8,7 +8,6 @@ import { useConnect, useEthereum } from '@particle-network/authkit';
 import { createUser, verifyOtp, saveSession } from "@/actions";
 import { handleError, parseErrors } from "@/lib/helpers";
 import { ethers } from "ethers";
-import { disconnect } from "process";
 
 interface Props {
   handleClose: () => void;
@@ -23,7 +22,7 @@ interface UserInfo {
 
 const Modal: React.FC<Props> = ({ handleClose }) => {
   const router = useRouter();
-  const { connect } = useConnect();
+  const { connect, disconnect } = useConnect();
   const { provider } =  useEthereum()
 
   const handleConnect = async (type: string)=>{

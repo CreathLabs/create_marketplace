@@ -18,6 +18,7 @@ const page = async ({ params: { id } }: { params: { id: string } }) => {
   try {
     const res = await getNft(id);
     data = res;
+    console.log(res)
   } catch (error) {
     console.log(error);
   }
@@ -93,7 +94,7 @@ const page = async ({ params: { id } }: { params: { id: string } }) => {
               </div>
               <div className="flex items-center justify-between lg:justify-start lg:gap-x-14">
                 <VerifyButton
-                  id={data.id}
+                  nft_id={data.nft_id}
                   current={current}
                   price={data.floor_price.toString()}
                   Innertext="Buy With Crypto"
@@ -101,7 +102,7 @@ const page = async ({ params: { id } }: { params: { id: string } }) => {
                   artName={data.name}
                 />
                 <VerifyButton
-                  id={data.id}
+                  nft_id={data.nft_id}
                   current={current}
                   price={data.floor_price.toString()}
                   Innertext="Buy With Fiat"
