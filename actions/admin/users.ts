@@ -112,3 +112,33 @@ export async function getAdminUser(id: string) {
     throw error;
   }
 }
+
+
+export async function getUser(id: string) {
+  const token = await getSession("admin_token");
+  if (!token) {
+    return null;
+  }
+
+  try {
+    const res = await currentAdmin(token);
+    const isA = await isAdmin(res);
+
+    if (!isA) {
+      throw new NotAuthorizedError();
+    }
+    
+    const data = await prisma.user.findUnique({
+      where: {
+        id,
+      },
+      include: {
+        artworks: true,
+      },
+    });
+
+    return data;
+  } catch (error) {
+    throw error;
+  }
+}

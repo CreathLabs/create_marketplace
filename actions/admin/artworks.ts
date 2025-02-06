@@ -102,7 +102,7 @@ export async function getAdminArtwork(id: string) {
   }
 }
 
-export async function approveArtwork(id: string) {
+export async function approveArtwork(id: string, nft_id: string) {
   const token = await getSession("admin_token");
   if (!token) {
     return null;
@@ -127,6 +127,7 @@ export async function approveArtwork(id: string) {
       },
       data: {
         is_approved: true,
+        nft_id: nft_id,
       },
       include: { user: true },
     });
