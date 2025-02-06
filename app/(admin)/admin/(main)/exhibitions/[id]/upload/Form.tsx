@@ -123,7 +123,7 @@ const UploadExhibitionArt: React.FC<{
               const mintReceipt = await Txn.wait()
               console.log(mintReceipt)
               let nft_id = parseInt(mintReceipt.events[0].args[2]._hex, 16)
-              let UnitPrice = ethers.utils.parseUnits(data.floor_price.toString(), 6)
+              let UnitPrice = ethers.utils.parseUnits(data.floor_price.toString())
               let Txn2 = await ListingContract.listItem(exhibition.nft_address, '0x9bBD6C78a59db71f5a6Bf883f9d108474e980794', nft_id, UnitPrice)
               const receipt = await Txn2.wait()
               console.log(receipt);

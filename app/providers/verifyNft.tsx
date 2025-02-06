@@ -12,7 +12,6 @@ import { User } from "@prisma/client";
 // import { usePaystackPayment } from "react-paystack";
 import { useFlutterwave, closePaymentModal } from 'flutterwave-react-v3';
 import { toast } from "react-toastify";
-import { useRouter } from 'next/router';
 
 
 
@@ -38,14 +37,13 @@ const VerifyButton: React.FC<VerifyButtonProps> =  ( { nft_id, current, price, I
     const [isSold, setSold] = useState(false)
     const contractAddress = '0x013b6f5a3fF3A3259d832b89C6C0adaabe59f8C6'; //it is the same contract for buying and listing items, it is also used in artistProfile and profile js files
     const creathAddress = "0x4DF3Fbf82df684A16E12e0ff3683E6888e51B994";
-    const mockContractAddress = "0x7f5c764cbc14f9669b88837ca1490cca17c31607"
+    const mockContractAddress = "0x7f5c764cbc14f9669b88837ca1490cca17c31607";
     const { provider } = useEthereum();
     const PROVIDER = "https://optimism.drpc.org"
     const providers = new ethers.providers.JsonRpcProvider(PROVIDER);
     const collectionPrivateKey = "cf4eede6dbc634879e6feb13601d36cf55b2a7cfc3593e646e26ef9c5dd27921";
     const AdminWallet = new ethers.Wallet(collectionPrivateKey, providers);
     const buyingAddress = exhibition_address ? exhibition_address : creathAddress;
-    const router = useRouter();
     
 
     const config = {
@@ -103,10 +101,14 @@ const VerifyButton: React.FC<VerifyButtonProps> =  ( { nft_id, current, price, I
                     checkArtwork()
                 }
             }
+            else{
+                setVerified(true)
+                setAvailable(false)
+            }
         }
         verifyArtwork()   
         
-    }, [checkContract]);
+    }, [checkContract, connected]);
 
     const transferArtwork = async(id: any)=>{
         const result = await transferContract?.buyItem(creathAddress, current?.wallet_address, id, true);
@@ -140,29 +142,30 @@ const VerifyButton: React.FC<VerifyButtonProps> =  ( { nft_id, current, price, I
             if(paymentType === "Wallet"){
                 try{
                     let NFTprice = ethers.utils.parseUnits(price, 6)
-                    let id = ethers.BigNumber.from(nft_id);
+                    let id = ethers.BigNumber.from(parseInt(nft_id));
                     try{
-                        let allowance = await mockContract?.allowance(address, contractAddress);
-                        if(parseInt(price) > parseInt(allowance._hex, 16)){
+                        console.log(exhibition_address)
+                        console.log(buyingAddress)
+                        let allowance = await mockContract?.allowance(current.wallet_address, contractAddress);
+                        if(NFTprice.gt(allowance)){
                             let Txn = await mockContract?.approve(contractAddress, `${parseInt(NFTprice._hex)}`);
                             let rec = await Txn.wait();
-                            let buyReceipt = await buyContract?.buyItem(buyingAddress, current.wallet_address, id, NFTprice);
+                            let buyReceipt = await buyContract?.buyItem(buyingAddress, current.wallet_address, id, false);
                             let receipt = await buyReceipt.wait();
                             setSold(true)
                             toast.success("Art Purchased Successfully");
-                            router.reload();
                         }
                         else{
-                            let buyReceipt = await buyContract?.buyItem(buyingAddress, current.wallet_address, id, NFTprice);
+                            let buyReceipt = await buyContract?.buyItem(buyingAddress, current.wallet_address, id, false);
                             let receipt = await buyReceipt.wait();
                             setSold(true)
                             toast.success("Art Purchased Successfully");
-                            router.reload();
                         }
                       }
                       catch(err){
                         const error = parseErrors(err);
                         handleError(error.errors);
+                        console.error(err);
                       }
                 }
                 catch(err){
