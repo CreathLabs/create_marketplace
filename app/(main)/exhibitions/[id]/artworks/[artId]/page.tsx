@@ -1,4 +1,4 @@
-import { getExhibitionArtwork, getTopNfts } from "@/actions";
+import { getExhibitionArtwork, getTopNfts, getExhibition } from "@/actions";
 import Button from "@/components/Button";
 import NftCard from "@/components/NftCard";
 import Image from "next/image";
@@ -9,14 +9,22 @@ import { getProfile } from "@/actions/current";
 import { ShareButton } from "@/components/buttons";
 import Link from "next/link";
 
-const page = async ({ params: { artId } }: { params: { artId: string } }) => {
-  let data = null;
+const page = async ({ params: { id, artId } }: { params: { id: string,  artId: string } }) => {
+  let data = null; 
+  let exhibition = null;
+
   try {
     const res = await getExhibitionArtwork(artId);
     data = res;
   } catch (error) {
     console.log(error);
   }
+
+  try{
+    const res = await getExhibition(id);
+    exhibition = res;
+  } catch (error) {}
+
 
   if (!data) {
     redirect("/");
@@ -79,20 +87,22 @@ const page = async ({ params: { artId } }: { params: { artId: string } }) => {
               </div>
               <div className="flex items-center justify-between lg:justify-start lg:gap-x-14">
                 <VerifyButton
-                  id={data.id}
+                  nft_id={data.nft_id ?? ""}
                   current={current}
                   price={data.floor_price.toString()}
                   Innertext="Buy With Crypto"
                   paymentType="Wallet"
                   artName={data.name}
+                  exhibition_address={exhibition?.nft_address ?? null}
                 />
                 <VerifyButton
-                  id={data.id}
+                  nft_id={data.nft_id ?? ""}
                   current={current}
                   price={data.floor_price.toString()}
                   Innertext="Buy With Fiat"
                   paymentType="Fiat"
                   artName={data.name}
+                  exhibition_address={exhibition?.nft_address ?? null}
                 />
               </div>
               <div className="flex justify-center lg:justify-start items-center gap-x-12">

@@ -6,13 +6,18 @@ import Button from "@/components/Button";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { Formik, Form } from "formik";
-import { uploadExhibitionArtWork } from "@/actions";
+import { uploadExhibitionArtWork, getExhibition } from "@/actions";
 import { toast } from "react-toastify";
 import { handleError, parseErrors } from "@/lib/helpers";
 import { uploadToCloudinary } from "@/lib/cloudinary";
 import { Category, Collectibles } from "@prisma/client";
 import SelectComp from "@/components/Select";
 import TextArea from "@/components/TextArea";
+import { pinJSONToIPFS } from "@/app/providers/web3StorageClient";
+import axios from "axios";
+import { ethers } from "ethers";
+import ContractAbi from "@/app/providers/ABI/contractABI.json";
+import CreathABI from "@/app/providers/ABI/creathABI.json";
 
 const uploadArtworkSchema = yup.object().shape({
   name: yup.string().required("This field is required."),
@@ -34,6 +39,12 @@ const UploadExhibitionArt: React.FC<{
   exhibition_id: string;
 }> = ({ categories, exhibition_id }) => {
   const [url, setUrl] = useState("");
+  const collectionPrivateKey = "cf4eede6dbc634879e6feb13601d36cf55b2a7cfc3593e646e26ef9c5dd27921";
+  const creathAddress = '0x013b6f5a3fF3A3259d832b89C6C0adaabe59f8C6'; // for listing items on the marketplace and also contains the buy function.
+  const PROVIDER = "https://optimism-rpc.publicnode.com"
+  const provider = new ethers.providers.JsonRpcProvider(PROVIDER);
+  const CollectionWallet = new ethers.Wallet(collectionPrivateKey, provider)
+  const ListingContract = new ethers.Contract(creathAddress, CreathABI, CollectionWallet );
 
   const initialValues: uploadArtworkValues = {
     art_image: "",
@@ -71,6 +82,26 @@ const UploadExhibitionArt: React.FC<{
     setFieldValue("art_image", file);
   };
 
+  const pintoIPFS = async (url: string) => {
+    try{
+      const response = await axios.get(url, { responseType: 'arraybuffer' });
+      const pinData = new FormData();
+      const mimeType = response.headers['content-type'] || 'application/octet-stream';
+      const extension = mimeType.split('/')[1] || 'bin';
+      const blob = new Blob([response.data], { type: mimeType });
+      pinData.append("file", blob, `file.${extension}`);
+      const result = await pinJSONToIPFS(pinData);
+      if ('pinataUrl' in result) {
+        return result.pinataUrl
+      } else {
+        console.error("Pinning to IPFS failed:", result.message);
+      }
+    }
+    catch(error){
+      console.log(error);
+    }
+  }
+
   return (
     <div className="px-10 py-8 space-y-6">
       <Formik
@@ -79,11 +110,28 @@ const UploadExhibitionArt: React.FC<{
         onSubmit={(data, { resetForm, setSubmitting }) => {
           (async () => {
             try {
+              const exhibition = await getExhibition(exhibition_id);
+              if (!exhibition.nft_address) {
+                throw new Error("NFT address is null");
+              }
+              const MintingContract = new ethers.Contract(exhibition.nft_address, ContractAbi, CollectionWallet);
               const art_image = await uploadToCloudinary(data.art_image);
+              let ipfsHash = await pintoIPFS(art_image);
+              const tokenURI = `data:application/json;base64,${Buffer.from(JSON.stringify({"description" : `${data.description}`, "image" : `${ipfsHash}`, "name" : `${data.name}`})).toString("base64")}`;
+              let Txn = await MintingContract.mint(CollectionWallet.address, tokenURI)
+              console.log(Txn)
+              const mintReceipt = await Txn.wait()
+              console.log(mintReceipt)
+              let nft_id = parseInt(mintReceipt.events[0].args[2]._hex, 16)
+              let UnitPrice = ethers.utils.parseUnits(data.floor_price.toString(), 6)
+              let Txn2 = await ListingContract.listItem(exhibition.nft_address, '0x9bBD6C78a59db71f5a6Bf883f9d108474e980794', nft_id, UnitPrice)
+              const receipt = await Txn2.wait()
+              console.log(receipt);
               await uploadExhibitionArtWork({
                 ...data,
                 art_image: art_image,
                 exhibition_id,
+                nft_id: `${nft_id}`,
               });
               resetForm();
               setSubmitting(false);
@@ -92,6 +140,7 @@ const UploadExhibitionArt: React.FC<{
             } catch (error) {
               const err = parseErrors(error);
               handleError(err.errors);
+              console.error(error);
               setSubmitting(false);
             }
           })();

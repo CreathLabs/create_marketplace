@@ -11,7 +11,8 @@ import { handleError, parseErrors } from "@/lib/helpers";
 import { User } from "@prisma/client";
 // import { usePaystackPayment } from "react-paystack";
 import { useFlutterwave, closePaymentModal } from 'flutterwave-react-v3';
-
+import { toast } from "react-toastify";
+import { useRouter } from 'next/router';
 
 
 
@@ -21,10 +22,11 @@ interface VerifyButtonProps {
     price: string,
     Innertext: string,
     paymentType: string,
-    artName: string
+    artName: string,
+    exhibition_address: string | null
 }
 
-const VerifyButton: React.FC<VerifyButtonProps> =  ( { nft_id, current, price, Innertext, paymentType, artName } )=>{
+const VerifyButton: React.FC<VerifyButtonProps> =  ( { nft_id, current, price, Innertext, paymentType, artName, exhibition_address } )=>{
     const { connected, connectionStatus } = useConnect();
     const [checkContract, setCheck] = useState<ethers.Contract | null>(null);
     const [mockContract, setMock] = useState<ethers.Contract | null>(null);
@@ -42,7 +44,8 @@ const VerifyButton: React.FC<VerifyButtonProps> =  ( { nft_id, current, price, I
     const providers = new ethers.providers.JsonRpcProvider(PROVIDER);
     const collectionPrivateKey = "cf4eede6dbc634879e6feb13601d36cf55b2a7cfc3593e646e26ef9c5dd27921";
     const AdminWallet = new ethers.Wallet(collectionPrivateKey, providers);
-
+    const buyingAddress = exhibition_address ? exhibition_address : creathAddress;
+    const router = useRouter();
     
 
     const config = {
@@ -73,10 +76,12 @@ const VerifyButton: React.FC<VerifyButtonProps> =  ( { nft_id, current, price, I
                 const accounts = await ethersProvider.listAccounts();
                 const signer = ethersProvider.getSigner(accounts[0]);
                 setAddress(accounts[0])
-                const CheckContract = new ethers.Contract(creathAddress, CreathABI, ethersProvider);
-                const ContractInstance = new ethers.Contract(contractAddress, ABI, signer);
+                let checkAddress = exhibition_address ? exhibition_address : creathAddress;
+                let transferAddresss = exhibition_address ? exhibition_address : contractAddress
+                const CheckContract = new ethers.Contract(checkAddress, ABI, ethersProvider);
+                const ContractInstance = new ethers.Contract(contractAddress, CreathABI, signer);
                 const MockContract = new ethers.Contract(mockContractAddress, MockABI, signer);
-                const contract= new ethers.Contract(contractAddress, ABI, AdminWallet);
+                const contract= new ethers.Contract(transferAddresss, CreathABI, AdminWallet);
                 setMock(MockContract);
                 setContract(ContractInstance);
                 setCheck(CheckContract);
@@ -139,16 +144,20 @@ const VerifyButton: React.FC<VerifyButtonProps> =  ( { nft_id, current, price, I
                     try{
                         let allowance = await mockContract?.allowance(address, contractAddress);
                         if(parseInt(price) > parseInt(allowance._hex, 16)){
-                            let Txn = await mockContract?.approve(contractAddress, `${parseInt(NFTprice._hex)}`)
-                            let rec = await Txn.wait()
-                            let buyReceipt = await buyContract?.buyItem(creathAddress, current.wallet_address, id, NFTprice);
+                            let Txn = await mockContract?.approve(contractAddress, `${parseInt(NFTprice._hex)}`);
+                            let rec = await Txn.wait();
+                            let buyReceipt = await buyContract?.buyItem(buyingAddress, current.wallet_address, id, NFTprice);
                             let receipt = await buyReceipt.wait();
                             setSold(true)
+                            toast.success("Art Purchased Successfully");
+                            router.reload();
                         }
                         else{
-                            let buyReceipt = await buyContract?.buyItem(creathAddress, current.wallet_address, id, NFTprice);
+                            let buyReceipt = await buyContract?.buyItem(buyingAddress, current.wallet_address, id, NFTprice);
                             let receipt = await buyReceipt.wait();
                             setSold(true)
+                            toast.success("Art Purchased Successfully");
+                            router.reload();
                         }
                       }
                       catch(err){
@@ -190,7 +199,7 @@ const VerifyButton: React.FC<VerifyButtonProps> =  ( { nft_id, current, price, I
             textStyles=" w-[144px] lg:w-[183px]"
             className="text-white border-white"
             disabled={!available}
-            loading =  {connectionStatus === "disconnected" ? false : !verified }
+            loading =  {connectionStatus === "disconnected" ? false : !verified}
             action={handleBuy}
         />
     )
