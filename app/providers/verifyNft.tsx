@@ -16,7 +16,7 @@ import { useFlutterwave, closePaymentModal } from 'flutterwave-react-v3';
 
 
 interface VerifyButtonProps {
-    id: string,
+    nft_id: string,
     current: User | null,
     price: string,
     Innertext: string,
@@ -24,11 +24,12 @@ interface VerifyButtonProps {
     artName: string
 }
 
-const VerifyButton: React.FC<VerifyButtonProps> =  ( { id, current, price, Innertext, paymentType, artName } )=>{
+const VerifyButton: React.FC<VerifyButtonProps> =  ( { nft_id, current, price, Innertext, paymentType, artName } )=>{
     const { connected, connectionStatus } = useConnect();
     const [checkContract, setCheck] = useState<ethers.Contract | null>(null);
     const [mockContract, setMock] = useState<ethers.Contract | null>(null);
     const [buyContract, setContract] = useState<ethers.Contract | null>(null)
+    const [transferContract, setTransferContract] = useState<ethers.Contract | null>(null)
     const [address, setAddress] = useState("");
     const [ verified, setVerified ] = useState(false);
     const [ available, setAvailable ] = useState(false);
@@ -36,8 +37,11 @@ const VerifyButton: React.FC<VerifyButtonProps> =  ( { id, current, price, Inner
     const contractAddress = '0x013b6f5a3fF3A3259d832b89C6C0adaabe59f8C6'; //it is the same contract for buying and listing items, it is also used in artistProfile and profile js files
     const creathAddress = "0x4DF3Fbf82df684A16E12e0ff3683E6888e51B994";
     const mockContractAddress = "0x7f5c764cbc14f9669b88837ca1490cca17c31607"
-    const nft = "16";
     const { provider } = useEthereum();
+    const PROVIDER = "https://optimism.drpc.org"
+    const providers = new ethers.providers.JsonRpcProvider(PROVIDER);
+    const collectionPrivateKey = "cf4eede6dbc634879e6feb13601d36cf55b2a7cfc3593e646e26ef9c5dd27921";
+    const AdminWallet = new ethers.Wallet(collectionPrivateKey, providers);
 
     
 
@@ -69,12 +73,14 @@ const VerifyButton: React.FC<VerifyButtonProps> =  ( { id, current, price, Inner
                 const accounts = await ethersProvider.listAccounts();
                 const signer = ethersProvider.getSigner(accounts[0]);
                 setAddress(accounts[0])
-                const CheckContract = new ethers.Contract("0x220D490F166CCF5289C7c806288C7A24f663b29C", CreathABI, ethersProvider);
+                const CheckContract = new ethers.Contract(creathAddress, CreathABI, ethersProvider);
                 const ContractInstance = new ethers.Contract(contractAddress, ABI, signer);
                 const MockContract = new ethers.Contract(mockContractAddress, MockABI, signer);
-                setMock(MockContract)
-                setContract(ContractInstance)
+                const contract= new ethers.Contract(contractAddress, ABI, AdminWallet);
+                setMock(MockContract);
+                setContract(ContractInstance);
                 setCheck(CheckContract);
+                setTransferContract(contract);
             }
             catch(err){
                 console.log(err)
@@ -97,14 +103,15 @@ const VerifyButton: React.FC<VerifyButtonProps> =  ( { id, current, price, Inner
         
     }, [checkContract]);
 
-    const transferArtwork = async()=>{
-        
+    const transferArtwork = async(id: any)=>{
+        const result = await transferContract?.buyItem(creathAddress, current?.wallet_address, id, true);
+        console.log(result);
     }
 
     const checkArtwork = async()=>{
         try{
             if(checkContract){
-                let txn =  await checkContract.ownerOf(nft);
+                let txn =  await checkContract.ownerOf(nft_id);
                 if(txn === "0x33B5E1DaF11b12103682fB77031111736aADAa5C"){
                     setVerified(true);
                     setAvailable(true);
@@ -128,12 +135,20 @@ const VerifyButton: React.FC<VerifyButtonProps> =  ( { id, current, price, Inner
             if(paymentType === "Wallet"){
                 try{
                     let NFTprice = ethers.utils.parseUnits(price, 6)
-                    let id = ethers.BigNumber.from(nft);
+                    let id = ethers.BigNumber.from(nft_id);
                     try{
                         let allowance = await mockContract?.allowance(address, contractAddress);
-                        if(2000 > parseInt(allowance._hex, 16)){
-                          let Txn = await mockContract?.approve(contractAddress, `${parseInt(NFTprice._hex)}`)
-                          let rec = await Txn.wait()
+                        if(parseInt(price) > parseInt(allowance._hex, 16)){
+                            let Txn = await mockContract?.approve(contractAddress, `${parseInt(NFTprice._hex)}`)
+                            let rec = await Txn.wait()
+                            let buyReceipt = await buyContract?.buyItem(creathAddress, current.wallet_address, id, NFTprice);
+                            let receipt = await buyReceipt.wait();
+                            setSold(true)
+                        }
+                        else{
+                            let buyReceipt = await buyContract?.buyItem(creathAddress, current.wallet_address, id, NFTprice);
+                            let receipt = await buyReceipt.wait();
+                            setSold(true)
                         }
                       }
                       catch(err){
@@ -152,7 +167,8 @@ const VerifyButton: React.FC<VerifyButtonProps> =  ( { id, current, price, Inner
                         callback: (response) => {
                         console.log("Flutterwave response:", response);
                         if (response.status === "successful") {
-                            transferArtwork(); // Trigger transfer logic after payment success
+                            let id = ethers.BigNumber.from(nft_id);
+                            transferArtwork(id); // Trigger transfer logic after payment success
                         }
                         closePaymentModal(); // Close the Flutterwave modal
                         },
