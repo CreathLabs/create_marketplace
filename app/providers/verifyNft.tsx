@@ -144,9 +144,10 @@ const VerifyButton: React.FC<VerifyButtonProps> =  ( { nft_id, current, price, I
                     let NFTprice = ethers.utils.parseUnits(price, 6)
                     let id = ethers.BigNumber.from(parseInt(nft_id));
                     try{
-                        console.log(exhibition_address)
-                        console.log(buyingAddress)
                         let allowance = await mockContract?.allowance(current.wallet_address, contractAddress);
+                        let listing  = await buyContract?.listings(buyingAddress, id);
+                        console.log(NFTprice)
+                        console.log(listing)
                         if(NFTprice.gt(allowance)){
                             let Txn = await mockContract?.approve(contractAddress, `${parseInt(NFTprice._hex)}`);
                             let rec = await Txn.wait();

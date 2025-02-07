@@ -38,7 +38,7 @@ const Buttons = ({ artwork }: { artwork: Art }) => {
         const mintReceipt = await Txn.wait()
         console.log(mintReceipt)
         let nft_id = parseInt(mintReceipt.events[0].args[2]._hex, 16)
-        let UnitPrice = ethers.utils.parseUnits(artwork.floor_price.toString())
+        let UnitPrice = ethers.utils.parseUnits(artwork.floor_price.toString(), 6)
         let Txn2 = await ListingContract.listItem(contractAddress, artist?.wallet_address, nft_id, UnitPrice)
         const receipt = await Txn2.wait()
         console.log(receipt);

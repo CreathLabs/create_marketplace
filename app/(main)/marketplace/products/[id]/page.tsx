@@ -94,20 +94,22 @@ const page = async ({ params: { id } }: { params: { id: string } }) => {
               </div>
               <div className="flex items-center justify-between lg:justify-start lg:gap-x-14">
                 <VerifyButton
-                  nft_id={data.nft_id}
+                  nft_id={data.nft_id ?? ""}
                   current={current}
                   price={data.floor_price.toString()}
                   Innertext="Buy With Crypto"
                   paymentType="Wallet"
                   artName={data.name}
+                  exhibition_address={null}
                 />
                 <VerifyButton
-                  nft_id={data.nft_id}
+                  nft_id={data.nft_id ?? ""}
                   current={current}
                   price={data.floor_price.toString()}
                   Innertext="Buy With Fiat"
                   paymentType="Fiat"
                   artName={data.name}
+                  exhibition_address={null}
                 />
               </div>
               <div className="flex justify-center lg:justify-start items-center gap-x-12">
