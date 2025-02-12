@@ -37,7 +37,7 @@ const VerifyButton: React.FC<VerifyButtonProps> =  ( { nft_id, current, price, I
     const [isSold, setSold] = useState(false)
     const contractAddress = '0x013b6f5a3fF3A3259d832b89C6C0adaabe59f8C6'; //it is the same contract for buying and listing items, it is also used in artistProfile and profile js files
     const creathAddress = "0x4DF3Fbf82df684A16E12e0ff3683E6888e51B994";
-    const mockContractAddress = "0x7f5c764cbc14f9669b88837ca1490cca17c31607";
+    const mockContractAddress = "0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85";
     const { provider } = useEthereum();
     const PROVIDER = "https://optimism.drpc.org"
     const providers = new ethers.providers.JsonRpcProvider(PROVIDER);
@@ -146,8 +146,7 @@ const VerifyButton: React.FC<VerifyButtonProps> =  ( { nft_id, current, price, I
                     try{
                         let allowance = await mockContract?.allowance(current.wallet_address, contractAddress);
                         let listing  = await buyContract?.listings(buyingAddress, id);
-                        console.log(NFTprice)
-                        console.log(listing)
+                        let fee = await buyContract?.platformFee();
                         if(NFTprice.gt(allowance)){
                             let Txn = await mockContract?.approve(contractAddress, `${parseInt(NFTprice._hex)}`);
                             let rec = await Txn.wait();
