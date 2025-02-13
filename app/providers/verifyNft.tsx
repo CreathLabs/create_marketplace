@@ -157,6 +157,7 @@ const VerifyButton: React.FC<VerifyButtonProps> =  ( { nft_id, current, price, I
                             setSold(true)
                             toast.success("Art Purchased Successfully");
                             setIsBuying(false);
+                            window.location.reload()
                         }
                         else{
                             setIsBuying(true);
@@ -165,6 +166,7 @@ const VerifyButton: React.FC<VerifyButtonProps> =  ( { nft_id, current, price, I
                             setSold(true)
                             toast.success("Art Purchased Successfully");
                             setIsBuying(false);
+                            window.location.reload()
                         }
                       }
                       catch(err){
