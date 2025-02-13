@@ -12,6 +12,8 @@ import { User } from "@prisma/client";
 // import { usePaystackPayment } from "react-paystack";
 import { useFlutterwave, closePaymentModal } from 'flutterwave-react-v3';
 import { toast } from "react-toastify";
+import LoadingModal from "@/components/loadingModal";
+import { set } from "lodash";
 
 
 
@@ -35,6 +37,7 @@ const VerifyButton: React.FC<VerifyButtonProps> =  ( { nft_id, current, price, I
     const [ verified, setVerified ] = useState(false);
     const [ available, setAvailable ] = useState(false);
     const [isSold, setSold] = useState(false)
+    const [isBuying, setIsBuying] = useState(false);
     const contractAddress = '0x013b6f5a3fF3A3259d832b89C6C0adaabe59f8C6'; //it is the same contract for buying and listing items, it is also used in artistProfile and profile js files
     const creathAddress = "0x4DF3Fbf82df684A16E12e0ff3683E6888e51B994";
     const mockContractAddress = "0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85";
@@ -145,27 +148,30 @@ const VerifyButton: React.FC<VerifyButtonProps> =  ( { nft_id, current, price, I
                     let id = ethers.BigNumber.from(parseInt(nft_id));
                     try{
                         let allowance = await mockContract?.allowance(current.wallet_address, contractAddress);
-                        let listing  = await buyContract?.listings(buyingAddress, id);
-                        let fee = await buyContract?.platformFee();
                         if(NFTprice.gt(allowance)){
                             let Txn = await mockContract?.approve(contractAddress, `${parseInt(NFTprice._hex)}`);
                             let rec = await Txn.wait();
+                            setIsBuying(true);
                             let buyReceipt = await buyContract?.buyItem(buyingAddress, current.wallet_address, id, false);
                             let receipt = await buyReceipt.wait();
                             setSold(true)
                             toast.success("Art Purchased Successfully");
+                            setIsBuying(false);
                         }
                         else{
+                            setIsBuying(true);
                             let buyReceipt = await buyContract?.buyItem(buyingAddress, current.wallet_address, id, false);
                             let receipt = await buyReceipt.wait();
                             setSold(true)
                             toast.success("Art Purchased Successfully");
+                            setIsBuying(false);
                         }
                       }
                       catch(err){
                         const error = parseErrors(err);
                         handleError(error.errors);
                         console.error(err);
+                        setIsBuying(false);
                       }
                 }
                 catch(err){
@@ -197,14 +203,17 @@ const VerifyButton: React.FC<VerifyButtonProps> =  ( { nft_id, current, price, I
     }
 
     return(
-        <Button
-            text={ !isSold ? `${Innertext}` : "Sold"}
-            textStyles=" w-[144px] lg:w-[183px]"
-            className="text-white border-white"
-            disabled={!available}
-            loading =  {connectionStatus === "disconnected" ? false : !verified}
-            action={handleBuy}
-        />
+        <>
+            <Button
+                text={ !isSold ? `${Innertext}` : "Sold"}
+                textStyles=" w-[144px] lg:w-[183px]"
+                className="text-white border-white"
+                disabled={!available}
+                loading =  {connectionStatus === "disconnected" ? false : !verified}
+                action={handleBuy}
+            />
+            <LoadingModal isOpen={isBuying} message="Please wait..." />
+        </>
     )
 }
 
