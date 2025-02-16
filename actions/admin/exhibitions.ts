@@ -203,28 +203,3 @@ export async function deleteExhibitionArtWork(id: string) {
     throw error;
   }
 }
-
-export async function getExhibition(id: string) {
-  const token = await getSession("admin_token");
-  if (!token) {
-    return null;
-  }
-  try {
-    const res = await currentAdmin(token);
-    const isA = await isAdmin(res);
-
-    if (!isA) {
-      throw new NotAuthorizedError();
-    }
-
-    const exhibition = await prisma.exhibition.findUnique({
-      where: {
-        id,
-      },
-    });
-
-    return exhibition;
-  } catch (error) {
-    throw error;
-  }
-}

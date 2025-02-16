@@ -37,6 +37,7 @@ export const UploadExhibitionArtworkSchema = yup.object({
   category_id: yup.string().required("Medium is required."),
   art_image: yup.string().required("Art Image is required"),
   exhibition_id: yup.string().required("Medium is required."),
+  nft_id: yup.string(),
 });
 
 export const validateUploadExhibitionArtworkSchema = async (values: any) => {

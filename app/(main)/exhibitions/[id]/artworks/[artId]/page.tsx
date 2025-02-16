@@ -94,6 +94,7 @@ const page = async ({ params: { id, artId } }: { params: { id: string,  artId: s
                   paymentType="Wallet"
                   artName={data.name}
                   exhibition_address={exhibition?.nft_address ?? null}
+                  art_id={data.id}
                 />
                 <VerifyButton
                   nft_id={data.nft_id ?? ""}
@@ -103,6 +104,7 @@ const page = async ({ params: { id, artId } }: { params: { id: string,  artId: s
                   paymentType="Fiat"
                   artName={data.name}
                   exhibition_address={exhibition?.nft_address ?? null}
+                  art_id={data.id}
                 />
               </div>
               <div className="flex justify-center lg:justify-start items-center gap-x-12">
