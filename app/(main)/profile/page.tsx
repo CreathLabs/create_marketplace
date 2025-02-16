@@ -37,6 +37,7 @@ const UserProfile = async ({
   } catch (error) {
     console.log(error);
   }
+  
 
   if (!profile) {
     redirect("/auth/login");

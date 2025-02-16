@@ -13,7 +13,7 @@ import { User } from "@prisma/client";
 import { useFlutterwave, closePaymentModal } from 'flutterwave-react-v3';
 import { toast } from "react-toastify";
 import LoadingModal from "@/components/loadingModal";
-import { set } from "lodash";
+import { updateArtCollected } from "@/actions";
 
 
 
@@ -24,10 +24,11 @@ interface VerifyButtonProps {
     Innertext: string,
     paymentType: string,
     artName: string,
-    exhibition_address: string | null
+    exhibition_address: string | null,
+    art_id: string,
 }
 
-const VerifyButton: React.FC<VerifyButtonProps> =  ( { nft_id, current, price, Innertext, paymentType, artName, exhibition_address } )=>{
+const VerifyButton: React.FC<VerifyButtonProps> =  ( { nft_id, current, price, Innertext, paymentType, artName, exhibition_address, art_id } )=>{
     const { connected, connectionStatus } = useConnect();
     const [checkContract, setCheck] = useState<ethers.Contract | null>(null);
     const [mockContract, setMock] = useState<ethers.Contract | null>(null);
@@ -115,6 +116,9 @@ const VerifyButton: React.FC<VerifyButtonProps> =  ( { nft_id, current, price, I
 
     const transferArtwork = async(id: any)=>{
         const result = await transferContract?.buyItem(creathAddress, current?.wallet_address, id, true);
+        if (current?.id) {
+            await updateArtCollected(art_id, current.id);
+        }
         console.log(result);
     }
 
@@ -156,6 +160,7 @@ const VerifyButton: React.FC<VerifyButtonProps> =  ( { nft_id, current, price, I
                             let receipt = await buyReceipt.wait();
                             setSold(true)
                             toast.success("Art Purchased Successfully");
+                            await updateArtCollected(art_id, current.id);
                             setIsBuying(false);
                             window.location.reload()
                         }
@@ -165,6 +170,7 @@ const VerifyButton: React.FC<VerifyButtonProps> =  ( { nft_id, current, price, I
                             let receipt = await buyReceipt.wait();
                             setSold(true)
                             toast.success("Art Purchased Successfully");
+                            await updateArtCollected(art_id, current.id);
                             setIsBuying(false);
                             window.location.reload()
                         }

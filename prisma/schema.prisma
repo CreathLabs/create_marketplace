@@ -38,12 +38,13 @@ model User {
   token_expies_in   DateTime?
   is_approved       Boolean            @default(false)
   is_artist         Boolean            @default(false)
-  artworks          Art[]
+  artworks          Art[]              @relation(name: "UserArt")
   likes             Likes[]
   flags             Flags[]
   notifications     Notification[]
   collectibleLikes  CollectibleLikes[]
   collectibleFlags  CollectibleFlags[]
+  collected         Art[]    @relation(name: "CollectedArt") // Artworks collected by this user
 }
 
 model Exhibition {
@@ -90,7 +91,7 @@ model Art {
   description   String         @db.VarChar()
   dimensions    String
   user_id       String
-  user          User           @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  user          User           @relation(name: "UserArt", fields: [user_id], references: [id], onDelete: Cascade) // Creator of the artwork
   category_id   String
   category      Category       @relation(fields: [category_id], references: [id], onDelete: Cascade)
   location      String?
@@ -104,6 +105,8 @@ model Art {
   likes         Likes[]
   flags         Flags[]
   notifications Notification[]
+  collected_by_id String?  // ID of the user who collected this artwork (nullable if not collected)
+  collected_by    User?    @relation(name: "CollectedArt", fields: [collected_by_id], references: [id], onDelete: SetNull) // The user who collected it
 }
 
 model ExhibitionArt {
