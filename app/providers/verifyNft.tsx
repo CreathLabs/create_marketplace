@@ -4,14 +4,16 @@ import { useEffect, useState } from "react";
 import { useConnect, useEthereum } from "@particle-network/authkit";
 import { ethers } from "ethers";
 import Button from "@/components/Button";
-import CreathABI from "./ABI/CreathABI.json";
-import ABI from './ABI/ContractABI.json';
+import CreathABI from "./ABI/creathABI.json";
+import ABI from './ABI/contractABI.json';
 import MockABI from './ABI/MockABI.json';
 import { handleError, parseErrors } from "@/lib/helpers";
 import { User } from "@prisma/client";
 // import { usePaystackPayment } from "react-paystack";
 import { useFlutterwave, closePaymentModal } from 'flutterwave-react-v3';
-
+import { toast } from "react-toastify";
+import LoadingModal from "@/components/loadingModal";
+import { updateArtCollected } from "@/actions";
 
 
 
@@ -21,10 +23,12 @@ interface VerifyButtonProps {
     price: string,
     Innertext: string,
     paymentType: string,
-    artName: string
+    artName: string,
+    exhibition_address: string | null,
+    art_id: string,
 }
 
-const VerifyButton: React.FC<VerifyButtonProps> =  ( { nft_id, current, price, Innertext, paymentType, artName } )=>{
+const VerifyButton: React.FC<VerifyButtonProps> =  ( { nft_id, current, price, Innertext, paymentType, artName, exhibition_address, art_id } )=>{
     const { connected, connectionStatus } = useConnect();
     const [checkContract, setCheck] = useState<ethers.Contract | null>(null);
     const [mockContract, setMock] = useState<ethers.Contract | null>(null);
@@ -34,15 +38,16 @@ const VerifyButton: React.FC<VerifyButtonProps> =  ( { nft_id, current, price, I
     const [ verified, setVerified ] = useState(false);
     const [ available, setAvailable ] = useState(false);
     const [isSold, setSold] = useState(false)
+    const [isBuying, setIsBuying] = useState(false);
     const contractAddress = '0x013b6f5a3fF3A3259d832b89C6C0adaabe59f8C6'; //it is the same contract for buying and listing items, it is also used in artistProfile and profile js files
     const creathAddress = "0x4DF3Fbf82df684A16E12e0ff3683E6888e51B994";
-    const mockContractAddress = "0x7f5c764cbc14f9669b88837ca1490cca17c31607"
+    const mockContractAddress = "0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85";
     const { provider } = useEthereum();
     const PROVIDER = "https://optimism.drpc.org"
     const providers = new ethers.providers.JsonRpcProvider(PROVIDER);
     const collectionPrivateKey = "cf4eede6dbc634879e6feb13601d36cf55b2a7cfc3593e646e26ef9c5dd27921";
     const AdminWallet = new ethers.Wallet(collectionPrivateKey, providers);
-
+    const buyingAddress = exhibition_address ? exhibition_address : creathAddress;
     
 
     const config = {
@@ -73,10 +78,12 @@ const VerifyButton: React.FC<VerifyButtonProps> =  ( { nft_id, current, price, I
                 const accounts = await ethersProvider.listAccounts();
                 const signer = ethersProvider.getSigner(accounts[0]);
                 setAddress(accounts[0])
-                const CheckContract = new ethers.Contract(creathAddress, CreathABI, ethersProvider);
-                const ContractInstance = new ethers.Contract(contractAddress, ABI, signer);
+                let checkAddress = exhibition_address ? exhibition_address : creathAddress;
+                let transferAddresss = exhibition_address ? exhibition_address : contractAddress
+                const CheckContract = new ethers.Contract(checkAddress, ABI, ethersProvider);
+                const ContractInstance = new ethers.Contract(contractAddress, CreathABI, signer);
                 const MockContract = new ethers.Contract(mockContractAddress, MockABI, signer);
-                const contract= new ethers.Contract(contractAddress, ABI, AdminWallet);
+                const contract= new ethers.Contract(transferAddresss, CreathABI, AdminWallet);
                 setMock(MockContract);
                 setContract(ContractInstance);
                 setCheck(CheckContract);
@@ -98,13 +105,20 @@ const VerifyButton: React.FC<VerifyButtonProps> =  ( { nft_id, current, price, I
                     checkArtwork()
                 }
             }
+            else{
+                setVerified(true)
+                setAvailable(false)
+            }
         }
         verifyArtwork()   
         
-    }, [checkContract]);
+    }, [checkContract, connected]);
 
     const transferArtwork = async(id: any)=>{
         const result = await transferContract?.buyItem(creathAddress, current?.wallet_address, id, true);
+        if (current?.id) {
+            await updateArtCollected(art_id, current.id);
+        }
         console.log(result);
     }
 
@@ -135,25 +149,37 @@ const VerifyButton: React.FC<VerifyButtonProps> =  ( { nft_id, current, price, I
             if(paymentType === "Wallet"){
                 try{
                     let NFTprice = ethers.utils.parseUnits(price, 6)
-                    let id = ethers.BigNumber.from(nft_id);
+                    let id = ethers.BigNumber.from(parseInt(nft_id));
                     try{
-                        let allowance = await mockContract?.allowance(address, contractAddress);
-                        if(parseInt(price) > parseInt(allowance._hex, 16)){
-                            let Txn = await mockContract?.approve(contractAddress, `${parseInt(NFTprice._hex)}`)
-                            let rec = await Txn.wait()
-                            let buyReceipt = await buyContract?.buyItem(creathAddress, current.wallet_address, id, NFTprice);
+                        let allowance = await mockContract?.allowance(current.wallet_address, contractAddress);
+                        if(NFTprice.gt(allowance)){
+                            let Txn = await mockContract?.approve(contractAddress, `${parseInt(NFTprice._hex)}`);
+                            let rec = await Txn.wait();
+                            setIsBuying(true);
+                            let buyReceipt = await buyContract?.buyItem(buyingAddress, current.wallet_address, id, false);
                             let receipt = await buyReceipt.wait();
                             setSold(true)
+                            toast.success("Art Purchased Successfully");
+                            await updateArtCollected(art_id, current.id);
+                            setIsBuying(false);
+                            window.location.reload()
                         }
                         else{
-                            let buyReceipt = await buyContract?.buyItem(creathAddress, current.wallet_address, id, NFTprice);
+                            setIsBuying(true);
+                            let buyReceipt = await buyContract?.buyItem(buyingAddress, current.wallet_address, id, false);
                             let receipt = await buyReceipt.wait();
                             setSold(true)
+                            toast.success("Art Purchased Successfully");
+                            await updateArtCollected(art_id, current.id);
+                            setIsBuying(false);
+                            window.location.reload()
                         }
                       }
                       catch(err){
                         const error = parseErrors(err);
                         handleError(error.errors);
+                        console.error(err);
+                        setIsBuying(false);
                       }
                 }
                 catch(err){
@@ -185,14 +211,17 @@ const VerifyButton: React.FC<VerifyButtonProps> =  ( { nft_id, current, price, I
     }
 
     return(
-        <Button
-            text={ !isSold ? `${Innertext}` : "Sold"}
-            textStyles=" w-[144px] lg:w-[183px]"
-            className="text-white border-white"
-            disabled={!available}
-            loading =  {connectionStatus === "disconnected" ? false : !verified }
-            action={handleBuy}
-        />
+        <>
+            <Button
+                text={ !isSold ? `${Innertext}` : "Sold"}
+                textStyles=" w-[144px] lg:w-[183px]"
+                className="text-white border-white"
+                disabled={!available}
+                loading =  {connectionStatus === "disconnected" ? false : !verified}
+                action={handleBuy}
+            />
+            <LoadingModal isOpen={isBuying} message="Please wait..." />
+        </>
     )
 }
 

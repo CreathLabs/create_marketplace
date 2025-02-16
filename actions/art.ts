@@ -4,6 +4,12 @@ import { currentUser, getSession } from "./current";
 import { NotAuthorizedError } from "@/lib/errors";
 import { NOTIFTYPE, Prisma } from "@prisma/client";
 import { Sort } from "@/lib/types";
+import { Resend } from "resend";
+import ArtworkCollectedEmail from "@/components/email-templates/ArtPurchase";
+import ArtistCollectedEmail from "@/components/email-templates/ArtistCollectedEmail";
+
+
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 export async function getTopNfts() {
   try {
@@ -279,3 +285,69 @@ export const flagNft = async (id: string) => {
     throw error;
   }
 };
+
+export const updateArtCollected = async (id: string, user_id: string) => {
+  try {
+    const updatedArtwork = await prisma.art.update({
+      where: {
+        id,
+      },
+      data: {
+        collected_by_id: user_id,
+      },
+    });
+
+    const user = await prisma.user.findUnique({
+      where: {
+        id: user_id,
+      },
+    });
+
+    const artist = await prisma.user.findUnique({
+      where: {
+        id: updatedArtwork.user_id,
+      }
+    })
+
+    if (!user?.email) {
+      throw new Error("User email not found");
+    }
+
+    const { error } = await resend.emails.send({
+      from: "Creath Marketplace <info@trustfynd.com>",
+      to: [user.email],
+      subject: "Artwork Collected",
+      react: ArtworkCollectedEmail({
+        username: user.username,
+        artworkName: updatedArtwork.name,
+      }),
+    });
+
+    if (error) {
+      throw error;
+    }
+
+    if (!artist?.email) {
+      throw new Error("Artist email not found");
+    }
+
+    const artistEmail = await resend.emails.send({
+      from: "Creath Marketplace <info@trustfynd.com>",
+      to: [artist.email],
+      subject: "Artwork Collected",
+      react: ArtistCollectedEmail({
+        username: artist.username,
+        artworkName: updatedArtwork.name,
+      }),
+    });
+
+    if (artistEmail.error) {
+      throw artistEmail.error;
+    }
+
+
+  }
+  catch (error) {
+    throw error;
+  }
+}

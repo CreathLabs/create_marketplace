@@ -21,14 +21,13 @@ const exhibitionSchema = yup.object().shape({
   country: yup.string().required("This field is required."),
   location: yup.string().required("This field is required."),
   address: yup.string().required("This field is required."),
-  nft_address: yup.string().required("This field is required."),
+  nft_address: yup.string(),
   date: yup.string().required("This field is required."),
   time: yup.string().required("This field is required."),
   artist_name: yup.string().required("This field is required."),
   curator_name: yup.string().required("This field is required."),
   cover_image: yup.mixed().required("This field is required"),
-  images: yup.array(yup.mixed().required()).optional(),
-  nft_address: yup.string(),
+  images: yup.array(yup.mixed().required()).optional()
 });
 
 const collectionContractAddress = '0x0578b23FE97D6Ac801007D259b03334F57276384' // for creating collections
@@ -287,18 +286,6 @@ const FormComp = () => {
                 handleBlur={handleBlur}
                 errors={errors.curator_name}
                 touched={touched.curator_name}
-                className="rounded-full bg-white border border-[#E2E8F0] placeholder:text-[#0000005C] "
-              />
-              <Input
-                label="Nft Address"
-                name="nft_address"
-                type="text"
-                value={values.nft_address}
-                handleChange={handleChange}
-                placeholder="Nft Address"
-                handleBlur={handleBlur}
-                errors={errors.nft_address}
-                touched={touched.nft_address}
                 className="rounded-full bg-white border border-[#E2E8F0] placeholder:text-[#0000005C] "
               />
             </div>

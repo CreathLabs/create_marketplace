@@ -54,6 +54,15 @@ export const getProfile = async () => {
             },
           },
         },
+        collected: {
+          include: {
+            _count: {
+              select: {
+                likes: true,
+              },
+            }
+          }
+        }
       },
     });
 
@@ -66,6 +75,10 @@ export const getProfile = async () => {
       likes: user.likes.map((item) => ({
         ...item.art,
         likesCount: item.art._count.likes,
+      })),
+      collected: user.collected.map((items)=> ({
+        ...items,
+        likeCounr: items._count.likes,
       })),
     };
   } catch (error) {

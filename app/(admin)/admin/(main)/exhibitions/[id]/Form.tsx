@@ -342,6 +342,7 @@ const FormComp = ({
                   errors={errors.nft_address}
                   touched={touched.nft_address}
                   className="rounded-full bg-white border border-[#E2E8F0] placeholder:text-[#0000005C] "
+                  disabled={true}
                 />
               </div>
               <div className="w-full flex gap-x-10">
