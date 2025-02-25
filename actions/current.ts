@@ -188,6 +188,36 @@ export const updateProfile = async (
   }
 };
 
+export const updateWalletAddres = async (wallet_address: string) => {
+  const token = await getSession("token");
+
+  if (!token) {
+    throw new NotAuthorizedError();
+  }
+
+  try{
+    const res = await currentUser(token);
+    if (!res.id) {
+      throw new NotAuthorizedError();
+    }
+
+    const user = await prisma.user.update({
+      where: {
+        id: res.id,
+      },
+      data: {
+        wallet_address: wallet_address,
+      },
+    });
+
+    return user;
+  }
+  catch (error) {
+    throw error;
+  }
+}
+
+
 export const uploadArtWork = async (
   values: yup.InferType<typeof UploadArtworkSchema>
 ) => {
