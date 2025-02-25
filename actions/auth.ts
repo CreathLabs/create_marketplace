@@ -105,6 +105,7 @@ export const userSignin = async (
         id: existingUser.id,
         email: existingUser.email,
         username: existingUser.username,
+        wallet_address: existingUser.wallet_address,
         token,
       },
     };

@@ -20,9 +20,9 @@ const ParticleProvider = ({ children }: ParticleProviderProps) => {
     return (
         <AuthCoreContextProvider
             options={{
-                projectId: "b4e72e2a-e754-4345-903b-cd4aadb01330",
-                clientKey: "cw5UfLmflJfryPgX5cbxoeOeQZUpKjG9VrDQvjvu",
-                appId: "82310efc-630c-4dfa-b073-984eec0078fe",
+                projectId: "a4c57a32-0d8c-44bb-a89f-d7373caad2ca",
+                clientKey: "cBt5RaacYbmwUVriB4SIBV3ZT2VHaNkaRFa93dgi",
+                appId: "07ff476a-2ab4-4d0a-910a-73de51597c11",
                 customStyle:{
                     logo: "https://art.creath.io/static/media/creathscg.bf3f0b7dbfa0e5f9464322e6f7f0a3eb.svg",
                     projectName: "Creath Marketplace",

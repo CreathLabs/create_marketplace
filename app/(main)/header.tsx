@@ -1,5 +1,5 @@
 "use client";
-import { deleteSession } from "@/actions";
+import { deleteSession, updateWalletAddres } from "@/actions";
 import Button from "@/components/Button";
 import NavLink from "@/components/NavLink";
 import { MenuContext } from "@/contexts/menuContext";
@@ -18,7 +18,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useContext, useEffect } from "react";
-import { useConnect } from '@particle-network/authkit';
+import { useConnect, useEthereum } from '@particle-network/authkit';
+import { ethers } from "ethers";
 import { userSignin, saveSession } from "@/actions";
 import { handleError, parseErrors } from "@/lib/helpers";
 
@@ -36,6 +37,7 @@ const Header: React.FC<Props> = ({ openModal, current }) => {
   const { toggleMenu, open, setIsLoggedIn } = useContext(MenuContext);
   const { connect, disconnect } = useConnect();
   const router = useRouter();
+  const { provider } =  useEthereum()
 
 
   useEffect(() => {
@@ -56,11 +58,16 @@ const Header: React.FC<Props> = ({ openModal, current }) => {
     try{
       const userInfo = await connect() as UserInfo;
       const email = userInfo?.email || "";
+      const ethersProvider = new ethers.providers.Web3Provider(provider);
+      const accounts = await ethersProvider.listAccounts();
       const res = await userSignin({
         email: email,
         password: "Dummy"
       });
       await saveSession("token", res?.data?.token || "");
+      if(res?.data?.wallet_address !== accounts[0]){
+        await updateWalletAddres(accounts[0]);
+      }
       router.push("/");
     }
     catch (err){
