@@ -115,11 +115,21 @@ const VerifyButton: React.FC<VerifyButtonProps> =  ( { nft_id, current, price, I
     }, [checkContract, connected]);
 
     const transferArtwork = async(id: any)=>{
-        const result = await transferContract?.buyItem(creathAddress, current?.wallet_address, id, true);
-        if (current?.id) {
-            await updateArtCollected(art_id, current.id);
+        try{
+            const result = await transferContract?.buyItem(creathAddress, current?.wallet_address, id, true);
+            if (current?.id) {
+                await updateArtCollected(art_id, current.id);
+            }
+            setIsBuying(false);
+            setSold(true)
+            toast.success("Art Purchased Successfully");
+            window.location.reload()
         }
-        console.log(result);
+        catch(err){
+            const error = parseErrors(err);
+            handleError(error.errors);
+            setIsBuying(false);
+        }
     }
 
     const checkArtwork = async()=>{
@@ -188,6 +198,7 @@ const VerifyButton: React.FC<VerifyButtonProps> =  ( { nft_id, current, price, I
                 }
             }
             else{
+                setIsBuying(true);
                 try {
                     handleFlutterPayment({
                         callback: (response) => {

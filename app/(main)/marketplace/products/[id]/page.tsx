@@ -20,7 +20,6 @@ const page = async ({ params: { id } }: { params: { id: string } }) => {
     data = res;
     console.log(res)
   } catch (error) {
-    console.log(error);
   }
 
   if (!data) {
