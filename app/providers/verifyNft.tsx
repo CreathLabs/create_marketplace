@@ -210,7 +210,8 @@ const VerifyButton: React.FC<VerifyButtonProps> =  ( { nft_id, current, price, I
                         closePaymentModal(); // Close the Flutterwave modal
                         },
                         onClose: () => {
-                        console.log("Flutterwave modal closed");
+                            setIsBuying(false);
+                            console.log("Flutterwave modal closed");
                         },
                     });
                 } catch (err) {
