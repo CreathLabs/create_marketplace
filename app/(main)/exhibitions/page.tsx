@@ -16,7 +16,7 @@ const Exhibitions = async ({
   return (
     <div className="py-14 contain space-y-[72px] min-h-[calc(100vh-70px)]">
       <div className="flex flex-col lg:flex-row gap-y-8 lg:gap-0 justify-between lg:items-center ">
-        <h1 className=" heading leading-[60px] ">Creath Exhibitons</h1>
+        <h1 className=" heading leading-[60px] ">Exhibitons</h1>
         <SearchInput
           placeholder="Search Artists"
           defaultValue={searchParams.search}

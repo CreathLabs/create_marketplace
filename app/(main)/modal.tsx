@@ -8,6 +8,7 @@ import { useConnect, useEthereum } from '@particle-network/authkit';
 import { createUser, verifyOtp, saveSession } from "@/actions";
 import { handleError, parseErrors } from "@/lib/helpers";
 import { ethers } from "ethers";
+import { PROFILETYPE } from "@prisma/client";
 
 interface Props {
   handleClose: () => void;
@@ -25,8 +26,7 @@ const Modal: React.FC<Props> = ({ handleClose }) => {
   const { connect, disconnect } = useConnect();
   const { provider } =  useEthereum()
 
-  const handleConnect = async (type: string)=>{
-    console.log(type)
+  const handleConnect = async (type: PROFILETYPE)=>{
     try{
       const userInfo = await connect() as UserInfo;
       const ethersProvider = new ethers.providers.Web3Provider(provider);

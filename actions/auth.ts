@@ -26,7 +26,7 @@ const resend = new Resend(process.env.RESEND_API_KEY);
 export const createUser = async (
   values: yup.InferType<typeof RegisterSchema>
 ) => {
-  const { email, password, wallet_address } = await validateRegisterSchema(values);
+  const { email, password, wallet_address, type } = await validateRegisterSchema(values);
 
   const existingUser = await user.findUnique({ where: { email } });
 
@@ -49,6 +49,7 @@ export const createUser = async (
         wallet_address,
         otp: hashedOtp,
         otp_expires_in,
+        type
       },
     });
 

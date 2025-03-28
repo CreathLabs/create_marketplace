@@ -94,7 +94,7 @@ export async function getExhibition(id: string) {
 export async function getExhibitionArtworks(
   id: string,
   page = 1,
-  noPerPage = 3
+  noPerPage = 6
 ) {
   try {
     const total = await prisma.exhibitionArt.count({
