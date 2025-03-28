@@ -8,13 +8,14 @@ interface Props {
   name: string;
   cover_image: string;
   artworks_count: number;
+  profile_image: string | null;
 }
 
 const GalleryCard: React.FC<Props> = ({
   id,
   artworks_count,
   name,
-  cover_image,
+  profile_image,
 }) => {
   const [hoverd, setHovered] = useState(false);
   const router = useRouter();
@@ -27,7 +28,7 @@ const GalleryCard: React.FC<Props> = ({
       className=" relative w-full h-[293px] md:h-[434px] overflow-hidden cursor-pointer "
     >
       <Image
-        src={cover_image}
+        src={profile_image? profile_image : "/artist_cover.png"}
         fill
         className={`object-cover p-5 transition-all  ease-in-out duration-500 ${
           hoverd ? "scale-105" : ""
