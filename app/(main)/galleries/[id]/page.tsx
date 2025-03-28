@@ -44,7 +44,7 @@ const AritistDetails = async ({
     <div className="w-full h-full space-y-5 min-h-[calc(100vh-70px)]  ">
       <div className="w-full h-[345px] relative  ">
         <Image
-          src={"/artist_cover.png"}
+          src={data.cover_image || "/artist_cover.png"}
           className="object-cover"
           fill
           alt="Aritst cover"

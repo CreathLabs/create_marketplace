@@ -1,5 +1,6 @@
 "use server";
 import prisma from "@/lib/prisma";
+import { profile } from "console";
 
 export async function getTopArtists() {
   try {
@@ -118,6 +119,7 @@ export async function getGalleries(page = 1, query = "", noPerPage = 6) {
           item.cover_image ||
           `https://api.dicebear.com/9.x/initials/png?seed=${item.username}`,
         artworks_count: item._count.artworks,
+        profile_image: item.profile_image
       })),
       ipp: noPerPage,
     };
