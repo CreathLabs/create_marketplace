@@ -55,7 +55,7 @@ export async function getNfts(
     max?: string;
     name?: string;
   } = { category_id: "", media: "", min: "", max: "", name: "" },
-  noPerPage = 9
+  noPerPage = 15
 ) {
   const sortOptions: Record<Sort, any> = {
     popularity: {

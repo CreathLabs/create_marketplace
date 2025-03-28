@@ -172,34 +172,32 @@ const ExhibitionDetails = async ({
         id="gallery"
         className="space-y-10 lg:space-y-12 flex flex-col  pb-[96px] items-center"
       >
-        <h1 className="font-Playfair font-bold text-xl lg:!text-3xl ">
-          Picture Gallery
-        </h1>
         {data?.images?.length > 0 ? (
-          <div className="container max-w-screen-xl mx-auto pl-6 ">
-            <div className="w-full scroller flex gap-x-6 lg:gap-x-10 overflow-x-auto last:pr-6 lg:last:pr-0">
-              {data.images.map((n, index) => (
-                <div
-                  key={index}
-                  className=" min-w-[calc(100vw/1.2)] lg:min-w-[520px]  h-[367px] relative "
-                >
-                  <Image
-                    src={n}
-                    fill
-                    className="w-full object-cover h-full"
-                    alt="Exh Gallery"
-                  />
-                </div>
-              ))}
+          <>
+            <h1 className="font-Playfair font-bold text-xl lg:!text-3xl ">
+              Picture Gallery
+            </h1>
+          
+            <div className="container max-w-screen-xl mx-auto pl-6 ">
+              <div className="w-full scroller flex gap-x-6 lg:gap-x-10 overflow-x-auto last:pr-6 lg:last:pr-0">
+                {data.images.map((n, index) => (
+                  <div
+                    key={index}
+                    className=" min-w-[calc(100vw/1.2)] lg:min-w-[520px]  h-[367px] relative "
+                  >
+                    <Image
+                      src={n}
+                      fill
+                      className="w-full object-cover h-full"
+                      alt="Exh Gallery"
+                    />
+                  </div>
+                ))}
+              </div>
             </div>
-          </div>
+          </>
         ) : (
-          <div className="py-16">
-            <EmptyComponent
-              text="Oops! This are no pictures at the moment"
-              className="max-w-[630px]"
-            />
-          </div>
+          <></>
         )}
       </div>
     </div>
