@@ -15,6 +15,7 @@
   },
   "dependencies": {
     "@ckeditor/ckeditor5-react": "^9.2.0",
+    "@next/third-parties": "^15.2.4",
     "@particle-network/authkit": "^2.0.16",
     "@prisma/client": "^5.15.1",
     "@stripe/stripe-js": "^4.10.0",
