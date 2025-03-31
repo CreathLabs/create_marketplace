@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { ToastContainer } from "react-toastify";
 import ParticleProvider from "./providers/ParticleProvider";
+import { GoogleAnalytics } from "@next/third-parties/google";
 import "react-toastify/dist/ReactToastify.css";
 import MainProvider from "./provider";
 
@@ -9,6 +10,8 @@ export const metadata: Metadata = {
   title: "Creath Art Marketplace",
   description: "Where Digital Meets Physical",
 };
+
+// gtag('config', 'G-0601G7T6R2');
 
 export default function RootLayout({
   children,
@@ -52,6 +55,7 @@ export default function RootLayout({
           <ParticleProvider>{children}</ParticleProvider>
         </MainProvider>
       </body>
+      <GoogleAnalytics gaId="G-0601G7T6R2" />
     </html>
   );
 }
