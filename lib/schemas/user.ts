@@ -9,10 +9,10 @@ export const EditProfileSchema = yup.object({
   username: yup.string().required("Username is required"),
   wallet_address: yup.string().required("Wallet address is required"),
   bio: yup.string().required("Biography is required"),
-  instagram: yup.string().required("Instagram is required"),
-  twitter: yup.string().required("Twitter is required"),
-  profile_image: yup.string().required("Profile Image is required"),
-  cover_image: yup.string().required("Cover Image is required"),
+  instagram: yup.string(),
+  twitter: yup.string(),
+  profile_image: yup.string(),
+  cover_image: yup.string()
 });
 
 export const UploadArtworkSchema = yup.object({
