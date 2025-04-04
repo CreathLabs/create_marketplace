@@ -19,15 +19,15 @@ const editProfileSchema = yup.object().shape({
     .email("Email address is incorrect")
     .required("This field is required."),
   username: yup.string().required("This field is required."),
-  bio: yup.string().max(300).required("This field is required."),
+  bio: yup.string().max(400).required("This field is required."),
   wallet_address: yup.string().required("This field is required."),
-  instagram: yup.string().required("This field is required."),
-  twitter: yup.string().required("This field is required."),
+  instagram: yup.string(),
+  twitter: yup.string(),
   country: yup.string().optional().nullable().default(null),
   state: yup.string().optional().nullable().default(null),
   address: yup.string().optional().nullable().default(null),
-  profile_image: yup.mixed().required("This field is required"),
-  cover_image: yup.mixed().required("This field is required"),
+  profile_image: yup.mixed(),
+  cover_image: yup.mixed(),
 });
 
 interface editProfileValues extends yup.InferType<typeof editProfileSchema> {
@@ -185,7 +185,7 @@ const EditProfileForm: React.FC<{ profile: User }> = ({ profile }) => {
               label="Instagram Profile"
               name="instagram"
               type="text"
-              value={values.instagram}
+              value={values.instagram ? values.instagram : ""}
               handleChange={handleChange}
               placeholder="Enter Profile URL"
               handleBlur={handleBlur}
@@ -196,7 +196,7 @@ const EditProfileForm: React.FC<{ profile: User }> = ({ profile }) => {
               label="Twitter Profile"
               name="twitter"
               type="text"
-              value={values.twitter}
+              value={values.twitter ? values.twitter : ""}
               handleChange={handleChange}
               placeholder="Enter Profile URL"
               handleBlur={handleBlur}
@@ -204,7 +204,7 @@ const EditProfileForm: React.FC<{ profile: User }> = ({ profile }) => {
               touched={touched.twitter}
             />
             <TextArea
-              label="Biography ( 300 Characters )"
+              label="Biography ( 400 Characters )"
               name="bio"
               value={values.bio}
               handleChange={handleChange}
@@ -243,7 +243,7 @@ const EditProfileForm: React.FC<{ profile: User }> = ({ profile }) => {
                   handleBlur={handleBlur}
                   errors={errors.state}
                   touched={touched.state}
-                  disabled
+                  //disabled
                 />
                 <Input
                   label="Address"
