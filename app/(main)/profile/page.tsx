@@ -40,7 +40,7 @@ const UserProfile = async ({
   
 
   if (!profile) {
-    redirect("/auth/login");
+    redirect("/");
   }
 
   const profileImage =
