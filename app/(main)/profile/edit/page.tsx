@@ -13,7 +13,7 @@ const EditProfile = async () => {
   }
 
   if (!profile) {
-    redirect("/auth/login");
+    redirect("/");
   }
   return (
     <div className="py-10 contain lg:min-h-[calc(100vh-70px)] space-y-10 lg:space-y-24">

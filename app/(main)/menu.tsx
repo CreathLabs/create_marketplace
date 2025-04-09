@@ -58,6 +58,7 @@ const Menu = ({
 
   const handleLogout = async () => {
     await disconnect();
+    router.push("/");
   };
 
   return (

@@ -47,7 +47,7 @@ const ResetPassword: React.FC<{ token: string }> = ({ token }) => {
             resetForm();
             toast.success("Password Reset Successful");
             setSubmitting(false);
-            router.push(`/auth/login`);
+            router.push(`/`);
           } catch (error) {
             const err = parseErrors(error);
             handleError(err.errors);
