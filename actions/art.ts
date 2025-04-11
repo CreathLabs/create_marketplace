@@ -45,6 +45,20 @@ export async function getCategories() {
   }
 }
 
+export async function getUserGalleries() {
+  try {
+    const res = await prisma.user.findMany({
+      where: {
+        is_approved: true,
+        type: "GALLERY",
+      },
+    });
+    return res;
+  } catch (error) {
+    throw error;
+  }
+}
+
 export async function getNfts(
   page = 1,
   sortby: Sort = "popularity",

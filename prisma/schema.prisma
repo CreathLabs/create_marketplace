@@ -45,6 +45,7 @@ model User {
   collectibleLikes  CollectibleLikes[]
   collectibleFlags  CollectibleFlags[]
   collected         Art[]    @relation(name: "CollectedArt") // Artworks collected by this user
+  exhibition        Exhibition[]     @relation(name: "CreatedExhibition") 
 }
 
 model Exhibition {
@@ -64,6 +65,8 @@ model Exhibition {
   created_at   DateTime        @default(now())
   updated_at   DateTime        @updatedAt
   artworks     ExhibitionArt[]
+  user_id      String?
+  created_by   User?   @relation(name: "CreatedExhibition", fields: [user_id], references: [id], onDelete: SetNull)
 }
 
 model Blog {

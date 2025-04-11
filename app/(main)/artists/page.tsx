@@ -29,7 +29,7 @@ const ArtistsPage = async ({
           ))}
         </div>
         {total > ipp && (
-          <Pagination itemsPerPage={16} page={page} totalItems={total} />
+          <Pagination itemsPerPage={12} page={page} totalItems={total} />
         )}
       </div>
     </div>

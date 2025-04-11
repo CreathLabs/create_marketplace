@@ -59,6 +59,9 @@ const page = async ({ params: { id } }: { params: { id: string } }) => {
                 <video
                   src={data.art_image!}
                   autoPlay
+                  playsInline
+                  loop
+                  muted
                   className="absolute w-full h-full object-cover p-4 lg:py-20 lg:pr-20"
                 />
               )}
