@@ -42,6 +42,7 @@ const NftCard: React.FC<ArtProps> = async ({
             autoPlay
             muted
             loop
+            playsInline
             className="w-full h-full object-cover  p-5 absolute"
           />
         )}

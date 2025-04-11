@@ -13,6 +13,7 @@ export const UploadExhibitionSchema = yup.object({
   artist_name: yup.string().required("This field is required."),
   curator_name: yup.string().required("This field is required."),
   cover_image: yup.string().required("This field is required"),
+  user_id: yup.string().required("This field is required."),
   images: yup.array(yup.string().required()).optional(),
 });
 

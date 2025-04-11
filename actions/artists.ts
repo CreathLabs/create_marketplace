@@ -22,7 +22,7 @@ export async function getTopArtists() {
   }
 }
 
-export async function getArtists(page = 1, query = "", noPerPage = 15) {
+export async function getArtists(page = 1, query = "", noPerPage = 12) {
   try {
     const total = await prisma.user.count({
       where: {
@@ -157,6 +157,15 @@ export async function getArtist(id: string) {
             },
           },
         },
+        exhibition: {
+          include: {
+            _count:{
+              select:{
+                artworks:true,
+              }
+            }
+          }
+        }
       },
     });
 
@@ -169,6 +178,10 @@ export async function getArtist(id: string) {
       likes: data.likes.map((item) => ({
         ...item.art,
         likesCount: item.art._count.likes,
+      })),
+      exhibitions: data.exhibition.map((exhibition) => ({
+        ...exhibition,
+        artworksCount: exhibition._count.artworks,
       })),
     };
   } catch (error) {

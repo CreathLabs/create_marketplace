@@ -34,7 +34,7 @@ const page = async ({ params: { id } }: { params: { id: string } }) => {
       <div className="flex flex-col md:w-[50%] lg:w-[60%] w-full lg:flex-column gap-y-6 lg:gap-0 justify-between lg:items-start ">
         <h1 className=" heading leading-[60px] ">{data.title}</h1>
         <div className="flex flex-row lg:w-[30%] md:w-[30%] w-[50%] mt-8 items-start justify-between" >
-          <SocialShare instagram={current?.instagram} />
+          <SocialShare instagram={current?.instagram} type="blog" twitter={current?.twitter} linkedin={"linked"} />
         </div>
       </div>
       <div className="lg:px-14 flex flex-col gap-y-8 lg:items-start ">

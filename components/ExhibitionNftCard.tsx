@@ -39,6 +39,7 @@ const ExhibitionNftCard: React.FC<ArtProps> = ({
             autoPlay
             muted
             loop
+            playsInline
             className="w-full h-full object-cover  p-5 absolute"
           />
         )}

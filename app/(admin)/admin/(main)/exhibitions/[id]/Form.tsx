@@ -27,11 +27,13 @@ const exhibitionSchema = yup.object().shape({
   curator_name: yup.string().required("This field is required."),
   cover_image: yup.mixed().required("This field is required"),
   images: yup.array(yup.mixed().required()).optional(),
+  user_id: yup.string().nullable().optional(),
 });
 
 interface exhibitionValues extends yup.InferType<typeof exhibitionSchema> {
   images: any[];
   cover_image: any;
+  user_id: string;
 }
 
 const FormComp = ({
@@ -50,6 +52,7 @@ const FormComp = ({
     curator_name,
     name,
     nft_address,
+    user_id
   },
   tab,
 }: {
@@ -72,6 +75,7 @@ const FormComp = ({
     name,
     time: time.toISOString().split("T")[1].slice(0, 5),
     nft_address: nft_address || "",
+    user_id : user_id || "",
   };
 
   const router = useRouter();

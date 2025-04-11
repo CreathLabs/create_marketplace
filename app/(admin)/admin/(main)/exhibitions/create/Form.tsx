@@ -14,6 +14,8 @@ import { addExhibition } from "@/actions";
 import ContractAbi from "@/app/providers/ABI/contractABI.json";
 import CollectionContractABI from '@/app/providers/ABI/CollectionContractABI.json';
 import { ethers } from "ethers";
+import SelectComp from "@/components/Select";
+import { User } from "@prisma/client";
 
 const exhibitionSchema = yup.object().shape({
   name: yup.string().required("This field is required."),
@@ -27,6 +29,7 @@ const exhibitionSchema = yup.object().shape({
   artist_name: yup.string().required("This field is required."),
   curator_name: yup.string().required("This field is required."),
   cover_image: yup.mixed().required("This field is required"),
+  user_id: yup.string().required("This field is required."),
   images: yup.array(yup.mixed().required()).optional()
 });
 
@@ -45,7 +48,8 @@ interface exhibitionValues extends yup.InferType<typeof exhibitionSchema> {
   cover_image: any;
 }
 
-const FormComp = () => {
+const FormComp: React.FC<{
+  galleries: User[];}> = ({ galleries }) => {
   const [url, setUrl] = useState("");
   const initialValues: exhibitionValues = {
     address: "",
@@ -60,6 +64,7 @@ const FormComp = () => {
     name: "",
     time: "",
     nft_address: "",
+    user_id: "",
   };
 
   const router = useRouter();
@@ -239,6 +244,7 @@ const FormComp = () => {
                 touched={touched.address}
                 className="rounded-full bg-white border border-[#E2E8F0] placeholder:text-[#0000005C] "
               />
+
               <Input
                 label="Date"
                 name="date"
@@ -263,7 +269,21 @@ const FormComp = () => {
                 touched={touched.time}
                 className="rounded-full bg-white border border-[#E2E8F0] placeholder:text-[#0000005C] "
               />
-
+              <SelectComp
+                  label="Medium"
+                  name="category_id"
+                  value={values.user_id}
+                  handleChange={setFieldValue}
+                  placeholder="Enter Medium"
+                  handleBlur={handleBlur}
+                  error={errors.user_id}
+                  touched={touched.user_id}
+                  options={galleries.map((c) => ({
+                    value: c.id,
+                    label: c.username,
+                  }))}
+                  className="rounded-full bg-white border border-[#E2E8F0] placeholder:text-[#0000005C] "
+              />
               <Input
                 label="Artist Name"
                 name="artist_name"

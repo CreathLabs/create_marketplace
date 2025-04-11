@@ -1,11 +1,11 @@
 import { getArtist } from "@/actions";
 import NftCard from "@/components/NftCard";
 import UserTabs from "@/components/UserTabs";
-import { Icon } from "@iconify/react/dist/iconify.js";
 import { Art } from "@prisma/client";
 import Image from "next/image";
 import { redirect } from "next/navigation";
 import React from "react";
+import SocialShare from "@/components/SocialShare";
 
 const tabs = [
   {
@@ -29,9 +29,15 @@ const AritistDetails = async ({
   searchParams: { tab?: string };
 }) => {
   let data = null;
+  let mintedArtworksCount = 0;
   try {
     const res = await getArtist(id);
     data = res;
+    // Compute the total minted artworks count
+    mintedArtworksCount =
+    data.artworks.length +
+    data.exhibitions.reduce((total, exhibition) => total + (exhibition.artworksCount || 0), 0);
+
   } catch (error) {
     console.log(error);
   }
@@ -76,12 +82,12 @@ const AritistDetails = async ({
             <div className="flex flex-col lg:items-start md:items-center sm:items-center">
               <div className="flex gap-x-10 divide-x lg:mt-0 mt-8">
                 <div className="flex space-x-6 items-center">
-                  <h1 className="font-bold text-[25px] ">6</h1>
+                  <h1 className="font-bold text-[25px] ">{mintedArtworksCount}</h1>
                   <h1 className="font-semibold text-lg">Minted Artworks</h1>
                 </div>
                 <div className="flex space-x-6 pl-10 items-center">
-                  <h1 className="font-bold text-[25px] ">62</h1>
-                  <h1 className="font-semibold text-lg">Collectors</h1>
+                  <h1 className="font-bold text-[25px] ">{data.exhibitions.length}</h1>
+                  <h1 className="font-semibold text-lg">{data.exhibitions.length > 1 ? "Exhibitions" : "Exhibition"}</h1>
                 </div>
               </div>
             </div>
@@ -101,16 +107,7 @@ const AritistDetails = async ({
             </div>
             <div className="space-y-4">
               <h3 className="text-lg font-bold ">Social Media</h3>
-              <div className="flex items-center space-x-12 ">
-                <Icon
-                  icon="ant-design:instagram-filled"
-                  className="text-[26px]"
-                />
-                <Icon
-                  icon="ant-design:twitter-outlined"
-                  className="text-[26px]"
-                />
-              </div>
+              <SocialShare instagram={data?.instagram} type="gallery" twitter={data?.twitter}/>
             </div>
           </div>
         </div>
