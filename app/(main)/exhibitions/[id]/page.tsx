@@ -57,10 +57,17 @@ const ExhibitionDetails = async ({
                 </h2>
               </div>
               <div className="space-y-4 overflow-hidden">
-                <h3 className="text-lg font-bold ">Venue</h3>
-                <h2 className="font-bold text-2xl font-Playfair ">
-                  {`${data.address}, ${data.location}, ${data.country}`}
-                </h2>
+                {
+                  data.address === "Virtual" || data.location === "Virtual" || data.country === "Virtual" ?
+                  <></>
+                  :
+                  <>
+                    <h3 className="text-lg font-bold ">Venue</h3>
+                    <h2 className="font-bold text-2xl font-Playfair ">
+                        {`${data.address}, ${data.location}, ${data.country}`}
+                    </h2>
+                  </>
+                }
               </div>
 
               <Link href="#gallery">
