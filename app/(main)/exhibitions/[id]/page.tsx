@@ -1,8 +1,5 @@
 import { getExhibition, getExhibitionArtworks } from "@/actions";
-import Button from "@/components/Button";
-import EmptyComponent from "@/components/EmptyComponent";
-import ExhibitionNftCard from "@/components/ExhibitionNftCard";
-import Pagination from "@/components/pagination";
+import ExhibitionPageContent from "@/components/exhibitionPageContent";
 import moment from "moment";
 import Image from "next/image";
 import Link from "next/link";
@@ -26,7 +23,7 @@ const ExhibitionDetails = async ({
     console.log(error);
   }
 
-  const { data: artworks, total, ipp } = await getExhibitionArtworks(id, page);
+  const { data: artworks} = await getExhibitionArtworks(id);
 
   if (!data) {
     redirect("/");
@@ -153,31 +150,7 @@ const ExhibitionDetails = async ({
             <h1 className="font-Playfair font-bold text-xl lg:!text-3xl ">
               Featured Artworks
             </h1>
-            {artworks?.length > 0 ? (
-              <>
-                <div className="w-full grid lg:grid-cols-3 gap-6 lg:gap-8">
-                  {artworks.map((n) => (
-                    <ExhibitionNftCard key={n.id} {...n} />
-                  ))}
-                </div>
-                {total > ipp && (
-                  <div className="w-full flex justify-center">
-                    <Pagination
-                      itemsPerPage={ipp}
-                      page={page}
-                      totalItems={total}
-                    />
-                  </div>
-                )}
-              </>
-            ) : (
-              <div className="py-16">
-                <EmptyComponent
-                  text="Oops! This are no featured artworks at the moment"
-                  className="max-w-[630px]"
-                />
-              </div>
-            )}
+            <ExhibitionPageContent artworks={artworks} />
           </div>
         </div>
       </div>
