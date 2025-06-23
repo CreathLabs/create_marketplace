@@ -92,9 +92,7 @@ export async function getExhibition(id: string) {
 }
 
 export async function getExhibitionArtworks(
-  id: string,
-  page = 1,
-  noPerPage = 6
+  id: string
 ) {
   try {
     const total = await prisma.exhibitionArt.count({
@@ -107,17 +105,13 @@ export async function getExhibitionArtworks(
       where: {
         exhibition_id: id,
       },
-      take: noPerPage,
-      skip: (page - 1) * noPerPage,
       orderBy: {
         created_at: "desc",
       },
     });
 
     return {
-      total,
-      data,
-      ipp: noPerPage,
+      data
     };
   } catch (error) {
     throw error;
