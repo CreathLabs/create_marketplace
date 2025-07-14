@@ -41,6 +41,15 @@ const page = async ({ params: { id } }: { params: { id: string } }) => {
   const ext = data.art_image?.split(".");
   const isVideo =
     ext?.[ext.length - 1] && ext?.[ext.length - 1]?.includes("mp4");
+  
+  const getTransformedImage = (img?: string): string | undefined => {
+    if (!img || !img.includes("media.publit.io")) return img ?? undefined;
+
+    const file = img.substr(0, img.lastIndexOf(".")) + ".webp";
+    const adding = "q_80,w_600,h_600,c_fill/";
+    const newString = file.slice(0, 29) + adding + file.slice(29);
+    return newString;
+  };
 
   return (
     <div className="w-full h-full">
@@ -50,7 +59,7 @@ const page = async ({ params: { id } }: { params: { id: string } }) => {
             <div className="w-full h-full relative ">
               {!isVideo ? (
                 <Image
-                  src={data.art_image || "/featured.png"}
+                  src={ getTransformedImage(data.art_image ?? undefined) || "/featured.png"}
                   fill
                   alt=""
                   className="object-cover p-4 lg:py-20 lg:pr-20"
