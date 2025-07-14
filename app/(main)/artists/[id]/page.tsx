@@ -80,7 +80,7 @@ const AritistDetails = async ({
             <div className="flex flex-col lg:items-end md:items-center sm:items-center space-y-14">
               <div className="flex gap-x-10 divide-x lg:mt-0 mt-8">
                 <div className="flex space-x-6 items-center">
-                  <h1 className="font-bold text-[25px] ">0</h1>
+                  <h1 className="font-bold text-[25px] ">{ ((data[(tab as keyof typeof data) || "artworks"] as Art[])?.length || 0)}</h1>
                   <h1 className="font-semibold text-lg">Minted Artworks</h1>
                 </div>
                 <div className="flex space-x-6 pl-10 items-center">

@@ -26,12 +26,21 @@ const NftCard: React.FC<ArtProps> = async ({
 
   const isLiked = !!allLikes?.find((i) => i.art_id === id);
 
+  const getTransformedImage = (img?: string): string | undefined => {
+    if (!img || !img.includes("media.publit.io")) return img ?? undefined;
+
+    const file = img.substr(0, img.lastIndexOf(".")) + ".webp";
+    const adding = "q_80,w_600,h_600,c_fill/";
+    const newString = file.slice(0, 29) + adding + file.slice(29);
+    return newString;
+  };
+
   return (
     <div className="w-full min-w-[323px] h-full  space-y-4 cursor-pointer ">
       <div className="bg-grayTwo relative w-full  h-[370px] ">
         {!isVideo ? (
           <Image
-            src={art_image || "/featured.png"}
+            src={getTransformedImage(art_image ?? undefined) || "/featured.png"}
             fill
             alt="Image"
             className="object-cover p-5"
