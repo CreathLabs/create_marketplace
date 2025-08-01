@@ -72,7 +72,6 @@ const Header: React.FC<Props> = ({ openModal, current }) => {
     }
     catch (err) {
       const error = parseErrors(err);
-      console.log(error)
       handleError(error.errors);
       disconnect()
     }
