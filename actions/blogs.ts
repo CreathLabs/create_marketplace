@@ -30,7 +30,11 @@ export async function getBlog(id: string) {
 
 export async function getBlogs() {
   try {
-    const data = await prisma.blog.findMany();
+    const data = await prisma.blog.findMany({
+      orderBy:{
+        created_at: "desc"
+      }
+    });
     return data;
   } catch (error) {
     throw error;

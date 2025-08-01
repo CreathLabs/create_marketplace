@@ -12,6 +12,7 @@ const ArtistsPage = async ({
   const page = Number(searchParams?.page) || 1;
 
   const { data, total, ipp } = await getArtists(page, searchParams.search);
+  console.log(total)
 
   return (
     <div className="py-14 contain space-y-[72px] min-h-[calc(100vh-70px)]">
