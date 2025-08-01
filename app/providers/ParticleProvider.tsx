@@ -29,7 +29,7 @@ const ParticleProvider = ({ children }: ParticleProviderProps) => {
                     subtitle: "Login or Sign Up"
                 },
                 chains: [optimism, mainnet, solana],
-                authTypes: [AuthType.email, AuthType.google, AuthType.twitter],
+                authTypes: [AuthType.email],
                 themeType: "light", // Login modal theme
                 fiatCoin: "USD",
                 language: "en",
