@@ -44,7 +44,7 @@ const page = async ({ params: { id } }: { params: { id: string } }) => {
           alt="Image"
           className=" !h-[200px] !w-[100%] !relative object-cover "
         />
-        <div className="px-7">{parse(data.content)}</div>
+        <div className="px-0">{parse(data.content)}</div>
       </div>
     </div>
   );

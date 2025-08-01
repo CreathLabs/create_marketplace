@@ -104,6 +104,11 @@ const Menu = ({
             path="exhibitions"
             icon={<Clipboard size="20" variant="Outline" />}
           />
+          <NavLink
+            text="Blogs"
+            path="blogs"
+            icon={<Clipboard size="20" variant="Outline" />}
+          />
         </ul>
       </div>
       <div className="absolute bottom-0 left-0 right-0 w-full contain pb-20">

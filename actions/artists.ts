@@ -43,7 +43,6 @@ export async function getArtists(page = 1, query = "", noPerPage = 12) {
       where: {
         is_approved: true,
         type: "ARTIST",
-        is_artist: true,
         ...(query
           ? {
               AND: {

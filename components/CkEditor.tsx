@@ -17,16 +17,59 @@ import {
   Link,
   BlockQuote,
   Alignment,
+  Image,
+  ImageCaption,
+  ImageStyle,
+  ImageToolbar,
+  ImageUpload,
+  ImageResize,
+  LinkImage,
 } from "ckeditor5";
 
 import "ckeditor5/ckeditor5.css";
 import { ErrorMessage } from "formik";
+import { uploadToCloudinary } from "@/lib/cloudinary";
 
 interface Props {
   name: string;
   placeholder: string;
   handleChange: any;
   value?: string;
+}
+
+// Custom upload adapter for Cloudinary
+class CloudinaryUploadAdapter {
+  loader: any;
+
+  constructor(loader: any) {
+    this.loader = loader;
+  }
+
+  upload() {
+    return this.loader.file.then((file: File) => {
+      return new Promise((resolve, reject) => {
+        uploadToCloudinary(file)
+          .then((url) => {
+            resolve({
+              default: url,
+            });
+          })
+          .catch((error) => {
+            reject(error);
+          });
+      });
+    });
+  }
+
+  abort() {
+    // Reject the promise returned from the upload() method.
+  }
+}
+
+function CloudinaryUploadAdapterPlugin(editor: any) {
+  editor.plugins.get("FileRepository").createUploadAdapter = (loader: any) => {
+    return new CloudinaryUploadAdapter(loader);
+  };
 }
 
 const CustomEditor: React.FC<Props> = ({
@@ -56,6 +99,7 @@ const CustomEditor: React.FC<Props> = ({
               "alignment",
               "bulletedList",
               "numberedList",
+              "imageUpload",
               "undo",
               "redo",
             ],
@@ -76,7 +120,36 @@ const CustomEditor: React.FC<Props> = ({
             Link,
             BlockQuote,
             Alignment,
+            Image,
+            ImageCaption,
+            ImageStyle,
+            ImageToolbar,
+            ImageUpload,
+            ImageResize,
+            LinkImage,
+            CloudinaryUploadAdapterPlugin,
           ],
+          image: {
+            toolbar: [
+              "imageStyle:inline",
+              "imageStyle:block",
+              "imageStyle:side",
+              "|",
+              "toggleImageCaption",
+              "imageTextAlternative",
+              "|",
+              "linkImage",
+            ],
+            styles: {
+              options: [
+              "full",
+              "side",
+              "alignLeft",
+              "alignCenter",
+              "alignRight",
+            ]
+          },
+          },
           placeholder,
         }}
       />

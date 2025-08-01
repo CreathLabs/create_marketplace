@@ -37,7 +37,7 @@ const Header: React.FC<Props> = ({ openModal, current }) => {
   const { toggleMenu, open, setIsLoggedIn } = useContext(MenuContext);
   const { connect, disconnect } = useConnect();
   const router = useRouter();
-  const { provider } =  useEthereum()
+  const { provider } = useEthereum()
 
 
   useEffect(() => {
@@ -46,7 +46,7 @@ const Header: React.FC<Props> = ({ openModal, current }) => {
         disconnect();
       }
     };
-  
+
     handleSession();
   }, []);
 
@@ -54,8 +54,8 @@ const Header: React.FC<Props> = ({ openModal, current }) => {
     setIsLoggedIn(!!current)
   }, [current]);
 
-  const handleLogin = async ()=>{
-    try{
+  const handleLogin = async () => {
+    try {
       const userInfo = await connect() as UserInfo;
       const email = userInfo?.email || "";
       const ethersProvider = new ethers.providers.Web3Provider(provider);
@@ -65,12 +65,12 @@ const Header: React.FC<Props> = ({ openModal, current }) => {
         password: "Dummy"
       });
       await saveSession("token", res?.data?.token || "");
-      if(res?.data?.wallet_address !== accounts[0]){
+      if (res?.data?.wallet_address !== accounts[0]) {
         await updateWalletAddres(accounts[0]);
       }
       router.push("/");
     }
-    catch (err){
+    catch (err) {
       const error = parseErrors(err);
       handleError(error.errors);
       disconnect()
@@ -78,13 +78,13 @@ const Header: React.FC<Props> = ({ openModal, current }) => {
     // disconnect()
   }
 
-  const handleLogout = async ()=>{
+  const handleLogout = async () => {
     await disconnect()
   }
 
   return (
     <main className="w-full h-[56px] lg:h-[70px] bg-white !z-50 sticky top-0">
-      <div className="contain h-full flex justify-between items-center ">
+      <div className="contain h-full flex justify-between items-center gap-x-8">
         <Image
           src="/logo.svg"
           width={55}
@@ -92,7 +92,7 @@ const Header: React.FC<Props> = ({ openModal, current }) => {
           className="!z-50 cursor-pointer"
           alt=""
         />
-        <div className=" hidden  xl:flex w-full h-full justify-center space-x-20 items-center">
+        <div className=" hidden  xl:flex w-full h-full justify-center space-x-12 items-center max-w-2xl mx-auto">
           <NavLink
             text="Home"
             icon={<House size="20" variant="Outline" />}
@@ -115,8 +115,13 @@ const Header: React.FC<Props> = ({ openModal, current }) => {
             path="exhibitions"
             icon={<Clipboard size="20" variant="Outline" />}
           />
+          <NavLink
+            text="Blogs"
+            path="blogs"
+            icon={<Clipboard size="20" variant="Outline" />}
+          />
         </div>
-        <div className="flex h-full gap-x-6 ">
+        <div className="flex h-full gap-x-6 ml-8">
           <Button
             text={current ? current?.username : "Sign Up"}
             className="h-full lg:flex justify-center !z-50 items-center py-0 hidden w-[145px]"
@@ -128,10 +133,10 @@ const Header: React.FC<Props> = ({ openModal, current }) => {
             action={
               current
                 ? async () => {
-                    await deleteSession("token");
-                    router.refresh();
-                    handleLogout();
-                  }
+                  await deleteSession("token");
+                  router.refresh();
+                  handleLogout();
+                }
                 : () => handleLogin()
             }
           />
