@@ -7,6 +7,7 @@ import EventCard from "@/components/EventCard";
 import Accordion from "@/components/Accordion";
 import { accordionItems } from "@/lib/data";
 import BlogCard from "@/components/BlogCard";
+import BridgeButton from "@/components/BridgeComponent";
 
 import {
   getTopArtists,
@@ -28,6 +29,7 @@ export default async function Home() {
 
   return (
     <main className="w-full h-full">
+      <BridgeButton/>
       <Hero topNfts={topNfts} allLikes={allLikes} />
       <TopNFTs topNfts={topNfts} />
       {/* artists */}
