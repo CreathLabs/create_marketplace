@@ -2,7 +2,7 @@
 
 import { AuthType } from '@particle-network/auth-core';
 import { AuthCoreContextProvider } from '@particle-network/authkit';
-import { mainnet, solana, base, arbitrum, arbitrumNova, avalanche, linea, bsc, optimism, polygon  } from '@particle-network/authkit/chains';
+import { mainnet, solana, base, arbitrum, arbitrumNova, avalanche, linea, bsc, optimism, polygon, tron  } from '@particle-network/authkit/chains';
 import { Buffer } from 'buffer';
 import { ReactNode } from "react";
 
@@ -28,7 +28,7 @@ const ParticleProvider = ({ children }: ParticleProviderProps) => {
                     projectName: "Creath Marketplace",
                     subtitle: "Login or Sign Up"
                 },
-                chains: [optimism, mainnet, solana, base, arbitrum, arbitrumNova, avalanche, linea, bsc, polygon],
+                chains: [optimism, mainnet, solana, base, arbitrum, arbitrumNova, avalanche, linea, bsc, polygon, tron],
                 authTypes: [AuthType.email],
                 themeType: "light", // Login modal theme
                 fiatCoin: "USD",
