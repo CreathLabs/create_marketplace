@@ -110,7 +110,7 @@ const BridgeButton = () => {
             {/* Modal */}
             {showBridge && (
                 <div
-                    className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[9999] p-4"
+                    className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[99] p-4"
                     onClick={(e) => {
                         if (e.target === e.currentTarget) {
                             setShowBridge(false);
