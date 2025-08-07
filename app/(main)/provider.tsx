@@ -5,6 +5,7 @@ import Header from "./header";
 import Footer from "./footer";
 import MenuContextProvider, { MenuContext } from "@/contexts/menuContext";
 import Menu from "./menu";
+import BridgeButton from "@/components/BridgeComponent";
 import { User } from "@prisma/client";
 
 const Provider = ({
@@ -39,6 +40,7 @@ const Main = ({
       {children}
       <Footer />
       {showModal && <Modal handleClose={() => setShowModal(false)} />}
+      <BridgeButton />
     </>
   );
 };
