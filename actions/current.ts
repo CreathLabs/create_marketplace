@@ -62,9 +62,31 @@ export const getProfile = async () => {
               },
             }
           }
+        },
+        collectedExhibitionArt: {
+          include: {
+            category: true,
+            exhibition: true,
+          }
         }
       },
     });
+
+    // Combine regular collected artworks and exhibition artworks
+    const combinedCollected = [
+      // Regular collected artworks
+      ...user.collected.map((items) => ({
+        ...items,
+        likeCount: items._count?.likes || 0,
+        type: 'artwork' as const,
+      })),
+      // Exhibition artworks (they don't have likes, so set to 0)
+      ...user.collectedExhibitionArt.map((items) => ({
+        ...items,
+        likeCount: 0, // Exhibition artworks don't have likes system
+        type: 'exhibition' as const,
+      })),
+    ];
 
     return {
       ...user,
@@ -76,9 +98,11 @@ export const getProfile = async () => {
         ...item.art,
         likesCount: item.art._count.likes,
       })),
-      collected: user.collected.map((items)=> ({
+      collected: combinedCollected,
+      // Keep the original arrays for backward compatibility if needed
+      collectedExhibitionArt: user.collectedExhibitionArt.map((items) => ({
         ...items,
-        likeCounr: items._count.likes,
+        likeCount: 0,
       })),
     };
   } catch (error) {
@@ -195,7 +219,7 @@ export const updateWalletAddres = async (wallet_address: string) => {
     throw new NotAuthorizedError();
   }
 
-  try{
+  try {
     const res = await currentUser(token);
     if (!res.id) {
       throw new NotAuthorizedError();

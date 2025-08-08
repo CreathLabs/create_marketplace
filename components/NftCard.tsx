@@ -9,6 +9,7 @@ import { LikeButton } from "./buttons";
 
 interface ArtProps extends Art {
   likesCount?: number;
+  showLikes?: boolean;
 }
 
 const NftCard: React.FC<ArtProps> = async ({
@@ -18,6 +19,7 @@ const NftCard: React.FC<ArtProps> = async ({
   name,
   floor_price,
   likesCount = 0,
+  showLikes = true,
 }) => {
   const allLikes = await getAllUserLikes();
   const ext = art_image?.split(".");
@@ -70,7 +72,7 @@ const NftCard: React.FC<ArtProps> = async ({
             <h1 className="text-navyBlue text-base md:text-lg font-bold ">
               {`${floor_price} USDC`}
             </h1>
-            <LikeButton likesCount={likesCount} isLiked={isLiked} id={id} />
+            <LikeButton showLikes={showLikes} likesCount={likesCount} isLiked={isLiked} id={id} />
           </div>
         </div>
       </div>

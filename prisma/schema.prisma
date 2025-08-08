@@ -45,6 +45,7 @@ model User {
   collectibleLikes  CollectibleLikes[]
   collectibleFlags  CollectibleFlags[]
   collected         Art[]    @relation(name: "CollectedArt") // Artworks collected by this user
+  collectedExhibitionArt ExhibitionArt[] @relation(name: "CollectedExhibitionArt") // Exhibition artworks collected by this user
   exhibition        Exhibition[]     @relation(name: "CreatedExhibition") 
 }
 
@@ -126,6 +127,8 @@ model ExhibitionArt {
   nft_id        String?
   created_at    DateTime   @default(now())
   updated_at    DateTime   @updatedAt
+  collected_by_id String?  // ID of the user who collected this exhibition artwork (nullable if not collected)
+  collected_by    User?    @relation(name: "CollectedExhibitionArt", fields: [collected_by_id], references: [id], onDelete: SetNull) // The user who collected it
 }
 
 model Collectibles {
