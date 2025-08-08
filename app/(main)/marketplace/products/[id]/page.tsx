@@ -93,6 +93,7 @@ const page = async ({ params: { id } }: { params: { id: string } }) => {
                   id={id}
                   isLiked={!!allLikes?.find((i) => i.art_id === id)}
                   likesCount={data.likesCount}
+                  showLikes={true}
                 />
               </div>
               <div className="space-y-3 lg:space-y-4">

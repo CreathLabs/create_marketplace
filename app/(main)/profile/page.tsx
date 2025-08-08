@@ -6,7 +6,7 @@ import Image from "next/image";
 import { redirect } from "next/navigation";
 import React from "react";
 import UserTabs from "@/components/UserTabs";
-import { Art } from "@prisma/client";
+import { Art, ExhibitionArt } from "@prisma/client";
 import EmptyComponent from "@/components/EmptyComponent";
 import Link from "next/link";
 
@@ -137,7 +137,7 @@ const UserProfile = async ({
             {(
               profile[(tab as keyof typeof profile) || "artworks"] as Art[]
             )?.map((a) => (
-              <NftCard key={a.id} {...a} />
+              <NftCard key={a.id} {...a} showLikes={false} />
             ))}
           </div>
         </div>

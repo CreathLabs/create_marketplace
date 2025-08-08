@@ -128,12 +128,12 @@ export async function getNfts(
         AND: filterObject,
         ...(filters.media
           ? {
-              OR: filters.media.split(",").map((type) => ({
-                art_image: {
-                  endsWith: `.${type}`,
-                },
-              })),
-            }
+            OR: filters.media.split(",").map((type) => ({
+              art_image: {
+                endsWith: `.${type}`,
+              },
+            })),
+          }
           : {}),
       },
     });
@@ -144,12 +144,12 @@ export async function getNfts(
         AND: filterObject,
         ...(filters.media
           ? {
-              OR: filters.media.split(",").map((type) => ({
-                art_image: {
-                  endsWith: `.${type}`,
-                },
-              })),
-            }
+            OR: filters.media.split(",").map((type) => ({
+              art_image: {
+                endsWith: `.${type}`,
+              },
+            })),
+          }
           : {}),
       },
       include: {
@@ -302,38 +302,81 @@ export const flagNft = async (id: string) => {
 
 export const updateArtCollected = async (id: string, user_id: string) => {
   try {
-    const updatedArtwork = await prisma.art.update({
-      where: {
-        id,
-      },
-      data: {
-        collected_by_id: user_id,
-      },
-    });
+    let updatedArtwork: any = null;
+    let artist: any = null;
+    let artworkName: string = "";
 
+    // First, try to update in the Art table
+    try {
+      updatedArtwork = await prisma.art.update({
+        where: {
+          id,
+        },
+        data: {
+          collected_by_id: user_id,
+        },
+      });
+
+      // Get the artist for regular artwork
+      artist = await prisma.user.findUnique({
+        where: {
+          id: updatedArtwork.user_id,
+        }
+      });
+
+      artworkName = updatedArtwork.name;
+    } catch (artError) {
+      // If artwork not found in Art table, try ExhibitionArt table
+      try {
+        updatedArtwork = await prisma.exhibitionArt.update({
+          where: {
+            id,
+          },
+          data: {
+            collected_by_id: user_id,
+          },
+          include: {
+            exhibition: {
+              include: {
+                created_by: true, // Get the exhibition creator as the "artist"
+              }
+            }
+          }
+        });
+
+        // For exhibition art, the "artist" is the exhibition creator
+        artist = await prisma.user.findUnique({
+          where: {
+            id: "f19da785-9ba9-46bb-ac31-38a98f340048",
+          }
+        });
+        artworkName = updatedArtwork.name;
+        updatedArtwork = updatedArtwork; // Set this so we know we found something
+      } catch (exhibitionError) {
+        // If not found in either table, throw the original error
+        throw new Error(`Artwork with id ${id} not found in Art or ExhibitionArt tables`);
+      }
+    }
+
+    // Get the user who collected the artwork
     const user = await prisma.user.findUnique({
       where: {
         id: user_id,
       },
     });
 
-    const artist = await prisma.user.findUnique({
-      where: {
-        id: updatedArtwork.user_id,
-      }
-    })
-
     if (!user?.email) {
       throw new Error("User email not found");
     }
 
+    // Send email to the collector
     const { error } = await resend.emails.send({
       from: "Creath Marketplace <info@trustfynd.com>",
       to: [user.email],
       subject: "Artwork Collected",
       react: ArtworkCollectedEmail({
         username: user.username,
-        artworkName: updatedArtwork.name,
+        artworkName: artworkName,
       }),
     });
 
@@ -341,27 +384,24 @@ export const updateArtCollected = async (id: string, user_id: string) => {
       throw error;
     }
 
-    if (!artist?.email) {
-      throw new Error("Artist email not found");
+    // Send email to the artist/exhibition creator (if they exist and have an email)
+    if (artist?.email) {
+      const artistEmail = await resend.emails.send({
+        from: "Creath Marketplace <info@trustfynd.com>",
+        to: [artist.email],
+        subject: "Artwork Collected",
+        react: ArtistCollectedEmail({
+          username: artist.username,
+          artworkName: artworkName,
+        }),
+      });
+
+      if (artistEmail.error) {
+        throw artistEmail.error;
+      }
     }
 
-    const artistEmail = await resend.emails.send({
-      from: "Creath Marketplace <info@trustfynd.com>",
-      to: [artist.email],
-      subject: "Artwork Collected",
-      react: ArtistCollectedEmail({
-        username: artist.username,
-        artworkName: updatedArtwork.name,
-      }),
-    });
-
-    if (artistEmail.error) {
-      throw artistEmail.error;
-    }
-
-
-  }
-  catch (error) {
+  } catch (error) {
     throw error;
   }
 }

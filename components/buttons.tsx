@@ -14,11 +14,12 @@ import React, { useContext, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
 export const LikeButton: React.FC<{
+  showLikes?: boolean;
   isLiked: boolean;
   likesCount: number;
   id: string;
   type?: "art" | "collectible";
-}> = ({ isLiked, id, likesCount, type = "art" }) => {
+}> = ({ showLikes = true, isLiked, id, likesCount, type = "art" }) => {
   const [liked, setLiked] = useState(isLiked);
   const [likes, setLikes] = useState(likesCount);
 
@@ -55,7 +56,10 @@ export const LikeButton: React.FC<{
   };
 
   return (
-    <div className="flex items-center space-x-3 ">
+    <div
+      className="flex items-center space-x-3"
+      style={{ display: showLikes ? 'flex' : 'none' }}
+    >
       <Heart
         size={24}
         // color={"#000"}
@@ -116,9 +120,8 @@ export const FlagButton: React.FC<{
   return (
     <div className="flex flex-col items-center space-y-3">
       <div
-        className={`w-12 h-12  ${
-          flagged ? "bg-red-600" : "bg-white"
-        } 0 flex items-center justify-center `}
+        className={`w-12 h-12  ${flagged ? "bg-red-600" : "bg-white"
+          } 0 flex items-center justify-center `}
       >
         <InfoCircle
           size={24}
