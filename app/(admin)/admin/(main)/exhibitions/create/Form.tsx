@@ -33,15 +33,9 @@ const exhibitionSchema = yup.object().shape({
   images: yup.array(yup.mixed().required()).optional()
 });
 
-const collectionContractAddress = '0x0578b23FE97D6Ac801007D259b03334F57276384' // for creating collections
-const collectionPrivateKey = "cf4eede6dbc634879e6feb13601d36cf55b2a7cfc3593e646e26ef9c5dd27921"
-const creathAddress = '0x013b6f5a3fF3A3259d832b89C6C0adaabe59f8C6'; // for listing items on the marketplace and also contains the buy function.
-// const PROVIDER = window.ethereum
-const PROVIDER = "https://mainnet.optimism.io"
 
-const provider = new ethers.providers.JsonRpcProvider(PROVIDER);
-const CollectionWallet = new ethers.Wallet(collectionPrivateKey, provider);
-const CollectionContractInstance =  new ethers.Contract(collectionContractAddress, CollectionContractABI, CollectionWallet );
+// for listing items on the marketplace and also contains the buy function.
+// const PROVIDER = window.ethereum
 
 interface exhibitionValues extends yup.InferType<typeof exhibitionSchema> {
   images: any[];
@@ -117,16 +111,21 @@ const FormComp: React.FC<{
           (async () => {
             try {
               const cover_image = await uploadToCloudinary(data.cover_image);
-              let Txn = await CollectionContractInstance.createNFTContract(`${data.name}`, getRandomLettersFromName(data.name))
-              const receipt = await Txn.wait()
-              const collectionInstance = new ethers.Contract(receipt.events[0].address, ContractAbi, CollectionWallet)
-              let tests = await collectionInstance.setApprovalForAll(creathAddress, true);
+              const res = await fetch("/api/createExhibition", {
+                method: "POST",
+                body: JSON.stringify({
+                  name: `${data.artist_name}`,
+                  random: getRandomLettersFromName(data.name)
+                }),
+                headers: { "Content-Type": "application/json" }
+              });
+              const { address } = await res.json();
               await addExhibition({
                 ...data,
                 cover_image,
                 date: new Date(data.date).toISOString(),
                 time: convertTimeToDateTime(data.time),
-                nft_address: receipt.events[0].address,
+                nft_address: address,
               });
               resetForm();
               setSubmitting(false);

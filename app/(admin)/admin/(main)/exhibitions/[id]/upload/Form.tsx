@@ -39,12 +39,10 @@ const UploadExhibitionArt: React.FC<{
   exhibition_id: string;
 }> = ({ categories, exhibition_id }) => {
   const [url, setUrl] = useState("");
-  const collectionPrivateKey = "cf4eede6dbc634879e6feb13601d36cf55b2a7cfc3593e646e26ef9c5dd27921";
-  const creathAddress = '0x013b6f5a3fF3A3259d832b89C6C0adaabe59f8C6'; // for listing items on the marketplace and also contains the buy function.
-  const PROVIDER = "https://optimism-rpc.publicnode.com"
-  const provider = new ethers.providers.JsonRpcProvider(PROVIDER);
-  const CollectionWallet = new ethers.Wallet(collectionPrivateKey, provider)
-  const ListingContract = new ethers.Contract(creathAddress, CreathABI, CollectionWallet );
+  // const creathAddress = '0x013b6f5a3fF3A3259d832b89C6C0adaabe59f8C6'; // for listing items on the marketplace and also contains the buy function.
+  // const PROVIDER = "https://optimism-rpc.publicnode.com"
+  // const provider = new ethers.providers.JsonRpcProvider(PROVIDER);
+  // const ListingContract = new ethers.Contract(creathAddress, CreathABI, CollectionWallet );
 
   const initialValues: uploadArtworkValues = {
     art_image: "",
@@ -114,19 +112,30 @@ const UploadExhibitionArt: React.FC<{
               if (!exhibition.nft_address) {
                 throw new Error("NFT address is null");
               }
-              const MintingContract = new ethers.Contract(exhibition.nft_address, ContractAbi, CollectionWallet);
+              // const MintingContract = new ethers.Contract(exhibition.nft_address, ContractAbi, CollectionWallet);
               const art_image = await uploadToCloudinary(data.art_image);
               let ipfsHash = await pintoIPFS(art_image);
               const tokenURI = `data:application/json;base64,${Buffer.from(JSON.stringify({"description" : `${data.description}`, "image" : `${ipfsHash}`, "name" : `${data.name}`})).toString("base64")}`;
-              let Txn = await MintingContract.mint(CollectionWallet.address, tokenURI)
-              console.log(Txn)
-              const mintReceipt = await Txn.wait()
-              console.log(mintReceipt)
-              let nft_id = parseInt(mintReceipt.events[0].args[2]._hex, 16)
-              let UnitPrice = ethers.utils.parseUnits(data.floor_price.toString(), 6)
-              let Txn2 = await ListingContract.listItem(exhibition.nft_address, '0x9bBD6C78a59db71f5a6Bf883f9d108474e980794', nft_id, UnitPrice)
-              const receipt = await Txn2.wait()
-              console.log(receipt);
+              // let Txn = await MintingContract.mint(CollectionWallet.address, tokenURI)
+              // console.log(Txn)
+              // const mintReceipt = await Txn.wait()
+              // console.log(mintReceipt)
+              // let nft_id = parseInt(mintReceipt.events[0].args[2]._hex, 16)
+              // let UnitPrice = ethers.utils.parseUnits(data.floor_price.toString(), 6)
+              // let Txn2 = await ListingContract.listItem(exhibition.nft_address, '0x9bBD6C78a59db71f5a6Bf883f9d108474e980794', nft_id, UnitPrice)
+              // const receipt = await Txn2.wait()
+              // console.log(receipt);
+              const res = await fetch("/api/mintExhibition", {
+                method: "POST",
+                body: JSON.stringify({
+                  tokenURI: tokenURI,
+                  artistWallet: "0x33B5E1DaF11b12103682fB77031111736aADAa5C",
+                  floor_price: data.floor_price,
+                  exhibition_address: exhibition.nft_address
+                }),
+                headers: { "Content-Type": "application/json" }
+              });
+              const { nft_id } = await res.json();
               await uploadExhibitionArtWork({
                 ...data,
                 art_image: art_image,

@@ -8,22 +8,11 @@ import React, { useState } from "react";
 import { toast } from "react-toastify";
 import { pinJSONToIPFS } from "@/app/providers/web3StorageClient";
 import axios from 'axios';
-import ContractAbi from "@/app/providers/ABI/contractABI.json";
-import CreathABI from "@/app/providers/ABI/creathABI.json";
-import { ethers } from "ethers";
 
 
 const Buttons = ({ artwork }: { artwork: Art }) => {
   const [approving, setApproving] = useState(false);
   const [rejecting, setRejecting] = useState(false);
-  const collectionPrivateKey = "cf4eede6dbc634879e6feb13601d36cf55b2a7cfc3593e646e26ef9c5dd27921"
-  const contractAddress = '0x4DF3Fbf82df684A16E12e0ff3683E6888e51B994'; // contract address for minting NFTs
-  const creathAddress = '0x013b6f5a3fF3A3259d832b89C6C0adaabe59f8C6'; // for listing items on the marketplace and also contains the buy function.
-  const PROVIDER = "https://optimism-rpc.publicnode.com"
-  const provider = new ethers.providers.JsonRpcProvider(PROVIDER);
-  const CollectionWallet = new ethers.Wallet(collectionPrivateKey, provider)
-  const MintingContract = new ethers.Contract(contractAddress, ContractAbi, CollectionWallet);
-  const ListingContract = new ethers.Contract(creathAddress, CreathABI, CollectionWallet );
   const router = useRouter();
 
   const approve = async () => {
@@ -33,15 +22,25 @@ const Buttons = ({ artwork }: { artwork: Art }) => {
         const artist = await getUser(artwork.user_id);
         let ipfsHash = await pintoIPFS(artwork.art_image);
         const tokenURI = `data:application/json;base64,${Buffer.from(JSON.stringify({"description" : `${artwork.description}`, "image" : `${ipfsHash}`, "name" : `${artwork.name}`})).toString("base64")}`;
-        let Txn = await MintingContract.mint(CollectionWallet.address, tokenURI)
-        console.log(Txn)
-        const mintReceipt = await Txn.wait()
-        console.log(mintReceipt)
-        let nft_id = parseInt(mintReceipt.events[0].args[2]._hex, 16)
-        let UnitPrice = ethers.utils.parseUnits(artwork.floor_price.toString(), 6)
-        let Txn2 = await ListingContract.listItem(contractAddress, artist?.wallet_address, nft_id, UnitPrice)
-        const receipt = await Txn2.wait()
-        console.log(receipt);
+        // let Txn = await MintingContract.mint(CollectionWallet.address, tokenURI)
+        // console.log(Txn)
+        // const mintReceipt = await Txn.wait()
+        // console.log(mintReceipt)
+        // let nft_id = parseInt(mintReceipt.events[0].args[2]._hex, 16)
+        // let UnitPrice = ethers.utils.parseUnits(artwork.floor_price.toString(), 6)
+        // let Txn2 = await ListingContract.listItem(contractAddress, artist?.wallet_address, nft_id, UnitPrice)
+        // const receipt = await Txn2.wait()
+        // console.log(receipt);
+        const res = await fetch("/api/mint", {
+          method: "POST",
+          body: JSON.stringify({
+            tokenURI: tokenURI,
+            artistWallet: artist?.wallet_address,
+            floor_price: artwork.floor_price
+          }),
+          headers: { "Content-Type": "application/json" }
+        });
+        const { nft_id } = await res.json();
         await approveArtwork(artwork.id, `${nft_id}`);
         toast.success("Artwork approved Successful");
         router.push("/admin/artworks");      

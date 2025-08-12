@@ -33,7 +33,7 @@ const VerifyButton: React.FC<VerifyButtonProps> =  ( { nft_id, current, price, I
     const [checkContract, setCheck] = useState<ethers.Contract | null>(null);
     const [mockContract, setMock] = useState<ethers.Contract | null>(null);
     const [buyContract, setContract] = useState<ethers.Contract | null>(null)
-    const [transferContract, setTransferContract] = useState<ethers.Contract | null>(null)
+    // const [transferContract, setTransferContract] = useState<ethers.Contract | null>(null)
     const [address, setAddress] = useState("");
     const [ verified, setVerified ] = useState(false);
     const [ available, setAvailable ] = useState(false);
@@ -43,10 +43,6 @@ const VerifyButton: React.FC<VerifyButtonProps> =  ( { nft_id, current, price, I
     const creathAddress = "0x4DF3Fbf82df684A16E12e0ff3683E6888e51B994";
     const mockContractAddress = "0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85";
     const { provider } = useEthereum();
-    const PROVIDER = "https://optimism.drpc.org"
-    const providers = new ethers.providers.JsonRpcProvider(PROVIDER);
-    const collectionPrivateKey = "cf4eede6dbc634879e6feb13601d36cf55b2a7cfc3593e646e26ef9c5dd27921";
-    const AdminWallet = new ethers.Wallet(collectionPrivateKey, providers);
     const buyingAddress = exhibition_address ? exhibition_address : creathAddress;
     
 
@@ -79,15 +75,13 @@ const VerifyButton: React.FC<VerifyButtonProps> =  ( { nft_id, current, price, I
                 const signer = ethersProvider.getSigner(accounts[0]);
                 setAddress(accounts[0])
                 let checkAddress = exhibition_address ? exhibition_address : creathAddress;
-                let transferAddresss = exhibition_address ? exhibition_address : contractAddress
+                // let transferAddresss = exhibition_address ? exhibition_address : contractAddress
                 const CheckContract = new ethers.Contract(checkAddress, ABI, ethersProvider);
                 const ContractInstance = new ethers.Contract(contractAddress, CreathABI, signer);
                 const MockContract = new ethers.Contract(mockContractAddress, MockABI, signer);
-                const contract= new ethers.Contract(transferAddresss, CreathABI, AdminWallet);
                 setMock(MockContract);
                 setContract(ContractInstance);
                 setCheck(CheckContract);
-                setTransferContract(contract);
             }
             catch(err){
                 console.log(err)
@@ -116,7 +110,15 @@ const VerifyButton: React.FC<VerifyButtonProps> =  ( { nft_id, current, price, I
 
     const transferArtwork = async(id: any)=>{
         try{
-            const result = await transferContract?.buyItem(creathAddress, current?.wallet_address, id, true);
+            const res = await fetch("/api/transfer", {
+                method: "POST",
+                body: JSON.stringify({
+                  id: id,
+                  address: exhibition_address,
+                  wallet_address: current?.wallet_address
+                }),
+                headers: { "Content-Type": "application/json" }
+              });
             if (current?.id) {
                 await updateArtCollected(art_id, current.id);
             }
@@ -204,8 +206,7 @@ const VerifyButton: React.FC<VerifyButtonProps> =  ( { nft_id, current, price, I
                         callback: (response) => {
                         console.log("Flutterwave response:", response);
                         if (response.status === "successful") {
-                            let id = ethers.BigNumber.from(nft_id);
-                            transferArtwork(id); // Trigger transfer logic after payment success
+                            transferArtwork(nft_id); // Trigger transfer logic after payment success
                         }
                         closePaymentModal(); // Close the Flutterwave modal
                         },
