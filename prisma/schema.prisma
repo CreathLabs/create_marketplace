@@ -65,7 +65,8 @@ model Exhibition {
   nft_address  String?
   created_at   DateTime        @default(now())
   updated_at   DateTime        @updatedAt
-  artworks     ExhibitionArt[]
+  artworks     ExhibitionArt[] // Keep for now (will be deprecated)
+  art_pieces   Art[]           @relation(name: "ExhibitionArt") // New relation to Art table
   user_id      String?
   created_by   User?   @relation(name: "CreatedExhibition", fields: [user_id], references: [id], onDelete: SetNull)
 }
@@ -94,10 +95,12 @@ model Art {
   floor_price   Float
   description   String         @db.VarChar()
   dimensions    String
-  user_id       String
-  user          User           @relation(name: "UserArt", fields: [user_id], references: [id], onDelete: Cascade) // Creator of the artwork
+  user_id       String?        // Made nullable
+  user          User?          @relation(name: "UserArt", fields: [user_id], references: [id], onDelete: SetNull) // Creator of the artwork
   category_id   String
   category      Category       @relation(fields: [category_id], references: [id], onDelete: Cascade)
+  exhibition_id String?        // New field linking to exhibition
+  exhibition    Exhibition?    @relation(name: "ExhibitionArt", fields: [exhibition_id], references: [id], onDelete: SetNull) // Link to exhibition
   location      String?
   contract      String?
   published_by  String?

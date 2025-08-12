@@ -1,12 +1,12 @@
 "use client";
 import { useState } from "react";
 import ExhibitionNftCard from "@/components/ExhibitionNftCard";
-import { ExhibitionArt } from "@prisma/client";
+import { Art } from "@prisma/client";
 import EmptyComponent from "@/components/EmptyComponent";
 import Button from "./Button";
 
 interface Props {
-  artworks: ExhibitionArt[];
+  artworks: Art[];
 }
 
 const STEP = 12;

@@ -1,12 +1,12 @@
 "use client";
-import { ExhibitionArt } from "@prisma/client";
+import { Art } from "@prisma/client";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 import { DeleteButton } from "./buttons";
 import { usePathname } from "next/navigation";
 
-interface ArtProps extends ExhibitionArt {}
+interface ArtProps extends Art {}
 
 const ExhibitionNftCard: React.FC<ArtProps> = ({
   id,
@@ -37,7 +37,7 @@ const ExhibitionNftCard: React.FC<ArtProps> = ({
       <div className="bg-grayTwo relative w-full  h-[370px] ">
         {!isVideo ? (
           <Image
-            src={getTransformedImage(art_image) || "/featured.png"}
+            src={getTransformedImage(art_image || undefined) || "/featured.png"}
             fill
             alt="Image"
             className="object-cover p-5"

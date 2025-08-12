@@ -95,13 +95,13 @@ export async function getExhibitionArtworks(
   id: string
 ) {
   try {
-    const total = await prisma.exhibitionArt.count({
+    const total = await prisma.art.count({
       where: {
         exhibition_id: id,
       },
     });
 
-    const data = await prisma.exhibitionArt.findMany({
+    const data = await prisma.art.findMany({
       where: {
         exhibition_id: id,
       },
@@ -120,7 +120,7 @@ export async function getExhibitionArtworks(
 
 export async function getExhibitionArtwork(id: string) {
   try {
-    const data = await prisma.exhibitionArt.findUniqueOrThrow({
+    const data = await prisma.art.findUniqueOrThrow({
       where: {
         id,
       },

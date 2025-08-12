@@ -270,11 +270,11 @@ const FormComp: React.FC<{
                 className="rounded-full bg-white border border-[#E2E8F0] placeholder:text-[#0000005C] "
               />
               <SelectComp
-                  label="Medium"
+                  label="Creator"
                   name="category_id"
                   value={values.user_id}
                   handleChange={setFieldValue}
-                  placeholder="Enter Medium"
+                  placeholder="Choose user"
                   handleBlur={handleBlur}
                   error={errors.user_id}
                   touched={touched.user_id}
