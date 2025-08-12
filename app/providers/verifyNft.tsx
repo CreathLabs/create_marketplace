@@ -228,7 +228,7 @@ const VerifyButton: React.FC<VerifyButtonProps> =  ( { nft_id, current, price, I
                 text={ !isSold ? `${Innertext}` : "Sold"}
                 textStyles=" w-[144px] lg:w-[183px]"
                 className="text-white border-white"
-                disabled={!available}
+                disabled={true}
                 loading =  {connectionStatus === "disconnected" ? false : !verified}
                 action={handleBuy}
             />
