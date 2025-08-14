@@ -54,7 +54,7 @@ export const createUser = async (
     });
 
     // const { error } = await resend.emails.send({
-    //   from: "Creath Marketplace <info@trustfynd.com>",
+    //   from: "Creath Marketplace <no-reply@mail.creath.io>",
     //   to: [res.email],
     //   subject: "Verify your Email address",
     //   react: OtpEmailTemplate({ otp }),
@@ -197,7 +197,7 @@ export const resendOtp = async (email: string) => {
   });
 
   const { error } = await resend.emails.send({
-    from: "Creath Marketplace <info@trustfynd.com>",
+    from: "Creath Marketplace <no-reply@mail.creath.io>",
     to: [res.email],
     subject: "Verify your Email address",
     react: OtpEmailTemplate({ otp }),

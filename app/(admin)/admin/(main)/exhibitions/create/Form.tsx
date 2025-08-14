@@ -43,7 +43,8 @@ interface exhibitionValues extends yup.InferType<typeof exhibitionSchema> {
 }
 
 const FormComp: React.FC<{
-  galleries: User[];}> = ({ galleries }) => {
+  galleries: User[];
+}> = ({ galleries }) => {
   const [url, setUrl] = useState("");
   const initialValues: exhibitionValues = {
     address: "",
@@ -98,7 +99,7 @@ const FormComp: React.FC<{
       const randomIndex = Math.floor(Math.random() * cleanName.length);
       randomLetters += cleanName[randomIndex];
     }
-  
+
     return randomLetters;
   }
 
@@ -109,24 +110,29 @@ const FormComp: React.FC<{
         validationSchema={exhibitionSchema}
         onSubmit={(data, { resetForm, setSubmitting }) => {
           (async () => {
+            console.log("Clicked!!!!")
             try {
               const cover_image = await uploadToCloudinary(data.cover_image);
               const res = await fetch("/api/createExhibition", {
                 method: "POST",
                 body: JSON.stringify({
-                  name: `${data.artist_name}`,
+                  name: `${data.name}`,
                   random: getRandomLettersFromName(data.name)
                 }),
                 headers: { "Content-Type": "application/json" }
               });
-              const { address } = await res.json();
+              const response = await res.json();
+              console.log(response)
+              if (!response.data.address?.address) {
+                throw new Error("Failed to create exhibition: No exhibition contract address");
+              }
               await addExhibition({
                 ...data,
                 cover_image,
                 date: new Date(data.date).toISOString(),
                 time: convertTimeToDateTime(data.time),
-                nft_address: address,
-              });
+                nft_address: response.data.address.address,
+              })
               resetForm();
               setSubmitting(false);
               toast.success("Exhibition added Successful");
@@ -269,19 +275,19 @@ const FormComp: React.FC<{
                 className="rounded-full bg-white border border-[#E2E8F0] placeholder:text-[#0000005C] "
               />
               <SelectComp
-                  label="Medium"
-                  name="category_id"
-                  value={values.user_id}
-                  handleChange={setFieldValue}
-                  placeholder="Enter Medium"
-                  handleBlur={handleBlur}
-                  error={errors.user_id}
-                  touched={touched.user_id}
-                  options={galleries.map((c) => ({
-                    value: c.id,
-                    label: c.username,
-                  }))}
-                  className="rounded-full bg-white border border-[#E2E8F0] placeholder:text-[#0000005C] "
+                label="Creator"
+                name="user_id"
+                value={values.user_id}
+                handleChange={setFieldValue}
+                placeholder="Select User"
+                handleBlur={handleBlur}
+                error={errors.user_id}
+                touched={touched.user_id}
+                options={galleries.map((c) => ({
+                  value: c.id,
+                  label: c.username,
+                }))}
+                className="rounded-full bg-white border border-[#E2E8F0] placeholder:text-[#0000005C] "
               />
               <Input
                 label="Artist Name"

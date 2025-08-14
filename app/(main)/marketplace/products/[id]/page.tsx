@@ -112,7 +112,7 @@ const page = async ({ params: { id } }: { params: { id: string } }) => {
                   Innertext="Buy With Crypto"
                   paymentType="Wallet"
                   artName={data.name}
-                  exhibition_address={null}
+                  exhibition_address={data.contract}
                   art_id={data.id}
                 />
                 <VerifyButton
@@ -122,7 +122,7 @@ const page = async ({ params: { id } }: { params: { id: string } }) => {
                   Innertext="Buy With Fiat"
                   paymentType="Fiat"
                   artName={data.name}
-                  exhibition_address={null}
+                  exhibition_address={data.contract}
                   art_id={data.id}
                 />
               </div>

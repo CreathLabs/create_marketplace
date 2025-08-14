@@ -8,7 +8,7 @@ import React, { useState } from "react";
 import { toast } from "react-toastify";
 import { pinJSONToIPFS } from "@/app/providers/web3StorageClient";
 import axios from 'axios';
-
+import { ethers } from "ethers";
 
 const Buttons = ({ artwork }: { artwork: Art }) => {
   const [approving, setApproving] = useState(false);
@@ -40,8 +40,12 @@ const Buttons = ({ artwork }: { artwork: Art }) => {
           }),
           headers: { "Content-Type": "application/json" }
         });
-        const { nft_id } = await res.json();
-        await approveArtwork(artwork.id, `${nft_id}`);
+        const response = await res.json();
+        console.log(response)
+        if(!response.data.nft_id.nft_id){
+          throw new Error("NFT ID not found");
+        }
+        await approveArtwork(artwork.id, `${response.data.nft_id.nft_id}`);
         toast.success("Artwork approved Successful");
         router.push("/admin/artworks");      
       } else {
@@ -92,6 +96,29 @@ const Buttons = ({ artwork }: { artwork: Art }) => {
     }
   };
 
+  const PROVIDERS = [
+    "https://optimism-rpc.publicnode.com",
+    "https://mainnet.optimism.io",
+    "https://optimism.drpc.org",
+    "https://opt-mainnet.g.alchemy.com/v2/zgCpItc4ibgfD5I_y5X0j4Wdfux5YT3j",
+    "wss://optimism.gateway.tenderly.co",
+    "https://optimism.public.blockpi.network/v1/rpc/public"
+  ];
+  
+  async function testNetwork() {
+    for (const url of PROVIDERS) {
+      try {
+        const provider = new ethers.providers.JsonRpcProvider(url, { name: "optimism", chainId: 10 });
+        await provider.getBlockNumber(); // quick health check
+        console.log(`✅ Connected to ${url}`);
+        return provider;
+      } catch (err) {
+        console.warn(`❌ RPC failed: ${url}`);
+      }
+    }
+    console.error("All Optimism RPCs failed");
+  }
+
   return (
     <>
       {artwork.is_approved ? (
@@ -105,6 +132,7 @@ const Buttons = ({ artwork }: { artwork: Art }) => {
         </div>
       ) : (
         <div className="flex justify-between items-center gap-x-10 ">
+          <button onClick={testNetwork}>Test Network</button>
           <Button
             text="Approve Artwork"
             action={approve}

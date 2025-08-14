@@ -36,9 +36,12 @@ export const UploadExhibitionArtworkSchema = yup.object({
   description: yup.string().required("Description is required."),
   dimensions: yup.string().required("Dimensions is required."),
   category_id: yup.string().required("Medium is required."),
-  art_image: yup.string().required("Art Image is required"),
-  exhibition_id: yup.string().required("Medium is required."),
+  art_image: yup.string().required().nullable(),
+  exhibition_id: yup.string().required().nullable(),
   nft_id: yup.string(),
+  is_approved: yup.boolean(),
+  contract: yup.string(),
+  user_id: yup.string().required()
 });
 
 export const validateUploadExhibitionArtworkSchema = async (values: any) => {

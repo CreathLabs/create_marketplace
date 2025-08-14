@@ -18,6 +18,9 @@ export async function getTopNfts() {
       where: {
         is_approved: true,
       },
+      orderBy: {
+        created_at: 'desc', // newest first
+      },
       include: {
         _count: {
           select: {
@@ -45,12 +48,15 @@ export async function getCategories() {
   }
 }
 
-export async function getUserGalleries() {
+export async function getUserGalleriesandArtists() {
   try {
     const res = await prisma.user.findMany({
       where: {
         is_approved: true,
-        type: "GALLERY",
+        OR: [
+          { type: "GALLERY" },
+          { is_artist: true },
+        ],
       },
     });
     return res;
@@ -61,7 +67,7 @@ export async function getUserGalleries() {
 
 export async function getNfts(
   page = 1,
-  sortby: Sort = "popularity",
+  sortby: Sort = "recent",
   filters: {
     category_id?: string;
     media?: string;
@@ -347,7 +353,7 @@ export const updateArtCollected = async (id: string, user_id: string) => {
         // For exhibition art, the "artist" is the exhibition creator
         artist = await prisma.user.findUnique({
           where: {
-            id: "f19da785-9ba9-46bb-ac31-38a98f340048",
+            id: updatedArtwork.user_id,
           }
         });
         artworkName = updatedArtwork.name;
@@ -371,7 +377,7 @@ export const updateArtCollected = async (id: string, user_id: string) => {
 
     // Send email to the collector
     const { error } = await resend.emails.send({
-      from: "Creath Marketplace <info@trustfynd.com>",
+      from: "Creath Marketplace <no-reply@mail.creath.io>",
       to: [user.email],
       subject: "Artwork Collected",
       react: ArtworkCollectedEmail({
@@ -387,7 +393,7 @@ export const updateArtCollected = async (id: string, user_id: string) => {
     // Send email to the artist/exhibition creator (if they exist and have an email)
     if (artist?.email) {
       const artistEmail = await resend.emails.send({
-        from: "Creath Marketplace <info@trustfynd.com>",
+        from: "Creath Marketplace <no-reply@mail.creath.io>",
         to: [artist.email],
         subject: "Artwork Collected",
         react: ArtistCollectedEmail({

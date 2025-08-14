@@ -274,7 +274,7 @@ export const uploadArtWork = async (
     });
 
     const { error } = await resend.emails.send({
-      from: "Creath Marketplace <info@trustfynd.com>",
+      from: "Creath Marketplace <no-reply@mail.creath.io>",
       to: [res.email],
       subject: "Artwork uploaded, pending Approval",
       react: ArtworkUploadedEmail({

@@ -133,7 +133,7 @@ export async function approveArtwork(id: string, nft_id: string) {
     });
 
     const { error } = await resend.emails.send({
-      from: "Creath Marketplace <info@trustfynd.com>",
+      from: "Creath Marketplace <no-reply@mail.creath.io>",
       to: [data?.user?.email],
       subject: "Artwork Approved",
       react: ArtworkApprovedEmail({
@@ -179,7 +179,7 @@ export async function rejectDeleteArtwork(id: string) {
     });
 
     const { error } = await resend.emails.send({
-      from: "Creath Marketplace <info@trustfynd.com>",
+      from: "Creath Marketplace <no-reply@mail.creath.io>",
       to: [data?.user?.email],
       subject: "Artwork Rejected",
       react: ArtworkRejectedEmail({

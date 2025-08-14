@@ -1,10 +1,10 @@
 import React from "react";
 import Header from "../../header";
 import FormComp from "./Form";
-import { getUserGalleries } from "@/actions";
+import { getUserGalleriesandArtists } from "@/actions";
 
 const CreateCollectible = async () => {
-  const galleries = await getUserGalleries();
+  const galleries = await getUserGalleriesandArtists();
   return (
     <div className="w-full  h-full">
       <Header title="Create Exhibition" />

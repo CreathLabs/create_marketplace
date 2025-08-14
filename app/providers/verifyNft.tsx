@@ -135,6 +135,7 @@ const VerifyButton: React.FC<VerifyButtonProps> =  ( { nft_id, current, price, I
     }
 
     const checkArtwork = async()=>{
+        console.log(nft_id)
         try{
             if(checkContract){
                 let txn =  await checkContract.ownerOf(nft_id);
@@ -229,7 +230,7 @@ const VerifyButton: React.FC<VerifyButtonProps> =  ( { nft_id, current, price, I
                 text={ !isSold ? `${Innertext}` : "Sold"}
                 textStyles=" w-[144px] lg:w-[183px]"
                 className="text-white border-white"
-                disabled={true}
+                disabled={!available}
                 loading =  {connectionStatus === "disconnected" ? false : !verified}
                 action={handleBuy}
             />
