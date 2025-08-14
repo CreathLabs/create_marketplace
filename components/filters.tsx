@@ -48,7 +48,7 @@ const Filters = ({
   const router = useRouter();
 
   useEffect(() => {
-    setActiveSort(sortby || "popularity");
+    setActiveSort(sortby || "recent");
   }, [sortby]);
 
   useEffect(() => {

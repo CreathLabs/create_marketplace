@@ -81,7 +81,7 @@ const UploadExhibitionArt: React.FC<{
   };
 
   const pintoIPFS = async (url: string) => {
-    try{
+    try {
       const response = await axios.get(url, { responseType: 'arraybuffer' });
       const pinData = new FormData();
       const mimeType = response.headers['content-type'] || 'application/octet-stream';
@@ -95,7 +95,7 @@ const UploadExhibitionArt: React.FC<{
         console.error("Pinning to IPFS failed:", result.message);
       }
     }
-    catch(error){
+    catch (error) {
       console.log(error);
     }
   }
@@ -115,7 +115,7 @@ const UploadExhibitionArt: React.FC<{
               // const MintingContract = new ethers.Contract(exhibition.nft_address, ContractAbi, CollectionWallet);
               const art_image = await uploadToCloudinary(data.art_image);
               let ipfsHash = await pintoIPFS(art_image);
-              const tokenURI = `data:application/json;base64,${Buffer.from(JSON.stringify({"description" : `${data.description}`, "image" : `${ipfsHash}`, "name" : `${data.name}`})).toString("base64")}`;
+              const tokenURI = `data:application/json;base64,${Buffer.from(JSON.stringify({ "description": `${data.description}`, "image": `${ipfsHash}`, "name": `${data.name}` })).toString("base64")}`;
               // let Txn = await MintingContract.mint(CollectionWallet.address, tokenURI)
               // console.log(Txn)
               // const mintReceipt = await Txn.wait()
@@ -135,12 +135,15 @@ const UploadExhibitionArt: React.FC<{
                 }),
                 headers: { "Content-Type": "application/json" }
               });
-              const { nft_id } = await res.json();
+              const response = await res.json();
               await uploadExhibitionArtWork({
                 ...data,
                 art_image: art_image,
                 exhibition_id,
-                nft_id: `${nft_id}`,
+                nft_id: `${response.data.nft_id.nft_id}`,
+                user_id: exhibition.user_id || "",
+                contract: exhibition.nft_address,
+                is_approved: true,
               });
               resetForm();
               setSubmitting(false);

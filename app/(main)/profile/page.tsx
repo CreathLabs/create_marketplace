@@ -9,6 +9,7 @@ import UserTabs from "@/components/UserTabs";
 import { Art, ExhibitionArt } from "@prisma/client";
 import EmptyComponent from "@/components/EmptyComponent";
 import Link from "next/link";
+import GetNft from "@/components/GetNft";
 
 const tabs = [
   {
@@ -109,6 +110,7 @@ const UserProfile = async ({
           <div className="mt-10 bg-grayTwo p-8 space-y-[60px] ">
             <DashStat title="Wallet Balance" value="Balance" />
             <DashStat title="Collector’s Royalty" value="Royalty" />
+            <GetNft/>
           </div>
         </div>
 

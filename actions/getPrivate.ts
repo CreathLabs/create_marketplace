@@ -1,23 +1,123 @@
-"use server";
+"use server"
 
 import { ethers } from "ethers";
 import ContractAbi from "@/app/providers/ABI/contractABI.json";
 import CreathABI from "@/app/providers/ABI/creathABI.json";
 import CollectionContractABI from "@/app/providers/ABI/CollectionContractABI.json";
+import { createWalletClient, http, fallback, createPublicClient } from 'viem';
+import { optimism } from 'viem/chains';
+import { privateKeyToAccount } from 'viem/accounts';
 
-const PROVIDERS = {
-  optimism: "https://optimism-rpc.publicnode.com",
-  optimismMainnet: "https://mainnet.optimism.io",
-  optimismDRPC: "https://optimism.drpc.org",
-};
+const PROVIDERS = [
+  "https://optimism-rpc.publicnode.com",
+  "https://mainnet.optimism.io",
+  "https://optimism.drpc.org",
+  "https://opt-mainnet.g.alchemy.com/v2/zgCpItc4ibgfD5I_y5X0j4Wdfux5YT3j",
+  "https://optimism.public.blockpi.network/v1/rpc/public"
+];
 
-function getWallet(providerUrl: string) {
+class FetchProvider extends ethers.providers.JsonRpcProvider {
+  url: string;
+
+  constructor(url: string, network: { name: string; chainId: number }) {
+    super(url, network);
+    // we won’t use ethers’ URL
+    this.url = url;
+    // network is set by parent constructor
+  }
+
+  async send(method: string, params: Array<any>): Promise<any> {
+    const payload = {
+      jsonrpc: "2.0",
+      id: 1,
+      method,
+      params,
+    };
+
+    const res = await fetch(this.url, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
+
+    const json = await res.json();
+
+    if (json.error) throw new Error(json.error.message);
+    return json.result;
+  }
+}
+
+// Choose the first working RPC
+async function getWorkingFetchProvider() {
+  for (const url of PROVIDERS) {
+    try {
+      // quick health check
+      const testRes = await fetch(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ jsonrpc: "2.0", id: 1, method: "eth_blockNumber", params: [] }),
+      });
+      const data = await testRes.json();
+      if (data.result) {
+        console.log(`✅ Connected to ${url}`);
+        return new FetchProvider(url, { name: "optimism", chainId: 10 });
+      }
+    } catch (err) {
+      console.warn(`❌ RPC failed: ${url}`, (err as Error).message);
+    }
+  }
+  throw new Error("All RPCs failed");
+}
+
+// async function getWorkingProvider() {
+//   for (const url of PROVIDERS) {
+//     try {
+//       const provider = new ethers.providers.JsonRpcProvider(url, { name: "optimism", chainId: 10 });
+//       await provider.getBlockNumber(); // quick health check
+//       console.log(`✅ Connected to ${url}`);
+//       return provider;
+//     } catch (err) {
+//       console.warn(`❌ RPC failed: ${url}`);
+//     }
+//   }
+//   throw new Error("All Optimism RPCs failed");
+// }
+
+async function getWallet() {
   if (!process.env.PRIVATE_KEY) {
     throw new Error("PRIVATE_KEY is missing in environment variables");
   }
-  const provider = new ethers.providers.JsonRpcProvider(providerUrl);
+  const provider = await getWorkingFetchProvider()
   return new ethers.Wallet(process.env.PRIVATE_KEY, provider);
 }
+
+
+async function getViemWallet() {
+  if (!process.env.PRIVATE_KEY) {
+    throw new Error("PRIVATE_KEY is missing in environment variables");
+  }
+
+  const pk = process.env.PRIVATE_KEY.startsWith("0x")
+    ? process.env.PRIVATE_KEY.trim()
+    : `0x${process.env.PRIVATE_KEY.trim()}`;
+  // Create account from private key
+  const account = privateKeyToAccount(pk as `0x${string}`);
+
+  // Create transport with fallback RPCs
+  const transport = fallback(PROVIDERS.map(url => http(url)));
+
+  // Create wallet client
+  return createWalletClient({
+    account,
+    chain: optimism,
+    transport
+  });
+}
+
+const publicClient = createPublicClient({
+  chain: optimism,
+  transport: fallback(PROVIDERS.map(url => http(url)))
+});
 
 export async function MintAndList(
   tokenURI: string,
@@ -27,12 +127,12 @@ export async function MintAndList(
   try {
     const contractAddress = "0x4DF3Fbf82df684A16E12e0ff3683E6888e51B994";
     const creathAddress = "0x013b6f5a3fF3A3259d832b89C6C0adaabe59f8C6";
-    const wallet = getWallet(PROVIDERS.optimism);
+    const wallet = await getWallet();
 
     const MintingContract = new ethers.Contract(contractAddress, ContractAbi, wallet);
     const ListingContract = new ethers.Contract(creathAddress, CreathABI, wallet);
 
-    const mintTx = await MintingContract.mint(artistWallet, tokenURI);
+    const mintTx = await MintingContract.mint(wallet.address, tokenURI);
     const mintReceipt = await mintTx.wait();
     const nft_id = parseInt(mintReceipt.events[0].args[2]._hex, 16);
 
@@ -55,12 +155,12 @@ export async function MintExhibition(
 ) {
   try {
     const creathAddress = "0x013b6f5a3fF3A3259d832b89C6C0adaabe59f8C6";
-    const wallet = getWallet(PROVIDERS.optimism);
+    const wallet = await getWallet();
 
     const MintingContract = new ethers.Contract(exhibition_address, ContractAbi, wallet);
     const ListingContract = new ethers.Contract(creathAddress, CreathABI, wallet);
 
-    const mintTx = await MintingContract.mint(artistWallet, tokenURI);
+    const mintTx = await MintingContract.mint(wallet.address, tokenURI);
     const mintReceipt = await mintTx.wait();
     const nft_id = parseInt(mintReceipt.events[0].args[2]._hex, 16);
 
@@ -79,21 +179,29 @@ export async function createExhibition(name: string, random: string) {
   try {
     const collectionContractAddress = "0x0578b23FE97D6Ac801007D259b03334F57276384";
     const creathAddress = "0x013b6f5a3fF3A3259d832b89C6C0adaabe59f8C6";
-    const wallet = getWallet(PROVIDERS.optimismMainnet);
 
-    const CollectionContractInstance = new ethers.Contract(
-      collectionContractAddress,
-      CollectionContractABI,
-      wallet
-    );
+    const walletClient = await getViemWallet();
 
-    const tx = await CollectionContractInstance.createNFTContract(name, random);
-    const receipt = await tx.wait();
+    // Step 1: Create NFT contract
+    const txHash = await walletClient.writeContract({
+      address: collectionContractAddress as `0x${string}`,
+      abi: CollectionContractABI,
+      functionName: 'createNFTContract',
+      args: [name, random]
+    });
 
-    const collectionAddress = receipt.events[0].address;
-    const collectionInstance = new ethers.Contract(collectionAddress, ContractAbi, wallet);
+    const receipt = await publicClient.waitForTransactionReceipt({ hash: txHash });
 
-    await collectionInstance.setApprovalForAll(creathAddress, true);
+    // Step 2: Get new contract address from logs
+    const collectionAddress = receipt.logs[0].address as `0x${string}`;
+
+    // Step 3: Set approval
+    await walletClient.writeContract({
+      address: collectionAddress,
+      abi: ContractAbi,
+      functionName: 'setApprovalForAll',
+      args: [creathAddress, true]
+    });
 
     return { address: collectionAddress };
   } catch (err) {
@@ -109,7 +217,7 @@ export async function transferArtwork(
 ) {
   try {
     const creathAddress = "0x013b6f5a3fF3A3259d832b89C6C0adaabe59f8C6";
-    const wallet = getWallet(PROVIDERS.optimismDRPC);
+    const wallet = await getWallet();
 
     const transferAddress = exhibition_address || creathAddress;
     const transferContract = new ethers.Contract(transferAddress, CreathABI, wallet);

@@ -41,6 +41,7 @@ const FormComp = ({
     address,
     artist_name,
     artworks,
+    art_pieces,
     country,
     cover_image,
     images,
@@ -397,7 +398,7 @@ const FormComp = ({
               <div className="w-full">
                 {activeTab === "uploaded" && (
                   <div className="grid grid-cols-3 gap-10">
-                    {artworks.map((artwork) => (
+                    {art_pieces.map((artwork) => (
                       <ExhibitionNftCard {...artwork} key={artwork.id} />
                     ))}
                   </div>

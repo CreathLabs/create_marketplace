@@ -35,7 +35,7 @@ export async function addAdmin(values: InferType<typeof AdminSchema>) {
     });
 
     const { error } = await resend.emails.send({
-      from: "Creath Marketplace <info@trustfynd.com>",
+      from: "Creath Marketplace <no-reply@mail.creath.io>",
       to: [data.email],
       subject: "You are now an Admin!",
       react: AdminWelcomeEmail({

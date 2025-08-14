@@ -27,6 +27,7 @@ export async function getArtists(page = 1, query = "", noPerPage = 12) {
     const total = await prisma.user.count({
       where: {
         is_approved: true,
+        is_artist: true,
         type: "ARTIST",
         ...(query
           ? {
@@ -42,6 +43,7 @@ export async function getArtists(page = 1, query = "", noPerPage = 12) {
     const data = await prisma.user.findMany({
       where: {
         is_approved: true,
+        is_artist: true,
         type: "ARTIST",
         ...(query
           ? {

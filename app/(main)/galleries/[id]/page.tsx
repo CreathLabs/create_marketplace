@@ -34,9 +34,7 @@ const AritistDetails = async ({
     const res = await getArtist(id);
     data = res;
     // Compute the total minted artworks count
-    mintedArtworksCount =
-    data.artworks.length +
-    data.exhibitions.reduce((total, exhibition) => total + (exhibition.artworksCount || 0), 0);
+    mintedArtworksCount = data.artworks.length
 
   } catch (error) {
     console.log(error);

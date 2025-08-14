@@ -52,7 +52,7 @@ export async function getExhibitions(page = 1, query = "", noPerPage = 6) {
       include: {
         _count: {
           select: {
-            artworks: true,
+            art_pieces: true,
           },
         },
       },
@@ -66,7 +66,7 @@ export async function getExhibitions(page = 1, query = "", noPerPage = 6) {
       total,
       data: data.map((d) => ({
         ...d,
-        artworks_count: d._count.artworks,
+        artworks_count: d._count.art_pieces,
       })),
       ipp: noPerPage,
     };
@@ -83,6 +83,7 @@ export async function getExhibition(id: string) {
       },
       include: {
         artworks: true,
+        art_pieces: true,
       },
     });
     return data;
@@ -95,13 +96,13 @@ export async function getExhibitionArtworks(
   id: string
 ) {
   try {
-    const total = await prisma.exhibitionArt.count({
+    const total = await prisma.art.count({
       where: {
         exhibition_id: id,
       },
     });
 
-    const data = await prisma.exhibitionArt.findMany({
+    const data = await prisma.art.findMany({
       where: {
         exhibition_id: id,
       },
@@ -120,7 +121,7 @@ export async function getExhibitionArtworks(
 
 export async function getExhibitionArtwork(id: string) {
   try {
-    const data = await prisma.exhibitionArt.findUniqueOrThrow({
+    const data = await prisma.art.findUniqueOrThrow({
       where: {
         id,
       },

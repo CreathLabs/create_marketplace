@@ -130,7 +130,7 @@ export const uploadExhibitionArtWork = async (
     }
     const data = await validateUploadExhibitionArtworkSchema(values);
 
-    const artwork = await prisma.exhibitionArt.create({
+    const artwork = await prisma.art.create({
       data: {
         ...data,
       },
@@ -160,7 +160,7 @@ export const updateExhibitionArtWork = async (
     }
     const data = await validateUploadExhibitionArtworkSchema(values);
 
-    const artwork = await prisma.exhibitionArt.update({
+    const artwork = await prisma.art.update({
       where: { id },
       data: {
         ...data,
