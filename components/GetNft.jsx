@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import { useConnect, useEthereum } from "@particle-network/authkit";
 import { ethers } from "ethers";
-import { set } from "lodash";
+import Image from "next/image";
 
 const GetNft = () => {
     const { connected } = useConnect();
@@ -192,7 +192,7 @@ const GetNft = () => {
                                         {nfts.map((nft, index) => (
                                             <div key={index} className="border border-gray-200 rounded-lg p-3">
                                                 {nft.media && nft.media[0] && (
-                                                    <img
+                                                    <Image
                                                         src={nft.media[0].gateway || nft.media[0].raw}
                                                         alt={nft.title || `NFT ${index + 1}`}
                                                         className="w-full h-32 object-cover rounded mb-2"
@@ -226,7 +226,7 @@ const GetNft = () => {
                             ) : (
                                 <div className="text-center py-8">
                                     <p className="text-gray-500">No NFTs found in your wallet</p>
-                                    <p className="text-sm text-gray-400 mt-2">Make sure you're connected to the Optimism network</p>
+                                    <p className="text-sm text-gray-400 mt-2">Make sure you&apos;re connected to the Optimism network</p>
                                 </div>
                             )}
                         </div>
