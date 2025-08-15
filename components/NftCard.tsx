@@ -69,7 +69,7 @@ const NftCard: React.FC<ArtProps> = async ({
             </h1>
           </Link>
           <div className="flex justify-between w-full items-center ">
-            <h1 className="text-navyBlue text-base md:text-lg font-bold ">
+            <h1 className="text-black text-base md:text-lg font-bold ">
               {`${floor_price} USDC`}
             </h1>
             <LikeButton showLikes={showLikes} likesCount={likesCount} isLiked={isLiked} id={id} />

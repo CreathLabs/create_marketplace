@@ -34,7 +34,7 @@ export default async function Home() {
       <div className="bg-black  pt-8 md:pt-10 md:pb-14 pb-6">
         <div className="contain space-y-10 md:space-y-14">
           <div className=" flex justify-between items-center">
-            <h1 className="heading text-white ">Performing Artists</h1>
+            <h1 className="heading text-white ">Artists</h1>
             <Link href={"/artists"}>
               <Button
                 text="View All Artists"

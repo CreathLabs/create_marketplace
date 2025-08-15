@@ -7,7 +7,7 @@ const Blogs = async () => {
   return (
     <div className="py-14 w-full contain space-y-8 lg:space-y-[30px] min-h-[calc(100vh-70px)]">
       <div className="flex flex-col lg:flex-row gap-y-6 lg:gap-0 justify-between lg:items-center ">
-        <h1 className=" heading leading-[60px] ">Creath Conversations</h1>
+        <h1 className=" heading leading-[60px] ">Creath Scoop</h1>
       </div>
       <div className="lg:mt-1 flex flex-col items-start">
         <p className=" text-xl leading-loose ">
