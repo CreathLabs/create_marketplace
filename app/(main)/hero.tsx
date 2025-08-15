@@ -86,7 +86,7 @@ const Hero: React.FC<{
                 >
                   {topNfts?.[current]?.name}
                 </h1>
-                <h1 className="font-bold text-navyBlue text-base md:text-xl">
+                <h1 className="font-bold text-black text-base md:text-xl">
                   {`${topNfts?.[current]?.floor_price} USDC`}
                 </h1>
               </div>

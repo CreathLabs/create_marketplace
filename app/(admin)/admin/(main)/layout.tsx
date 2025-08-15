@@ -27,7 +27,7 @@ export default async function RootLayout({
 
   return (
     <div className="w-full h-full">
-      <Sidebar />
+      <Sidebar admin={current}/>
       <main className="lg:pl-[280px] min-h-screen bg-white  w-full h-full">
         {children}
       </main>
