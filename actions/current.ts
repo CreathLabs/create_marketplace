@@ -62,12 +62,6 @@ export const getProfile = async () => {
               },
             }
           }
-        },
-        collectedExhibitionArt: {
-          include: {
-            category: true,
-            exhibition: true,
-          }
         }
       },
     });
@@ -79,12 +73,6 @@ export const getProfile = async () => {
         ...items,
         likeCount: items._count?.likes || 0,
         type: 'artwork' as const,
-      })),
-      // Exhibition artworks (they don't have likes, so set to 0)
-      ...user.collectedExhibitionArt.map((items) => ({
-        ...items,
-        likeCount: 0, // Exhibition artworks don't have likes system
-        type: 'exhibition' as const,
       })),
     ];
 
@@ -100,10 +88,7 @@ export const getProfile = async () => {
       })),
       collected: combinedCollected,
       // Keep the original arrays for backward compatibility if needed
-      collectedExhibitionArt: user.collectedExhibitionArt.map((items) => ({
-        ...items,
-        likeCount: 0,
-      })),
+
     };
   } catch (error) {
     throw error;
