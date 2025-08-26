@@ -114,6 +114,7 @@ const page = async ({ params: { id } }: { params: { id: string } }) => {
                   artName={data.name}
                   exhibition_address={data.contract}
                   art_id={data.id}
+                  isBought={data.isSold}
                 />
                 <VerifyButton
                   nft_id={data.nft_id ?? ""}
@@ -124,6 +125,7 @@ const page = async ({ params: { id } }: { params: { id: string } }) => {
                   artName={data.name}
                   exhibition_address={data.contract}
                   art_id={data.id}
+                  isBought={data.isSold}
                 />
               </div>
               <div className="flex justify-center lg:justify-start items-center gap-x-12">

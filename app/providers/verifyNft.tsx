@@ -27,9 +27,10 @@ interface VerifyButtonProps {
     artName: string,
     exhibition_address: string | null,
     art_id: string,
+    isBought: boolean,
 }
 
-const VerifyButton: React.FC<VerifyButtonProps> =  ( { nft_id, current, price, Innertext, paymentType, artName, exhibition_address, art_id } )=>{
+const VerifyButton: React.FC<VerifyButtonProps> =  ( { nft_id, current, price, Innertext, paymentType, artName, exhibition_address, art_id, isBought } )=>{
     const { connected, connectionStatus } = useConnect();
     const [checkContract, setCheck] = useState<ethers.Contract | null>(null);
     const [mockContract, setMock] = useState<ethers.Contract | null>(null);
@@ -96,7 +97,12 @@ const VerifyButton: React.FC<VerifyButtonProps> =  ( { nft_id, current, price, I
         // Only un checkArtwork if checkContract has been set
         const verifyArtwork = async ()=>{
             if(current){
-                if (checkContract) {
+                if(isBought){
+                    setVerified(true)
+                    setAvailable(false)
+                    setSold(true)
+                }
+                else if (checkContract) {
                     checkArtwork()
                 }
             }

@@ -22,7 +22,7 @@ export async function getTopExhibitions() {
   }
 }
 
-export async function getExhibitions(page = 1, query = "", noPerPage = 6) {
+export async function getExhibitions(page = 1, query = "", noPerPage = 8) {
   try {
     const total = await prisma.exhibition.count({
       where: {

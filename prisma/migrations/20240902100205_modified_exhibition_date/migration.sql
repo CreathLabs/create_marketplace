@@ -1,3 +1,0 @@
--- AlterTable
-ALTER TABLE "Exhibition" ALTER COLUMN "date" DROP NOT NULL,
-ALTER COLUMN "date" SET DATA TYPE TEXT;

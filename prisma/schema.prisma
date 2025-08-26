@@ -108,6 +108,7 @@ model Art {
   flags           Flags[]
   likes           Likes[]
   notifications   Notification[]
+  isSold          Boolean        @default(false)
 }
 
 model ExhibitionArt {
