@@ -3,7 +3,7 @@ ALTER TABLE "Art" ADD COLUMN "exhibition_id" TEXT;
 ALTER TABLE "Art" ALTER COLUMN "user_id" DROP NOT NULL;
 
 -- Add foreign key constraint for exhibition_id
-ALTER TABLE "Art" ADD CONSTRAINT "Art_exhibition_id_fkey" FOREIGN KEY ("exhibition_id") REFERENCES "Exhibition"("id") ON DELETE SET NULL ON UPDATE CASCADE;/
+ALTER TABLE "Art" ADD CONSTRAINT "Art_exhibition_id_fkey" FOREIGN KEY ("exhibition_id") REFERENCES "Exhibition"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- Change user_id foreign key to SET NULL on delete instead of CASCADE
 ALTER TABLE "Art" DROP CONSTRAINT "Art_user_id_fkey";
