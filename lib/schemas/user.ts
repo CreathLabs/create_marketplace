@@ -11,8 +11,8 @@ export const EditProfileSchema = yup.object({
   bio: yup.string().required("Biography is required"),
   instagram: yup.string(),
   twitter: yup.string(),
-  profile_image: yup.string(),
-  cover_image: yup.string()
+  profile_image: yup.string().optional().nullable(),
+  cover_image: yup.string().optional().nullable(),
 });
 
 export const UploadArtworkSchema = yup.object({

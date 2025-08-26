@@ -8,14 +8,14 @@ export async function getTopExhibitions() {
       include: {
         _count: {
           select: {
-            artworks: true,
+            art_pieces: true,
           },
         },
       },
     });
     return res.map((d) => ({
       ...d,
-      artworks_count: d._count.artworks,
+      artworks_count: d._count.art_pieces,
     }));
   } catch (error) {
     throw error;

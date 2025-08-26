@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider        = "prisma-client-js"
   previewFeatures = ["fullTextSearch"]
@@ -15,38 +9,38 @@ datasource db {
 }
 
 model User {
-  id                String             @id @default(uuid())
-  username          String             @unique
-  email             String             @unique
-  password          String
-  type              PROFILETYPE        @default(ARTIST)
-  wallet_address    String?            @unique
-  bio               String?            @db.VarChar(1000)
-  instagram         String?
-  twitter           String?
-  country           String?
-  state             String?
-  address           String?
-  profile_image     String?
-  cover_image       String?
-  created_at        DateTime           @default(now())
-  updated_at        DateTime           @updatedAt
-  is_email_verified Boolean?           @default(false)
-  otp               String?
-  otp_expires_in    DateTime?
-  reset_token       String?            @unique
-  token_expies_in   DateTime?
-  is_approved       Boolean            @default(false)
-  is_artist         Boolean            @default(false)
-  artworks          Art[]              @relation(name: "UserArt")
-  likes             Likes[]
-  flags             Flags[]
-  notifications     Notification[]
-  collectibleLikes  CollectibleLikes[]
-  collectibleFlags  CollectibleFlags[]
-  collected         Art[]    @relation(name: "CollectedArt") // Artworks collected by this user
-  collectedExhibitionArt ExhibitionArt[] @relation(name: "CollectedExhibitionArt") // Exhibition artworks collected by this user
-  exhibition        Exhibition[]     @relation(name: "CreatedExhibition") 
+  id                     String             @id @default(uuid())
+  username               String             @unique
+  email                  String             @unique
+  password               String
+  type                   PROFILETYPE        @default(ARTIST)
+  wallet_address         String?            @unique
+  bio                    String?            @db.VarChar(1000)
+  instagram              String?
+  twitter                String?
+  country                String?
+  state                  String?
+  address                String?
+  created_at             DateTime           @default(now())
+  updated_at             DateTime           @updatedAt
+  is_email_verified      Boolean?           @default(false)
+  otp                    String?
+  otp_expires_in         DateTime?
+  reset_token            String?            @unique
+  token_expies_in        DateTime?
+  is_approved            Boolean            @default(false)
+  profile_image          String?
+  cover_image            String?
+  is_artist              Boolean            @default(false)
+  collected              Art[]              @relation("CollectedArt")
+  artworks               Art[]              @relation("UserArt")
+  collectibleFlags       CollectibleFlags[]
+  collectibleLikes       CollectibleLikes[]
+  exhibition             Exhibition[]       @relation("CreatedExhibition")
+  collectedExhibitionArt ExhibitionArt[]    @relation("CollectedExhibitionArt")
+  flags                  Flags[]
+  likes                  Likes[]
+  notifications          Notification[]
 }
 
 model Exhibition {
@@ -54,21 +48,21 @@ model Exhibition {
   name         String
   description  String
   cover_image  String
-  images       String[]
-  country      String
-  location     String
-  address      String
-  date         DateTime
-  time         DateTime
-  artist_name  String
-  curator_name String
-  nft_address  String?
   created_at   DateTime        @default(now())
   updated_at   DateTime        @updatedAt
-  artworks     ExhibitionArt[] // Keep for now (will be deprecated)
-  art_pieces   Art[]           @relation(name: "ExhibitionArt") // New relation to Art table
+  address      String
+  artist_name  String
+  country      String
+  curator_name String
+  location     String
+  time         DateTime
+  images       String[]
+  date         DateTime
+  nft_address  String?
   user_id      String?
-  created_by   User?   @relation(name: "CreatedExhibition", fields: [user_id], references: [id], onDelete: SetNull)
+  art_pieces   Art[]           @relation("ExhibitionArt")
+  created_by   User?           @relation("CreatedExhibition", fields: [user_id], references: [id])
+  artworks     ExhibitionArt[]
 }
 
 model Blog {
@@ -90,56 +84,55 @@ model Category {
 }
 
 model Art {
-  id            String         @id @default(uuid())
-  name          String
-  floor_price   Float
-  description   String         @db.VarChar()
-  dimensions    String
-  user_id       String         // Non-nullable to match deployed database
-  user          User           @relation(name: "UserArt", fields: [user_id], references: [id], onDelete: Cascade) // Creator of the artwork
-  category_id   String
-  category      Category       @relation(fields: [category_id], references: [id], onDelete: Cascade)
-  exhibition_id String?        // New field linking to exhibition
-  exhibition    Exhibition?    @relation(name: "ExhibitionArt", fields: [exhibition_id], references: [id], onDelete: SetNull) // Link to exhibition
-  location      String?
-  contract      String?
-  published_by  String?
-  art_image     String?
-  nft_id        String?
-  is_approved   Boolean        @default(false)
-  created_at    DateTime       @default(now())
-  updated_at    DateTime       @updatedAt
-  likes         Likes[]
-  flags         Flags[]
-  notifications Notification[]
-  collected_by_id String?  // ID of the user who collected this artwork (nullable if not collected)
-  collected_by    User?    @relation(name: "CollectedArt", fields: [collected_by_id], references: [id], onDelete: SetNull) // The user who collected it
+  id              String         @id @default(uuid())
+  name            String
+  floor_price     Float
+  description     String         @db.VarChar
+  dimensions      String
+  user_id         String
+  category_id     String
+  location        String?
+  contract        String?
+  published_by    String?
+  created_at      DateTime       @default(now())
+  updated_at      DateTime       @updatedAt
+  art_image       String?
+  is_approved     Boolean        @default(false)
+  nft_id          String?
+  collected_by_id String?
+  exhibition_id   String?
+  category        Category       @relation(fields: [category_id], references: [id], onDelete: Cascade)
+  collected_by    User?          @relation("CollectedArt", fields: [collected_by_id], references: [id])
+  exhibition      Exhibition?    @relation("ExhibitionArt", fields: [exhibition_id], references: [id])
+  user            User           @relation("UserArt", fields: [user_id], references: [id], onDelete: SetNull)
+  flags           Flags[]
+  likes           Likes[]
+  notifications   Notification[]
 }
 
 model ExhibitionArt {
-  id            String     @id @default(uuid())
-  name          String
-  floor_price   Float
-  description   String     @db.VarChar()
-  dimensions    String
-  category_id   String
-  category      Category   @relation(fields: [category_id], references: [id], onDelete: Cascade)
-  exhibition_id String
-  exhibition    Exhibition @relation(fields: [exhibition_id], references: [id], onDelete: Cascade)
-  art_image     String
-  nft_id        String?
-  created_at    DateTime   @default(now())
-  updated_at    DateTime   @updatedAt
-  collected_by_id String?  // ID of the user who collected this exhibition artwork (nullable if not collected)
-  collected_by    User?    @relation(name: "CollectedExhibitionArt", fields: [collected_by_id], references: [id], onDelete: SetNull) // The user who collected it
+  id              String     @id @default(uuid())
+  name            String
+  floor_price     Float
+  description     String     @db.VarChar
+  dimensions      String
+  category_id     String
+  exhibition_id   String
+  art_image       String
+  nft_id          String?
+  created_at      DateTime   @default(now())
+  updated_at      DateTime   @updatedAt
+  collected_by_id String?
+  category        Category   @relation(fields: [category_id], references: [id], onDelete: Cascade)
+  collected_by    User?      @relation("CollectedExhibitionArt", fields: [collected_by_id], references: [id])
+  exhibition      Exhibition @relation(fields: [exhibition_id], references: [id], onDelete: Cascade)
 }
 
 model Collectibles {
   id              String             @id @default(uuid())
   name            String
   mint_price      Float
-  description     String             @db.VarChar()
-  mint_per_wallet Int                @default(0)
+  description     String             @db.VarChar
   total_minted    Int                @default(0)
   total_unminted  Int                @default(0)
   published_by    String
@@ -147,50 +140,51 @@ model Collectibles {
   contract        String?
   created_at      DateTime           @default(now())
   updated_at      DateTime           @updatedAt
-  likes           CollectibleLikes[]
+  mint_per_wallet Int                @default(0)
   flags           CollectibleFlags[]
+  likes           CollectibleLikes[]
 }
 
 model Likes {
   user_id    String
-  user       User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
   art_id     String
-  art        Art      @relation(fields: [art_id], references: [id], onDelete: Cascade)
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
+  art        Art      @relation(fields: [art_id], references: [id], onDelete: Cascade)
+  user       User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
 
   @@id([user_id, art_id])
 }
 
 model Flags {
   user_id    String
-  user       User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
   art_id     String
-  art        Art      @relation(fields: [art_id], references: [id], onDelete: Cascade)
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
+  art        Art      @relation(fields: [art_id], references: [id], onDelete: Cascade)
+  user       User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
 
   @@id([user_id, art_id])
 }
 
 model CollectibleLikes {
   user_id        String
-  user           User         @relation(fields: [user_id], references: [id], onDelete: Cascade)
   collectible_id String
-  collectible    Collectibles @relation(fields: [collectible_id], references: [id], onDelete: Cascade)
   created_at     DateTime     @default(now())
   updated_at     DateTime     @updatedAt
+  collectible    Collectibles @relation(fields: [collectible_id], references: [id], onDelete: Cascade)
+  user           User         @relation(fields: [user_id], references: [id], onDelete: Cascade)
 
   @@id([user_id, collectible_id])
 }
 
 model CollectibleFlags {
   user_id        String
-  user           User         @relation(fields: [user_id], references: [id], onDelete: Cascade)
   collectible_id String
-  collectible    Collectibles @relation(fields: [collectible_id], references: [id], onDelete: Cascade)
   created_at     DateTime     @default(now())
   updated_at     DateTime     @updatedAt
+  collectible    Collectibles @relation(fields: [collectible_id], references: [id], onDelete: Cascade)
+  user           User         @relation(fields: [user_id], references: [id], onDelete: Cascade)
 
   @@id([user_id, collectible_id])
 }
@@ -198,13 +192,13 @@ model CollectibleFlags {
 model Notification {
   id         String    @id @default(uuid())
   user_id    String
-  user       User      @relation(fields: [user_id], references: [id], onDelete: Cascade)
   art_id     String?
-  art        Art?      @relation(fields: [art_id], references: [id], onDelete: Cascade)
   type       NOTIFTYPE
   created_at DateTime  @default(now())
   updated_at DateTime  @updatedAt
   is_read    Boolean   @default(false)
+  art        Art?      @relation(fields: [art_id], references: [id], onDelete: Cascade)
+  user       User      @relation(fields: [user_id], references: [id], onDelete: Cascade)
 }
 
 model Admin {
@@ -213,11 +207,11 @@ model Admin {
   email         String   @unique
   password      String
   phone_no      String
-  role          ROLE     @default(ADMIN)
   profile_image String
   created_at    DateTime @default(now())
   updated_at    DateTime @updatedAt
   is_suspended  Boolean  @default(false)
+  role          ROLE     @default(ADMIN)
 }
 
 enum NOTIFTYPE {

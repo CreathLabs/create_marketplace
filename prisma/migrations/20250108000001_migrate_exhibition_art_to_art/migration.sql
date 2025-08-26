@@ -1,0 +1,2 @@
+-- This migration was already applied in production.
+-- Recreated as a placeholder to resolve drift.

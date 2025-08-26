@@ -14,6 +14,7 @@ import { useFlutterwave, closePaymentModal } from 'flutterwave-react-v3';
 import { toast } from "react-toastify";
 import LoadingModal from "@/components/loadingModal";
 import { updateArtCollected } from "@/actions";
+import { set } from "lodash";
 
 
 
@@ -124,6 +125,7 @@ const VerifyButton: React.FC<VerifyButtonProps> =  ( { nft_id, current, price, I
             }
             setIsBuying(false);
             setSold(true)
+            setAvailable(false);
             toast.success("Art Purchased Successfully");
             window.location.reload()
         }
@@ -172,6 +174,7 @@ const VerifyButton: React.FC<VerifyButtonProps> =  ( { nft_id, current, price, I
                             let buyReceipt = await buyContract?.buyItem(buyingAddress, current.wallet_address, id, false);
                             let receipt = await buyReceipt.wait();
                             setSold(true)
+                            setAvailable(false);
                             toast.success("Art Purchased Successfully");
                             await updateArtCollected(art_id, current.id);
                             setIsBuying(false);
@@ -182,6 +185,7 @@ const VerifyButton: React.FC<VerifyButtonProps> =  ( { nft_id, current, price, I
                             let buyReceipt = await buyContract?.buyItem(buyingAddress, current.wallet_address, id, false);
                             let receipt = await buyReceipt.wait();
                             setSold(true)
+                            setAvailable(false);
                             toast.success("Art Purchased Successfully");
                             await updateArtCollected(art_id, current.id);
                             setIsBuying(false);

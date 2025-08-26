@@ -26,8 +26,8 @@ const editProfileSchema = yup.object().shape({
   country: yup.string().optional().nullable().default(null),
   state: yup.string().optional().nullable().default(null),
   address: yup.string().optional().nullable().default(null),
-  profile_image: yup.mixed(),
-  cover_image: yup.mixed(),
+  profile_image: yup.mixed().optional().nullable(),
+  cover_image: yup.mixed().optional().nullable(),
 });
 
 interface editProfileValues extends yup.InferType<typeof editProfileSchema> {
@@ -94,12 +94,12 @@ const EditProfileForm: React.FC<{ profile: User }> = ({ profile }) => {
               data?.cover_image?.name === existingCI.name;
 
             const profile_image = piNoChange
-              ? profile.profile_image!
-              : await uploadToCloudinary(data.profile_image);
+              ? profile.profile_image 
+              : data.profile_image ?  await uploadToCloudinary(data.profile_image) : null;
 
             const cover_image = ciNoChange
-              ? profile.cover_image!
-              : await uploadToCloudinary(data.cover_image);
+              ? profile.cover_image
+              : data.cover_image ?  await uploadToCloudinary(data.cover_image) : null;
 
             await updateProfile({ ...data, profile_image, cover_image });
             toast.success("Profile Updated Successfully");
