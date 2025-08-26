@@ -43,7 +43,7 @@ const Hero: React.FC<{
         <div className=" space-y-8 lg:space-y-12 ">
           <div className=" space-y-3 lg:space-y-6">
             <h1 className="text-[28px] md:text-[40px] font-bold leading-[60px] text-center lg:text-left font-Playfair  ">
-             The New Frontier For Art and Collectibles
+             The New Frontier For <br/> Art and Collectibles
             </h1>
             <h2 className="text-lg md:text-xl text-center lg:text-left leading-[45px]">
               We are a curated marketplace <br className="lg:hidden" /> bridging

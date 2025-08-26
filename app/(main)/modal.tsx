@@ -38,7 +38,6 @@ const Modal: React.FC<Props> = ({ handleClose }) => {
         wallet_address: accounts[0],
         type: type
       }).then(async (resp) => {
-        console.log(resp)
         try {
           const res = await verifyOtp({
             email,
