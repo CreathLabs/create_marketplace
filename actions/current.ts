@@ -272,6 +272,25 @@ export const uploadArtWork = async (
       throw error;
     }
 
+    const notification = await prisma.notification.create({
+      data: {
+        art_id: artwork.id,
+        user_id: res.id,
+        type: NOTIFTYPE.UPLOADS,
+      },
+    });
+
+    const notifEmail = await resend.emails.send({
+      from: "Creath Marketplace <no-reply@mail.creath.io>",
+      to: ["artists@creath.io "],
+      subject: "Notification",
+      text: "A new notification on the Marketplace"
+    });
+  
+    if (notifEmail.error) {
+      throw error;
+    }
+
     return artwork;
   } catch (error) {
     throw error;

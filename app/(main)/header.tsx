@@ -21,7 +21,8 @@ import React, { useContext, useEffect } from "react";
 import { useConnect, useEthereum } from '@particle-network/authkit';
 import { ethers } from "ethers";
 import { userSignin, saveSession } from "@/actions";
-import { handleError, parseErrors } from "@/lib/helpers";
+import { parseErrors } from "@/lib/helpers";
+import { toast } from "react-toastify";
 
 interface Props {
   openModal: () => void;
@@ -53,6 +54,12 @@ const Header: React.FC<Props> = ({ openModal, current }) => {
   useEffect(() => {
     setIsLoggedIn(!!current)
   }, [current]);
+
+  const handleError = (errors: { message: string }[]) => {
+    errors.forEach((item) => {
+      toast.error(item.message);
+    });
+  };
 
   const handleLogin = async () => {
     try {

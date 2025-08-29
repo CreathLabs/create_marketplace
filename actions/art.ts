@@ -7,6 +7,7 @@ import { Sort } from "@/lib/types";
 import { Resend } from "resend";
 import ArtworkCollectedEmail from "@/components/email-templates/ArtPurchase";
 import ArtistCollectedEmail from "@/components/email-templates/ArtistCollectedEmail";
+import EnquiryEmail from "@/components/email-templates/EnquiryEmail";
 
 
 const resend = new Resend(process.env.RESEND_API_KEY);
@@ -320,6 +321,7 @@ export const updateArtCollected = async (id: string, user_id: string) => {
         },
         data: {
           collected_by_id: user_id,
+          isSold: true
         },
       });
 
@@ -379,7 +381,7 @@ export const updateArtCollected = async (id: string, user_id: string) => {
     const { error } = await resend.emails.send({
       from: "Creath Marketplace <no-reply@mail.creath.io>",
       to: [user.email],
-      subject: "Artwork Collected",
+      subject: "Congratulations on Your Artful Acquisition! 🎉",
       react: ArtworkCollectedEmail({
         username: user.username,
         artworkName: artworkName,
@@ -395,10 +397,12 @@ export const updateArtCollected = async (id: string, user_id: string) => {
       const artistEmail = await resend.emails.send({
         from: "Creath Marketplace <no-reply@mail.creath.io>",
         to: [artist.email],
-        subject: "Artwork Collected",
+        subject: "Exciting News: Your Artwork Has Found a New Home! 🎨✨",
         react: ArtistCollectedEmail({
           username: artist.username,
           artworkName: artworkName,
+          collector:  user.username,
+          price: updatedArtwork.price.toString()
         }),
       });
 
@@ -407,6 +411,62 @@ export const updateArtCollected = async (id: string, user_id: string) => {
       }
     }
 
+    const notification = await prisma.notification.create({
+      data: {
+        art_id: id,
+        user_id: user_id,
+        type: NOTIFTYPE.BUYS,
+      },
+    });
+  } catch (error) {
+    throw error;
+  }
+
+  const { error } = await resend.emails.send({
+    from: "Creath Marketplace <no-reply@mail.creath.io>",
+    to: ["creathtteam@gmail.com"],
+    subject: "Notification",
+    text: "A new notification on the Marketplace"
+  });
+
+  if (error) {
+    throw error;
+  }
+}
+
+export const sendCollectorTest = async (email: string, username: string, artworkName: string)=>{
+  const { error } = await resend.emails.send({
+    from: "Creath Marketplace <no-reply@mail.creath.io>",
+    to: [email],
+    subject: "Congratulations on Your Artful Acquisition! 🎉",
+    react: ArtworkCollectedEmail({
+      username: username,
+      artworkName: artworkName,
+    }),
+  });
+
+  if (error) {
+    throw error;
+  }
+
+}
+
+export const sendEnquiry = async (email: string, name: string, message: string) => {
+  try {
+    const { error } = await resend.emails.send({
+      from: "Creath Marketplace <no-reply@mail.creath.io>",
+      to: ["info@creath.io"],
+      subject: "Enquiry from Creath Marketplace",
+      react: EnquiryEmail({
+        email: email,
+        name: name,
+        enquiry: message,
+      })
+    });
+
+    if (error) {
+      throw error;
+    }
   } catch (error) {
     throw error;
   }

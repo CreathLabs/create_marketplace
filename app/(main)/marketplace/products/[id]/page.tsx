@@ -5,6 +5,8 @@ import Image from "next/image";
 import { redirect } from "next/navigation";
 import React from "react";
 import VerifyButton from "@/app/providers/verifyNft";
+import Tester from "@/components/Tester";
+import EnquireButton from "@/components/EnquireButton";
 import {
   getAllUserFlags,
   getAllUserLikes,
@@ -53,6 +55,7 @@ const page = async ({ params: { id } }: { params: { id: string } }) => {
 
   return (
     <div className="w-full h-full">
+      {/* <Tester/> */}
       <div className="h-full  relative grid lg:grid-cols-2">
         <div className="w-full lg:sticky lg:top-[70px] lg:max-h-[calc(100vh-70px)] h-[398px] lg:h-[695px] bg-grayTwo flex justify-end ">
           <div className="contain_right ">
@@ -109,24 +112,12 @@ const page = async ({ params: { id } }: { params: { id: string } }) => {
                   nft_id={data.nft_id ?? ""}
                   current={current}
                   price={data.floor_price.toString()}
-                  Innertext="Buy With Crypto"
-                  paymentType="Wallet"
                   artName={data.name}
                   exhibition_address={data.contract}
                   art_id={data.id}
                   isBought={data.isSold}
                 />
-                <VerifyButton
-                  nft_id={data.nft_id ?? ""}
-                  current={current}
-                  price={data.floor_price.toString()}
-                  Innertext="Buy With Fiat"
-                  paymentType="Fiat"
-                  artName={data.name}
-                  exhibition_address={data.contract}
-                  art_id={data.id}
-                  isBought={data.isSold}
-                />
+                <EnquireButton/>
               </div>
               <div className="flex justify-center lg:justify-start items-center gap-x-12">
                 <FlagButton

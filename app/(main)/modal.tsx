@@ -6,8 +6,9 @@ import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { useConnect, useEthereum } from '@particle-network/authkit';
 import { createUser, verifyOtp, saveSession } from "@/actions";
-import { handleError, parseErrors } from "@/lib/helpers";
+import { parseErrors } from "@/lib/helpers";
 import { ethers } from "ethers";
+import { toast } from "react-toastify";
 import { PROFILETYPE } from "@prisma/client";
 
 interface Props {
@@ -25,6 +26,12 @@ const Modal: React.FC<Props> = ({ handleClose }) => {
   const router = useRouter();
   const { connect, disconnect } = useConnect();
   const { provider } =  useEthereum()
+
+  const handleError = (errors: { message: string }[]) => {
+    errors.forEach((item) => {
+      toast.error(item.message);
+    });
+  };
 
   const handleConnect = async (type: PROFILETYPE)=>{
     try{
