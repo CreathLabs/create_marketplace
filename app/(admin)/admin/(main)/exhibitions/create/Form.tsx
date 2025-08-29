@@ -110,7 +110,6 @@ const FormComp: React.FC<{
         validationSchema={exhibitionSchema}
         onSubmit={(data, { resetForm, setSubmitting }) => {
           (async () => {
-            console.log("Clicked!!!!")
             try {
               const cover_image = await uploadToCloudinary(data.cover_image);
               const res = await fetch("/api/createExhibition", {

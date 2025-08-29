@@ -7,7 +7,7 @@ import Button from "@/components/Button";
 import CreathABI from "./ABI/creathABI.json";
 import ABI from './ABI/contractABI.json';
 import MockABI from './ABI/MockABI.json';
-import { handleError, parseErrors } from "@/lib/helpers";
+import { parseErrors } from "@/lib/helpers";
 import { User } from "@prisma/client";
 // import { usePaystackPayment } from "react-paystack";
 import { useFlutterwave, closePaymentModal } from 'flutterwave-react-v3';
@@ -22,31 +22,30 @@ interface VerifyButtonProps {
     nft_id: string,
     current: User | null,
     price: string,
-    Innertext: string,
-    paymentType: string,
     artName: string,
     exhibition_address: string | null,
     art_id: string,
     isBought: boolean,
 }
 
-const VerifyButton: React.FC<VerifyButtonProps> =  ( { nft_id, current, price, Innertext, paymentType, artName, exhibition_address, art_id, isBought } )=>{
+const VerifyButton: React.FC<VerifyButtonProps> = ({ nft_id, current, price, artName, exhibition_address, art_id, isBought }) => {
     const { connected, connectionStatus } = useConnect();
     const [checkContract, setCheck] = useState<ethers.Contract | null>(null);
     const [mockContract, setMock] = useState<ethers.Contract | null>(null);
     const [buyContract, setContract] = useState<ethers.Contract | null>(null)
     // const [transferContract, setTransferContract] = useState<ethers.Contract | null>(null)
     const [address, setAddress] = useState("");
-    const [ verified, setVerified ] = useState(false);
-    const [ available, setAvailable ] = useState(false);
+    const [verified, setVerified] = useState(false);
+    const [available, setAvailable] = useState(false);
     const [isSold, setSold] = useState(false)
     const [isBuying, setIsBuying] = useState(false);
+    const [showPaymentModal, setShowPaymentModal] = useState(false);
     const contractAddress = '0x013b6f5a3fF3A3259d832b89C6C0adaabe59f8C6'; //it is the same contract for buying and listing items, it is also used in artistProfile and profile js files
     const creathAddress = "0x4DF3Fbf82df684A16E12e0ff3683E6888e51B994";
     const mockContractAddress = "0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85";
     const { provider } = useEthereum();
     const buyingAddress = exhibition_address ? exhibition_address : creathAddress;
-    
+
 
     const config = {
         public_key: 'FLWPUBK-0b212880f051f3e79e3b654d97a61fb7-X',
@@ -55,23 +54,23 @@ const VerifyButton: React.FC<VerifyButtonProps> =  ( { nft_id, current, price, I
         currency: 'USD',
         payment_options: 'card, banktransfer, ussd, account, credit',
         customer: {
-        email: `${current ? current.email : ''}`,
-        phone_number: ``,
-        name: `${current ? current.username : ''}`,
+            email: `${current ? current.email : ''}`,
+            phone_number: ``,
+            name: `${current ? current.username : ''}`,
         },
         customizations: {
-        title: `Paying for artwork ${artName}`,
-        description: 'Payment for an artwork on Creath Marketplace',
-        logo: 'https://media.publit.io/file/creat-logo.webp',
+            title: `Paying for artwork ${artName}`,
+            description: 'Payment for an artwork on Creath Marketplace',
+            logo: 'https://media.publit.io/file/creat-logo.webp',
         },
     };
 
     const handleFlutterPayment = useFlutterwave(config);
-    
 
-    useEffect(()=>{
-        const assignContracts = async ()=>{
-            try{
+
+    useEffect(() => {
+        const assignContracts = async () => {
+            try {
                 const ethersProvider = new ethers.providers.Web3Provider(provider);
                 const accounts = await ethersProvider.listAccounts();
                 const signer = ethersProvider.getSigner(accounts[0]);
@@ -85,7 +84,7 @@ const VerifyButton: React.FC<VerifyButtonProps> =  ( { nft_id, current, price, I
                 setContract(ContractInstance);
                 setCheck(CheckContract);
             }
-            catch(err){
+            catch (err) {
                 console.log(err)
             }
         }
@@ -95,9 +94,9 @@ const VerifyButton: React.FC<VerifyButtonProps> =  ( { nft_id, current, price, I
 
     useEffect(() => {
         // Only un checkArtwork if checkContract has been set
-        const verifyArtwork = async ()=>{
-            if(current){
-                if(isBought){
+        const verifyArtwork = async () => {
+            if (current) {
+                if (isBought) {
                     setVerified(true)
                     setAvailable(false)
                     setSold(true)
@@ -106,26 +105,26 @@ const VerifyButton: React.FC<VerifyButtonProps> =  ( { nft_id, current, price, I
                     checkArtwork()
                 }
             }
-            else{
+            else {
                 setVerified(true)
                 setAvailable(false)
             }
         }
-        verifyArtwork()   
-        
+        verifyArtwork()
+
     }, [checkContract, connected]);
 
-    const transferArtwork = async(id: any)=>{
-        try{
+    const transferArtwork = async (id: any) => {
+        try {
             const res = await fetch("/api/transfer", {
                 method: "POST",
                 body: JSON.stringify({
-                  id: id,
-                  address: exhibition_address,
-                  wallet_address: current?.wallet_address
+                    id: id,
+                    address: exhibition_address,
+                    wallet_address: current?.wallet_address
                 }),
                 headers: { "Content-Type": "application/json" }
-              });
+            });
             if (current?.id) {
                 await updateArtCollected(art_id, current.id);
             }
@@ -135,45 +134,56 @@ const VerifyButton: React.FC<VerifyButtonProps> =  ( { nft_id, current, price, I
             toast.success("Art Purchased Successfully");
             window.location.reload()
         }
-        catch(err){
+        catch (err) {
             const error = parseErrors(err);
             handleError(error.errors);
             setIsBuying(false);
         }
     }
 
-    const checkArtwork = async()=>{
+    const checkArtwork = async () => {
         console.log(nft_id)
-        try{
-            if(checkContract){
-                let txn =  await checkContract.ownerOf(nft_id);
-                if(txn === "0x33B5E1DaF11b12103682fB77031111736aADAa5C"){
+        try {
+            if (checkContract) {
+                let txn = await checkContract.ownerOf(nft_id);
+                if (txn === "0x33B5E1DaF11b12103682fB77031111736aADAa5C") {
                     setVerified(true);
                     setAvailable(true);
                 }
-                else{
+                else {
                     setVerified(true)
                     setAvailable(false)
                     setSold(true)
                 }
             }
         }
-        catch(err){
+        catch (err) {
             setVerified(true)
             const error = parseErrors(err);
             handleError(error.errors);
         }
     }
 
-    const handleBuy =  async ()=>{
-        if(current){
-            if(paymentType === "Wallet"){
-                try{
+    const openPayment = () => {
+        setShowPaymentModal(true);
+    }
+
+    const handleError = (errors: { message: string }[]) => {
+        errors.forEach((item) => {
+          toast.error(item.message);
+        });
+    };
+
+    const handleBuy = async (paymentType: string) => {
+        setShowPaymentModal(false);
+        if (current) {
+            if (paymentType === "Wallet") {
+                try {
                     let NFTprice = ethers.utils.parseUnits(price, 6)
                     let id = ethers.BigNumber.from(parseInt(nft_id));
-                    try{
+                    try {
                         let allowance = await mockContract?.allowance(current.wallet_address, contractAddress);
-                        if(NFTprice.gt(allowance)){
+                        if (NFTprice.gt(allowance)) {
                             let Txn = await mockContract?.approve(contractAddress, `${parseInt(NFTprice._hex)}`);
                             let rec = await Txn.wait();
                             setIsBuying(true);
@@ -186,7 +196,7 @@ const VerifyButton: React.FC<VerifyButtonProps> =  ( { nft_id, current, price, I
                             setIsBuying(false);
                             window.location.reload()
                         }
-                        else{
+                        else {
                             setIsBuying(true);
                             let buyReceipt = await buyContract?.buyItem(buyingAddress, current.wallet_address, id, false);
                             let receipt = await buyReceipt.wait();
@@ -197,29 +207,29 @@ const VerifyButton: React.FC<VerifyButtonProps> =  ( { nft_id, current, price, I
                             setIsBuying(false);
                             window.location.reload()
                         }
-                      }
-                      catch(err){
+                    }
+                    catch (err) {
                         const error = parseErrors(err);
                         handleError(error.errors);
                         console.error(err);
                         setIsBuying(false);
-                      }
+                    }
                 }
-                catch(err){
+                catch (err) {
                     const error = parseErrors(err);
                     handleError(error.errors);
                 }
             }
-            else{
+            else {
                 setIsBuying(true);
                 try {
                     handleFlutterPayment({
                         callback: (response) => {
-                        console.log("Flutterwave response:", response);
-                        if (response.status === "successful") {
-                            transferArtwork(nft_id); // Trigger transfer logic after payment success
-                        }
-                        closePaymentModal(); // Close the Flutterwave modal
+                            console.log("Flutterwave response:", response);
+                            if (response.status === "successful") {
+                                transferArtwork(nft_id); // Trigger transfer logic after payment success
+                            }
+                            closePaymentModal(); // Close the Flutterwave modal
                         },
                         onClose: () => {
                             setIsBuying(false);
@@ -227,23 +237,53 @@ const VerifyButton: React.FC<VerifyButtonProps> =  ( { nft_id, current, price, I
                         },
                     });
                 } catch (err) {
-                const error = parseErrors(err);
-                handleError(error.errors);
+                    const error = parseErrors(err);
+                    handleError(error.errors);
                 }
             }
         }
     }
 
-    return(
+    return (
         <>
             <Button
-                text={ !isSold ? `${Innertext}` : "Sold"}
+                text={!isSold ? `Buy` : "Sold"}
                 textStyles=" w-[144px] lg:w-[183px]"
                 className="text-white border-white"
                 disabled={!available}
-                loading =  {connectionStatus === "disconnected" ? false : !verified}
-                action={handleBuy}
+                loading={connectionStatus === "disconnected" ? false : !verified}
+                action={openPayment}
             />
+
+            {/* Payment Method Modal */}
+            {showPaymentModal && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                    <div className="bg-white rounded-lg p-8 max-w-md w-full mx-4">
+                        <h2 className="text-2xl font-bold text-center mb-6">Choose Payment Method</h2>
+                        <div className="space-y-4">
+                            <button
+                                onClick={() => handleBuy("Wallet")}
+                                className="w-full py-4 px-6 bg-black text-white rounded-lg hover:bg-gray-800 transition-colors"
+                            >
+                                Pay with Wallet
+                            </button>
+                            <button
+                                onClick={() => handleBuy("Fiat")}
+                                className="w-full py-4 px-6 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                            >
+                                Pay with Fiat
+                            </button>
+                        </div>
+                        <button
+                            onClick={() => setShowPaymentModal(false)}
+                            className="w-full mt-4 py-2 px-4 text-gray-600 hover:text-gray-800 transition-colors"
+                        >
+                            Cancel
+                        </button>
+                    </div>
+                </div>
+            )}
+
             <LoadingModal isOpen={isBuying} message="Please wait..." />
         </>
     )

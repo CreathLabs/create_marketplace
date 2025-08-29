@@ -5,6 +5,7 @@ import Image from "next/image";
 import { redirect } from "next/navigation";
 import React from "react";
 import VerifyButton from "@/app/providers/verifyNft";
+import EnquireButton from "@/components/EnquireButton";
 import { getProfile } from "@/actions/current";
 import { ShareButton } from "@/components/buttons";
 import Link from "next/link";
@@ -93,24 +94,12 @@ const page = async ({ params: { id, artId } }: { params: { id: string,  artId: s
                   nft_id={data.nft_id ?? ""}
                   current={current}
                   price={data.floor_price.toString()}
-                  Innertext="Buy With Crypto"
-                  paymentType="Wallet"
                   artName={data.name}
                   exhibition_address={exhibition?.nft_address ?? null}
                   art_id={data.id}
                   isBought={data.isSold}
                 />
-                <VerifyButton
-                  nft_id={data.nft_id ?? ""}
-                  current={current}
-                  price={data.floor_price.toString()}
-                  Innertext="Buy With Fiat"
-                  paymentType="Fiat"
-                  artName={data.name}
-                  exhibition_address={exhibition?.nft_address ?? null}
-                  art_id={data.id}
-                  isBought={data.isSold}
-                />
+                <EnquireButton/>
               </div>
               <div className="flex justify-center lg:justify-start items-center gap-x-12">
                 <ShareButton title={data.name} type="collectible" />

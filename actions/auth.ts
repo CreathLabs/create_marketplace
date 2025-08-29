@@ -19,6 +19,7 @@ import { Resend } from "resend";
 import OtpEmailTemplate from "@/components/email-templates/OTP";
 import { randomBytes } from "crypto";
 import ResetPasswordEmail from "@/components/email-templates/ResetPassword";
+import UserWelcome from "@/components/email-templates/UserWelcome";
 
 const { user } = prisma;
 const resend = new Resend(process.env.RESEND_API_KEY);
@@ -167,6 +168,16 @@ export const verifyOtp = async (values: yup.InferType<typeof OtpSchema>) => {
     });
 
     const token = jwtSignCustomer(existingUser);
+
+    const { error } = await resend.emails.send({
+      from: "Creath Marketplace <no-reply@mail.creath.io>",
+      to: [updatedUser.email],
+      subject: "Welcome to Creath",
+      react: UserWelcome({ username: updatedUser.username }),
+    });
+    if (error) {
+      throw error;
+    }
 
     return {
       success: true,
