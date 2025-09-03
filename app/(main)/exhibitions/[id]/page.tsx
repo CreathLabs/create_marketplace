@@ -86,8 +86,8 @@ const ExhibitionDetails = async ({
             </h1>
             <div className="flex flex-col space-y-10 w-full">
               <h3 className="font-semibold text-base lg:text-xl leading-9 tracking-[5%] ">
-                {data.description.length > 400
-                  ? `${data.description.substring(0, 400)}...`
+                {data.description.length > 600
+                  ? `${data.description.substring(0, 600)}...`
                   : data.description}
               </h3>
               <div className="flex items-center justify-between lg:justify-start lg:space-x-[123px]   ">
