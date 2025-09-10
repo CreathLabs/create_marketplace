@@ -1,0 +1,9 @@
+/* Something.module.css */
+
+.content figure {
+  @apply self-center;
+}
+
+.content figcaption {
+  @apply mt-5 mb-5; /* Tailwind spacing: 20px ≈ 1.25rem */
+}

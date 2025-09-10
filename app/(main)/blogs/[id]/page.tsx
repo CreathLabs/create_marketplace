@@ -6,6 +6,8 @@ import { redirect } from "next/navigation";
 import parse from "html-react-parser";
 import { getProfile } from "@/actions/current";
 import SocialShare from "@/components/SocialShare";
+import styles from "@/styles/blog.module.css";
+
 
 const page = async ({ params: { id } }: { params: { id: string } }) => {
 
@@ -44,7 +46,7 @@ const page = async ({ params: { id } }: { params: { id: string } }) => {
           alt="Image"
           className=" !h-[200px] !w-[100%] !relative object-cover "
         />
-        <div className="px-0">{parse(data.content)}</div>
+        <div className={`${styles.content} px-0 flex-col flex`}>{parse(data.content)}</div>
       </div>
     </div>
   );
