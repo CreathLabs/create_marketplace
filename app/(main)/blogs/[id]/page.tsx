@@ -39,12 +39,12 @@ const page = async ({ params: { id } }: { params: { id: string } }) => {
           <SocialShare instagram={current?.instagram} type="blog" twitter={current?.twitter} linkedin={"linked"} />
         </div>
       </div>
-      <div className="lg:px-14 flex flex-col gap-y-8 lg:items-start ">
+      <div className="lg:px-14 flex flex-col gap-y-8 lg:items-start">
         <Image
           src={data.cover_image}
           fill
           alt="Image"
-          className=" !h-[200px] !w-[100%] !relative object-cover "
+          className=" !h-auto !w-[80%] !relative object-cover self-center"
         />
         <div className={`${styles.content} px-0 flex-col flex`}>{parse(data.content)}</div>
       </div>
