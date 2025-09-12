@@ -6,7 +6,7 @@ import TextArea from "@/components/TextArea";
 import { Formik, Form } from "formik";
 import * as yup from "yup";
 import { sendEnquiry } from "@/actions";
-import { reset } from "viem/actions";
+import { toast } from "react-toastify";
 
 const enquirySchema = yup.object().shape({
     name: yup.string().required("Name is required"),
@@ -84,6 +84,7 @@ const EnquireButton = () => {
                                             await sendEnquiry(data.name, data.email, data.description);
                                             resetForm();
                                             setSubmitting(false);
+                                            toast.success("Enquiry submitted successfully!");
                                             closeModal();
                                         } catch (error) {
                                             console.error("Error submitting enquiry:", error);
