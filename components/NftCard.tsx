@@ -1,7 +1,7 @@
 import { getAllUserLikes } from "@/actions";
 import { Art } from "@prisma/client";
 import { Heart } from "iconsax-react";
-import Image from "next/image";
+import ImageWithPopup from "./ImageWithPopup";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React from "react";
@@ -41,9 +41,8 @@ const NftCard: React.FC<ArtProps> = async ({
     <div className="w-full min-w-[323px] h-full  space-y-4 cursor-pointer ">
       <div className="bg-grayTwo relative w-full  h-[370px] ">
         {!isVideo ? (
-          <Image
+          <ImageWithPopup
             src={getTransformedImage(art_image ?? undefined) || "/featured.png"}
-            fill
             alt="Image"
             className="object-cover p-5"
           />

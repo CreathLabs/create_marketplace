@@ -4,7 +4,7 @@ import { ethers } from "ethers";
 import ContractAbi from "@/app/providers/ABI/contractABI.json";
 import CreathABI from "@/app/providers/ABI/creathABI.json";
 import CollectionContractABI from "@/app/providers/ABI/CollectionContractABI.json";
-import { createWalletClient, http, fallback, createPublicClient } from 'viem';
+import { createWalletClient, http, fallback, createPublicClient, decodeEventLog } from 'viem';
 import { optimism } from 'viem/chains';
 import { privateKeyToAccount } from 'viem/accounts';
 
@@ -42,7 +42,10 @@ class FetchProvider extends ethers.providers.JsonRpcProvider {
 
     const json = await res.json();
 
-    if (json.error) throw new Error(json.error.message);
+    if (json.error){ 
+      console.log('The Error is at fetching provider'); 
+      throw new Error(json.error.message);
+    }
     return json.result;
   }
 }
@@ -155,18 +158,58 @@ export async function MintExhibition(
 ) {
   try {
     const creathAddress = "0x013b6f5a3fF3A3259d832b89C6C0adaabe59f8C6";
-    const wallet = await getWallet();
+    const walletClient = await getViemWallet();
 
-    const MintingContract = new ethers.Contract(exhibition_address, ContractAbi, wallet);
-    const ListingContract = new ethers.Contract(creathAddress, CreathABI, wallet);
+    // 1. Mint NFT
+    const mintHash = await walletClient.writeContract({
+      address: exhibition_address as `0x${string}`,
+      abi: ContractAbi,
+      functionName: "mint",
+      args: [walletClient.account.address, tokenURI]
+    });
 
-    const mintTx = await MintingContract.mint(wallet.address, tokenURI);
-    const mintReceipt = await mintTx.wait();
-    const nft_id = parseInt(mintReceipt.events[0].args[2]._hex, 16);
+    let nft_id: number | undefined;
 
+    const mintReceipt = await publicClient.waitForTransactionReceipt({ hash: mintHash });
+    const mintEvent = mintReceipt.logs[0]; // you’ll probably want to decode properly with viem’s `decodeEventLog`
+    console.log("Mint receipt:", mintReceipt);
+      for (const log of mintReceipt.logs) {
+        try {
+          const decoded = decodeEventLog({
+            abi: ContractAbi,   // must contain `event Transfer(address indexed from, address indexed to, uint256 indexed tokenId)`
+            data: log.data,
+            topics: log.topics,
+          });
+
+          if (decoded.eventName === "Transfer") {
+            const args = decoded.args as unknown as {
+              from: string;
+              to: string;
+              tokenId: bigint;
+            };
+            nft_id = Number(args.tokenId);
+            console.log("Minted tokenId:", nft_id);
+            break;
+          }
+        } catch {
+          // not an event from this ABI — ignore and continue
+        }
+      }
+
+      if (nft_id === undefined) {
+        throw new Error("No Transfer event found in mint receipt");
+      }
+
+    // 2. List item
     const UnitPrice = ethers.utils.parseUnits(floor_price.toString(), 6);
-    const listTx = await ListingContract.listItem(exhibition_address, artistWallet, nft_id, UnitPrice);
-    await listTx.wait();
+    const listHash = await walletClient.writeContract({
+      address: creathAddress as `0x${string}`,
+      abi: CreathABI,
+      functionName: "listItem",
+      args: [exhibition_address, artistWallet, nft_id, UnitPrice]
+    });
+
+    await publicClient.waitForTransactionReceipt({ hash: listHash });
 
     return { nft_id };
   } catch (err) {

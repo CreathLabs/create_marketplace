@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import { Icon } from "@iconify/react";
 import Button from "@/components/Button";
-import Image from "next/image";
+import ImageWithPopup from "@/components/ImageWithPopup";
 import { Art } from "@prisma/client";
 import { useRouter } from "next/navigation";
 import { LikeButton } from "@/components/buttons";
@@ -63,9 +63,8 @@ const Hero: React.FC<{
           <div className="space-y-[15px]">
             <div className="bg-grayTwo p-5 ">
               <div className="relative w-full  h-[330px]  ">
-                <Image
+                <ImageWithPopup
                   src={topNfts?.[current]?.art_image || "/featured.png"}
-                  fill
                   className="object-cover"
                   alt="featured"
                 />
