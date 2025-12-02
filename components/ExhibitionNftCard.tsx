@@ -1,10 +1,12 @@
 "use client";
 import { Art } from "@prisma/client";
-import Image from "next/image";
+import ImageWithPopup from "./ImageWithPopup";
 import Link from "next/link";
 import React from "react";
 import { DeleteButton } from "./buttons";
 import { usePathname } from "next/navigation";
+import CreathABI from "@/app/providers/ABI/creathABI.json";
+import { ethers } from "ethers";
 
 interface ArtProps extends Art {}
 
@@ -13,8 +15,16 @@ const ExhibitionNftCard: React.FC<ArtProps> = ({
   art_image,
   name,
   floor_price,
+  nft_id,
   exhibition_id,
+  contract
 }) => {
+  // const creathAddress = '0x013b6f5a3fF3A3259d832b89C6C0adaabe59f8C6'; // for listing items on the marketplace and also contains the buy function.
+  // const PROVIDER = "https://optimism-rpc.publicnode.com"
+  // const provider = new ethers.providers.JsonRpcProvider(PROVIDER);
+  // const CollectionWallet = 'private key goes here'
+  // const signer = new ethers.Wallet(CollectionWallet, provider);
+  // const ListingContract = new ethers.Contract(creathAddress, CreathABI, signer );
   const pathname = usePathname();
 
   const ext = art_image?.split(".");
@@ -32,13 +42,19 @@ const ExhibitionNftCard: React.FC<ArtProps> = ({
     return newString;
   };
 
+  // const updatePrice = async()=>{
+  //   const txn = await ListingContract.updateListing(contract, "0x33B5E1DaF11b12103682fB77031111736aADAa5C", nft_id, ethers.utils.parseUnits("600", 6))
+  //   const receipt = await txn.wait();
+  //   console.log(receipt)
+  // }
+
   return (
     <div className="w-full min-w-[323px] h-full  space-y-4 cursor-pointer ">
+      {/* <button onClick={()=>{updatePrice()}}>Update Price</button> */}
       <div className="bg-grayTwo relative w-full  h-[370px] ">
         {!isVideo ? (
-          <Image
+          <ImageWithPopup
             src={getTransformedImage(art_image || undefined) || "/featured.png"}
-            fill
             alt="Image"
             className="object-cover p-5"
           />
