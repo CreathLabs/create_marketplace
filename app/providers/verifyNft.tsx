@@ -46,26 +46,20 @@ const VerifyButton: React.FC<VerifyButtonProps> = ({ nft_id, current, price, art
     const { provider } = useEthereum();
     const buyingAddress = exhibition_address ? exhibition_address : creathAddress;
 
+    const convertToNaira = async (amount: number): Promise<number> => {
+        const response = await fetch('/api/getNaira', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ amount }),
+        });
 
-    const config = {
-        public_key: 'FLWPUBK-0b212880f051f3e79e3b654d97a61fb7-X',
-        tx_ref: `${Date.now()}`,
-        amount: Number(price),
-        currency: 'USD',
-        payment_options: 'card, banktransfer, ussd, account, credit',
-        customer: {
-            email: `${current ? current.email : ''}`,
-            phone_number: ``,
-            name: `${current ? current.username : ''}`,
-        },
-        customizations: {
-            title: `Paying for artwork ${artName}`,
-            description: 'Payment for an artwork on Creath Marketplace',
-            logo: 'https://media.publit.io/file/creat-logo.webp',
-        },
+        if (!response.ok) {
+            throw new Error('Failed to convert currency');
+        }
+
+        const data = await response.json();
+        return data.ngnAmount;
     };
-
-    const handleFlutterPayment = useFlutterwave(config);
 
 
     useEffect(() => {
@@ -223,6 +217,28 @@ const VerifyButton: React.FC<VerifyButtonProps> = ({ nft_id, current, price, art
             else {
                 setIsBuying(true);
                 try {
+                    const nairaAmount = await convertToNaira(Number(price));
+                    
+                    const config = {
+                        public_key: 'FLWPUBK-0b212880f051f3e79e3b654d97a61fb7-X',
+                        tx_ref: `${Date.now()}`,
+                        amount: nairaAmount,
+                        currency: 'NGN',
+                        payment_options: 'card, banktransfer, ussd, account, credit',
+                        customer: {
+                            email: `${current ? current.email : ''}`,
+                            phone_number: ``,
+                            name: `${current ? current.username : ''}`,
+                        },
+                        customizations: {
+                            title: `Paying for artwork ${artName}`,
+                            description: 'Payment for an artwork on Creath Marketplace',
+                            logo: 'https://media.publit.io/file/creat-logo.webp',
+                        },
+                    };
+
+                    const handleFlutterPayment = useFlutterwave(config);
+                    
                     handleFlutterPayment({
                         callback: (response) => {
                             console.log("Flutterwave response:", response);
