@@ -33,6 +33,7 @@ const VerifyButton: React.FC<VerifyButtonProps> = ({ nft_id, current, price, art
     const [checkContract, setCheck] = useState<ethers.Contract | null>(null);
     const [mockContract, setMock] = useState<ethers.Contract | null>(null);
     const [buyContract, setContract] = useState<ethers.Contract | null>(null)
+    const [nairaAmount, setNairaAmount] = useState<number | null>(null);
     // const [transferContract, setTransferContract] = useState<ethers.Contract | null>(null)
     const [address, setAddress] = useState("");
     const [verified, setVerified] = useState(false);
@@ -60,6 +61,40 @@ const VerifyButton: React.FC<VerifyButtonProps> = ({ nft_id, current, price, art
         const data = await response.json();
         return data.ngnAmount;
     };
+
+
+    const config = {
+        public_key: 'FLWPUBK-0b212880f051f3e79e3b654d97a61fb7-X',
+        tx_ref: `${Date.now()}`,
+        amount: nairaAmount ?? 0,
+        currency: 'NGN',
+        payment_options: 'card, banktransfer, ussd, account, credit',
+        customer: {
+            email: `${current ? current.email : ''}`,
+            phone_number: ``,
+            name: `${current ? current.username : ''}`,
+        },
+        customizations: {
+            title: `Paying for artwork ${artName}`,
+            description: 'Payment for an artwork on Creath Marketplace',
+            logo: 'https://media.publit.io/file/creat-logo.webp',
+        },
+    };
+
+    const handleFlutterPayment = useFlutterwave(config);
+
+    useEffect(() => {
+        const fetchNairaAmount = async () => {
+            try {
+                const converted = await convertToNaira(Number(price));
+                setNairaAmount(converted);
+            } catch (err) {
+                console.error('Failed to convert currency', err);
+            }
+        };
+
+        fetchNairaAmount();
+    }, [price]);
 
 
     useEffect(() => {
@@ -217,28 +252,6 @@ const VerifyButton: React.FC<VerifyButtonProps> = ({ nft_id, current, price, art
             else {
                 setIsBuying(true);
                 try {
-                    const nairaAmount = await convertToNaira(Number(price));
-                    
-                    const config = {
-                        public_key: 'FLWPUBK-0b212880f051f3e79e3b654d97a61fb7-X',
-                        tx_ref: `${Date.now()}`,
-                        amount: nairaAmount,
-                        currency: 'NGN',
-                        payment_options: 'card, banktransfer, ussd, account, credit',
-                        customer: {
-                            email: `${current ? current.email : ''}`,
-                            phone_number: ``,
-                            name: `${current ? current.username : ''}`,
-                        },
-                        customizations: {
-                            title: `Paying for artwork ${artName}`,
-                            description: 'Payment for an artwork on Creath Marketplace',
-                            logo: 'https://media.publit.io/file/creat-logo.webp',
-                        },
-                    };
-
-                    const handleFlutterPayment = useFlutterwave(config);
-                    
                     handleFlutterPayment({
                         callback: (response) => {
                             console.log("Flutterwave response:", response);
@@ -286,6 +299,7 @@ const VerifyButton: React.FC<VerifyButtonProps> = ({ nft_id, current, price, art
                             <button
                                 onClick={() => handleBuy("Fiat")}
                                 className="w-full py-4 px-6 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                                disabled={!nairaAmount}
                             >
                                 Pay with Fiat
                             </button>
